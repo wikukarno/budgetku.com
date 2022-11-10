@@ -15,14 +15,14 @@
                     @method('PUT')
                     @csrf
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label for="title" class="form-label">Nama Portofolio</label>
                                 <input type="text" class="form-control" id="title" value="{{ $portofolio->title }}"
                                     name="title" placeholder="Nama Portofolio">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label for="kategori" class="form-label">Nama Portofolio</label>
                                 <select class="form-select" name="kategori" aria-label="Default select example">
@@ -30,6 +30,13 @@
                                     <option value="Web Design">Web Design</option>
                                     <option value="Web Design / Code">Web Design / Code</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="published" class="form-label">Tanggal Dibuat</label>
+                                <input type="text" class="form-control" id="published" name="published"
+                                    value="{{ $portofolio->published }}">
                             </div>
                         </div>
                     </div>
