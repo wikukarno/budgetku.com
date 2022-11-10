@@ -17,7 +17,7 @@
                     <div class="col-12 col-lg-4 mb-4">
                         <a href="{{ route('portofolio.edit', $item->id) }}">
                             <div class="card">
-                                <img src="public{{ Storage::url($item->thumbnail) }}"
+                                <img src="{{ Storage::url('public/'.$item->thumbnail) }}"
                                     class="card-img-top img-fluid w-100 h-100" alt="foto {{ $item->title }}"
                                     style="background-size: cover; height: 15rem">
                                 <div class="card-body">
