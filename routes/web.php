@@ -34,4 +34,4 @@ Route::prefix('/pages/dashboard')
     });
 
 
-Auth::routes();
+Auth::routes(['register' => false]);
