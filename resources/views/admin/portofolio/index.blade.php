@@ -17,8 +17,9 @@
                     <div class="col-12 col-lg-4 mb-4">
                         <a href="{{ route('portofolio.edit', $item->id) }}">
                             <div class="card">
-                                <img src="{{ Storage::url($item->thumbnail) }}" class="card-img-top img-fluid"
-                                    alt="foto {{ $item->title }}" style="background-size: cover; height: 15rem">
+                                <img src="{{ Storage::url($item->thumbnail) }}"
+                                    class="card-img-top img-fluid w-100 h-100" alt="foto {{ $item->title }}"
+                                    style="background-size: cover; height: 15rem">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $item->title }}</h5>
                                     <p class="card-text">{{ $item->kategori }} - {{ $item->created_at->isoFormat('D MMMM
