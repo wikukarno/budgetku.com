@@ -28,6 +28,9 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/pages/dashboard';
 
+    protected $maxAttempts = 1;
+    protected $decayMinutes = 1;
+
     /**
      * Create a new controller instance.
      *
