@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\DashboardAdminController;
+use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\PortofoliosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,7 @@ Route::prefix('/pages/dashboard')
 
         Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
+        Route::resource('document', DocumentController::class);
         Route::resource('account', AccountController::class);
     });
 
