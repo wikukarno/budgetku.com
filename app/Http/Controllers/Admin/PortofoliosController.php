@@ -113,6 +113,9 @@ class PortofoliosController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $portofolio = Portofolio::findOrFail($id);
+        Storage::delete($portofolio->thumbnail);
+        $portofolio->delete();
+        return redirect()->route('portofolio.index');
     }
 }

@@ -24,8 +24,21 @@
                                     <h5 class="card-title">{{ $item->title }}</h5>
                                     <p class="card-text">{{ $item->kategori }} - {{ $item->created_at->isoFormat('D MMMM
                                         Y') }}</p>
-                                    <a href="{{ $item->url }}" class="btn btn-success mt-3" target="_blank">Lihat
-                                        Karya</a>
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <a href="{{ $item->url }}" class="btn btn-success mt-3"
+                                                target="_blank">Lihat
+                                                Karya</a>
+                                        </div>
+                                        <div class="col-1">
+                                            <form action="{{ route('portofolio.destroy', $item->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger mt-3"><i
+                                                        class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </a>

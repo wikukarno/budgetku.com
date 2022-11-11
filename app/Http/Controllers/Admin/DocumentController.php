@@ -31,6 +31,10 @@ class DocumentController extends Controller
                         <a href="' . route('document.edit', $item->id) . '">
                             <button type="button" class="btn btn-warning">Edit</button>
                         </a>
+                        <form action="' . route('document.destroy', $item->id) . '" method="POST" class="d-inline">
+                            ' . method_field('delete') . csrf_field() . '
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
                     ';
                 })
                 ->rawColumns(['action', 'file'])
@@ -131,6 +135,9 @@ class DocumentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Document::findOrFail($id);
+        unlink('storage/' . $data->file);
+        $data->delete();
+        return back();
     }
 }
