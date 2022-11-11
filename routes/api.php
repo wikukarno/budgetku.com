@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AboutsController;
+use App\Http\Controllers\API\DocumentController;
 use App\Http\Controllers\API\PortofoliosController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('portofolios', [PortofoliosController::class, 'all']);
 Route::get('abouts', [AboutsController::class, 'all']);
+Route::get('documents', [DocumentController::class, 'all']);
