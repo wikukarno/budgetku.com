@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Tentang')
+@section('title', 'Tambah Portofolio')
 
 @section('content')
 <div class="row add-about-section">
@@ -27,6 +27,8 @@
                                     <option selected>Open this select menu</option>
                                     <option value="Web Design">Web Design</option>
                                     <option value="Web Design / Code">Web Design / Code</option>
+                                    <option value="Apps">Apps</option>
+                                    <option value="Web Design / Apps">Web Design / Apps</option>
                                 </select>
                             </div>
                         </div>
