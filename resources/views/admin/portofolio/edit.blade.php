@@ -35,7 +35,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label for="published" class="form-label">Tanggal Dibuat</label>
-                                <input type="text" class="form-control" id="published" name="published"
+                                <input type="date" class="form-control" name="published"
                                     value="{{ $portofolio->published }}">
                             </div>
                         </div>
