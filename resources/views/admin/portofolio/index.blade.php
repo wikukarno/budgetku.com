@@ -22,8 +22,8 @@
                                     style="background-size: cover; height: 15rem">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $item->title }}</h5>
-                                    <p class="card-text">{{ $item->kategori }} - {{ $item->created_at->isoFormat('D MMMM
-                                        Y') }}</p>
+                                    <p class="card-text">{{ $item->kategori }} - {{
+                                        \Carbon\Carbon::parse($item->published)->isoFormat('D MMMM Y') }}</p>
                                     <div class="row">
                                         <div class="col-10">
                                             <a href="{{ $item->url }}" class="btn btn-success mt-3"
