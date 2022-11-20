@@ -1,5 +1,5 @@
 @props([
-'url' => 'http://127.0.0.1:8000/password/reset',
+'url' => 'https://api-wikukarno.wikukarno.id/password/reset',
 ])
 <x-mail::message>
 # Hallo {{ $user->name }},
