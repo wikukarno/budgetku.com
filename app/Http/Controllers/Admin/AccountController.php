@@ -75,7 +75,6 @@ class AccountController extends Controller
         if (Auth::user()->id) {
             $user = User::where('id', Auth::user()->id)->first();
             $user->name = $request->name;
-            $user->email = $request->email;
             $user->save();
             return back();
         }

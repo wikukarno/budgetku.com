@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\Login;
 use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Request;
 
 class LoginController extends Controller
 {
@@ -27,6 +31,16 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/pages/dashboard';
+
+    // send email login
+    protected function authenticated($request, $user)
+    {
+        $user->update([
+            'last_login_at' => Carbon::now()->toDateTimeString(),
+            'last_login_ip' => Request::ip(),
+        ]);
+        Mail::to($request->user())->send(new Login($user));
+    }
 
     protected $maxAttempts = 1;
     protected $decayMinutes = 1;
