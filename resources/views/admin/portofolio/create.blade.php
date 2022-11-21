@@ -26,9 +26,10 @@
                                 <select class="form-select" name="kategori" aria-label="Default select example">
                                     <option selected>Open this select menu</option>
                                     <option value="Web Design">Web Design</option>
-                                    <option value="Web Design / Code">Web Design / Code</option>
                                     <option value="Apps">Apps</option>
                                     <option value="Web Design / Apps">Web Design / Apps</option>
+                                    <option value="Apps / Maintener">Apps / Maintener</option>
+                                    <option value="Apps / Mobile">Apps / Mobile</option>
                                 </select>
                             </div>
                         </div>
