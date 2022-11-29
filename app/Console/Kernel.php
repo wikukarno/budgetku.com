@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Request;
 use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 
 class Kernel extends ConsoleKernel
@@ -16,11 +18,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+        $user = User::all();
         $schedule->command(
             SendEmailsCommand::class,
             [
-                'from' => 'admin@wikukarno.id',
-                'to' => 'prasetyagama2@gmail.com',
+                'from' => env('MAIL_FROM_ADDRESS'),
+                'to' => $user->email,
                 'subject' => 'Test',
                 'body' => 'Test'
             ]
