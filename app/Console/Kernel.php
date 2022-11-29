@@ -19,12 +19,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        $user = User::all();
         $schedule->command(
             SendEmailsCommand::class,
             [
                 'from' => env('MAIL_FROM_ADDRESS'),
-                'to' => $user->email,
+                'to' => 'prasetyagama2@gmail.com',
                 'subject' => 'Test',
                 'body' => 'Test'
             ]
