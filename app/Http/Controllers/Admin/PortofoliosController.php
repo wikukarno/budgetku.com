@@ -42,7 +42,7 @@ class PortofoliosController extends Controller
      */
     public function store(PortofolioRequest $request)
     {
-        Portofolio::create([
+        $data = Portofolio::create([
             'thumbnail' => $request->file('thumbnail')->storePubliclyAs('assets/portofolio', $request->file('thumbnail')->getClientOriginalName(), 'public'),
             'title' => $request->title,
             'url' => $request->url,
@@ -50,7 +50,15 @@ class PortofoliosController extends Controller
             'published' => $request->published
         ]);
 
-        return redirect()->route('portofolio.index');
+        if ($data) {
+            //redirect dengan pesan sukses
+            return redirect()->route('portofolio.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect()->route('portofolio.index')->with(['error' => 'Data Gagal Disimpan!']);
+        }
+
+        // return redirect()->route('portofolio.index');
     }
 
     /**

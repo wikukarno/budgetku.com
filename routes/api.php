@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AboutsController;
 use App\Http\Controllers\API\DocumentController;
+use App\Http\Controllers\API\FinancesController;
 use App\Http\Controllers\API\PortofoliosController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
 });
+Route::get('/finance', [FinancesController::class, 'getFinances']);
 
 Route::get('portofolios', [PortofoliosController::class, 'all']);
 Route::get('abouts', [AboutsController::class, 'all']);

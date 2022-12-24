@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="shortcut icon" href="{{ url('assets/img/logo.svg') }}">
     <title>
         @yield('title')
     </title>
@@ -30,8 +30,8 @@
     </main>
 
     {{-- @include('includes.admin.sidebar-plugin') --}}
-    @include('components.modal-logout')
-    @stack('before-scripts')
+
+    @stack('before-scripts')@include('components.modal-logout')
     @include('includes.admin.scripts')
     @stack('after-scripts')
 </body>
