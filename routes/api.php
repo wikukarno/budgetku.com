@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 });
-Route::get('/finance', [FinancesController::class, 'getFinances']);
+Route::get('/finance/{id}', [FinancesController::class, 'getFinances']);
 
 Route::get('portofolios', [PortofoliosController::class, 'all']);
 Route::get('abouts', [AboutsController::class, 'all']);

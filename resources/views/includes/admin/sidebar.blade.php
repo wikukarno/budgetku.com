@@ -46,9 +46,29 @@
                     href="{{ route('document.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-regular fa-images text-white"></i>
+                        <i class="fa-solid fa-file text-white"></i>
                     </div>
                     <span class="nav-link-text ms-1">Document</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('pages/dashboard/finance') ? 'active' : '' }} {{ request()->is('pages/dashboard/keuangan/{id}/edit') ? 'active' : '' }}"
+                    href="{{ route('finance.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-money-bill-trend-up text-white"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Keuangan</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('pages/dashboard/category-finance') ? 'active' : '' }} {{ request()->is('pages/dashboard/keuangan/{id}/edit') ? 'active' : '' }}"
+                    href="{{ route('category-finance.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-list text-white"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Kategori Keuangan</span>
                 </a>
             </li>
             <li class="nav-item mt-3">
