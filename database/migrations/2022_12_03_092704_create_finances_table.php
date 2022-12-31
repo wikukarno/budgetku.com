@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('finances', function (Blueprint $table) {
             $table->id();
             $table->string('users_id');
-            $table->string('category_finances_phpid');
+            $table->string('category_finances_id');
             $table->string('name_item');
             $table->string('price');
             $table->date('purchase_date');
