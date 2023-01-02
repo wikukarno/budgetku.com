@@ -28,17 +28,16 @@ class FinanceController extends Controller
                     return Carbon::parse($item->purchase_date)->isoFormat('D MMMM Y');
                 })
                 ->editColumn('price', function ($item) {
-                    return 'Rp. ' . number_format($item->price, 0, ',', '.');
+                    return 'Rp.' . number_format($item->price, 0, ',', '.');
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('finance.edit', $item->id) . '">
+                        <a href="javascript:void(0)" onclick="updateFinance(' . $item->id . ')">
                             <button type="button" class="btn btn-warning">Edit</button>
                         </a>
-                        <form action="' . route('finance.destroy', $item->id) . '" method="POST" class="d-inline">
-                            ' . method_field('delete') . csrf_field() . '
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                        <a href="javascript:void(0)" onclick="deleteFinance(' . $item->id . ')">
+                            <button type="button" class="btn btn-danger">Delete</button>
+                        </a>
                     ';
                 })
                 ->rawColumns(['purchase_date', 'action'])
@@ -101,9 +100,10 @@ class FinanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $data = Finance::findOrFail($request->id);
+        return response()->json($data);
     }
 
     /**
@@ -114,9 +114,7 @@ class FinanceController extends Controller
      */
     public function edit($id)
     {
-        $item = Finance::findOrFail($id);
-
-        return view('admin.finance.edit', compact('item'));
+        //
     }
 
     /**
@@ -154,8 +152,15 @@ class FinanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $item = Finance::find($request->id);
+        $item->delete();
+
+        if ($item) {
+            return redirect()->route('finance.index')->with('success', 'Data berhasil dihapus');
+        } else {
+            return redirect()->route('finance.index')->with('error', 'Data gagal dihapus');
+        }
     }
 }

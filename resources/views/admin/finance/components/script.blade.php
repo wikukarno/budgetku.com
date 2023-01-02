@@ -5,6 +5,79 @@
         $('#id_finance').val('');
         $('#form-tambah-finance').trigger('reset');
     }
+
+    function updateFinance(id){
+        $('#financeModalLabel').html('Edit Kategori Keuangan');
+        $('#financeModal').modal('show');
+        $('#form-tambah-finance').trigger('reset');
+        $('#id_finance').val(id);
+        $('#btnSaveKeuangan').html('Simpan Perubahan');
+        $('#btnSaveKeuangan').attr('disabled', false);
+
+        $.ajax({
+            type:"POST",
+            url: "{{ url('/pages/dashboard/show/finance') }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                id:id
+            },
+            dataType: 'json',
+            beforeSend: function() {
+                $(".preloader").fadeIn();
+            },
+            success: function(res){
+                $('#id_finance').val(res.id);
+                $('#category_finances_id').val(res.category_finances_id);
+                $('#name_item').val(res.name_item);
+                $('#price').val(res.price);
+                $('#purchase_date').val(res.purchase_date);
+                $('#purchase_by').val(res.purchase_by);
+            },
+            complete: function(){
+                $(".preloader").fadeOut();
+            }
+        });
+        
+    }
+
+    function deleteFinance(id){
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus data!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type:"POST",
+                    url: "{{ url('/pages/dashboard/delete/finance') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id:id
+                    },
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $(".preloader").fadeIn();
+                    },
+                    success: function(res){
+                        $('#tb_finance').DataTable().ajax.reload();
+                        Swal.fire(
+                            'Terhapus!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        )
+                    },
+                    complete: function(){
+                        $(".preloader").fadeOut();
+                    }
+                });
+            }
+        })
+    }
+
     $('#tb_finance').dataTable({
         processing: true,
         serverSide: true,
@@ -39,8 +112,8 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                $('#btnSaveFinance').html('Loading...');
-                $('#btnSaveFinance').attr('disabled', true);
+                $('#btnSaveKeuangan').html('Loading...');
+                $('#btnSaveKeuangan').attr('disabled', true);
             },
             success: (data) => {
                 $('#financeModal').modal('hide');

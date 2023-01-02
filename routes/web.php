@@ -30,8 +30,10 @@ Route::prefix('/pages/dashboard')
     ->group(function () {
         Route::get('/', [DashboardAdminController::class, 'index'])->name('dashboard');
         Route::post('/ubah-profile', [AccountController::class, 'ubahProfile'])->name('ubah-profile');
+        Route::post('/show/finance', [FinanceController::class, 'show']);
         Route::post('/show/kategori', [CategoryFinanceController::class, 'show']);
         Route::post('/delete/kategori', [CategoryFinanceController::class, 'destroy']);
+        Route::post('/delete/finance', [FinanceController::class, 'destroy']);
 
         Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
