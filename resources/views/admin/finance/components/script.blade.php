@@ -31,7 +31,7 @@
                 $('#id_finance').val(res.id);
                 $('#category_finances_id').val(res.category_finances_id);
                 $('#name_item').val(res.name_item);
-                $('#price').val(res.price);
+                $('#price').val(formatRupiah(res.price, 'Rp.'));
                 $('#purchase_date').val(res.purchase_date);
                 $('#purchase_by').val(res.purchase_by);
             },
