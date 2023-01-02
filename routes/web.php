@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\PortofoliosController;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
+
+Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
+Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
 Route::prefix('/pages/dashboard')
     ->middleware(['auth', 'owner'])

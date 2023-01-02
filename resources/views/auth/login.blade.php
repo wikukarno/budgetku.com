@@ -73,7 +73,15 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="row">
+                            <a href="{{ url('/auth/redirect') }}" class="btn btn-transparent">
+                                <img src="{{ asset('assets/img/ic_google.svg') }}" class="img-fluid me-2"
+                                    style="max-height: 30px" alt="login-with-google">
+                                Login With Google
+                            </a>
+                        </div>
                     </form>
+
                 </div>
             </div>
         </div>

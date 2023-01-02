@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Mail\Login;
-use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Mail\Login;
+use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Request;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
@@ -31,6 +34,30 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/pages/dashboard';
+
+    public function redirectToProvider()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handlerProviderCallback(Request $request)
+    {
+        $user = Socialite::driver('google')->user();
+        $findUser = User::where('email', $user->email)->first();
+        if ($findUser) {
+            $findUser->update([
+                'last_login_at' => Carbon::now()->toDateTimeString(),
+                'last_login_ip' => Request::ip(),
+            ]);
+            Auth::login($findUser);
+            Mail::to(
+                $findUser->email
+            )->send(new Login($findUser));
+            return redirect()->intended('pages/dashboard');
+        } else {
+            return redirect()->route('login');
+        }
+    }
 
     // send email login
     protected function authenticated($request, $user)
