@@ -1,15 +1,17 @@
 <script>
     function addFinance() {
-        $('#financeModalLabel').html('Tambah Kategori Keuangan');
+        $('#financeModalLabel').html('Tambah Data Keuangan');
         $('#financeModal').modal('show');
         $('#id_finance').val('');
-        $('#form-tambah-finance').trigger('reset');
+        $('#form-finance').trigger('reset');
+        $('#btnSaveKeuangan').html('Simpan');
+        $('#btnSaveKeuangan').attr('disabled', false);
     }
 
     function updateFinance(id){
         $('#financeModalLabel').html('Edit Kategori Keuangan');
         $('#financeModal').modal('show');
-        $('#form-tambah-finance').trigger('reset');
+        $('#form-finance').trigger('reset');
         $('#id_finance').val(id);
         $('#btnSaveKeuangan').html('Simpan Perubahan');
         $('#btnSaveKeuangan').attr('disabled', false);

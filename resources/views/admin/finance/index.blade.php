@@ -12,7 +12,7 @@
                     <a href="javascript:void(0)" class="btn btn-primary mt-3" onclick="addFinance();"><i
                             class="fa-solid fa-circle-plus"></i>
                         &nbsp;
-                        Tambah Kategori</a>
+                        Tambah Data</a>
                 </div>
             </div>
             <div class="card-body">
