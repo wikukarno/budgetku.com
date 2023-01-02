@@ -38,7 +38,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan</p>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan Januari</p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.0
                                 {{-- {{ number_format($pendapatanPerbulan, 0, ',', '.') }} --}}
