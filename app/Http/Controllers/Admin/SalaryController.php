@@ -39,7 +39,7 @@ class SalaryController extends Controller
                         </a>
                     ';
                 })
-                ->rawColumns(['action', 'date'])
+                ->rawColumns(['action', 'date', 'salary'])
                 ->make(true);
         }
 
