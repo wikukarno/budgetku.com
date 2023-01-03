@@ -40,7 +40,7 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan Januari</p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.0
+                                Rp.{{ number_format($remainder) }}
                                 {{-- {{ number_format($pendapatanPerbulan, 0, ',', '.') }} --}}
                                 {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
                             </h5>
@@ -65,7 +65,7 @@
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($totalPerbulan, 0, ',', '.') }}
+                                Rp.{{ number_format($expenditure, 0, ',', '.') }}
                                 {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
                             </h5>
                         </div>

@@ -45,7 +45,7 @@
                                 <div class="form-group">
                                     <label for="purchase_date">Tanggal Bayar</label>
                                     <input type="date" name="purchase_date" id="purchase_date" class="form-control"
-                                        placeholder="Rp.100.000" required>
+                                        required>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-4">

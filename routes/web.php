@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\PortofoliosController;
+use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -38,10 +39,14 @@ Route::prefix('/pages/dashboard')
         Route::post('/show/kategori', [CategoryFinanceController::class, 'show']);
         Route::post('/delete/kategori', [CategoryFinanceController::class, 'destroy']);
         Route::post('/delete/finance', [FinanceController::class, 'destroy']);
+        Route::post('/show/salary', [SalaryController::class, 'show']);
+        Route::post('/delete/salary', [SalaryController::class, 'destroy']);
+
 
         Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
         Route::resource('document', DocumentController::class);
+        Route::resource('salary', SalaryController::class);
         Route::resource('finance', FinanceController::class);
         Route::resource('category-finance', CategoryFinanceController::class);
         Route::resource('account', AccountController::class);

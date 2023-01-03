@@ -52,13 +52,23 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->is('pages/dashboard/salary') ? 'active' : '' }}"
+                    href="{{ route('salary.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-money-bill-trend-up text-white"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Uang Masuk</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('pages/dashboard/finance') ? 'active' : '' }} {{ request()->is('pages/dashboard/keuangan/{id}/edit') ? 'active' : '' }}"
                     href="{{ route('finance.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-money-bill-trend-up text-white"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Keuangan</span>
+                    <span class="nav-link-text ms-1">Uang Keluar</span>
                 </a>
             </li>
             <li class="nav-item">
