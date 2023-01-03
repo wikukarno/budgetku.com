@@ -23,6 +23,9 @@ class SalaryController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->editColumn('salary', function ($item) {
+                    return 'Rp.' . number_format($item->salary, 0, ',', '.');
+                })
                 ->editColumn('date', function ($item) {
                     return Carbon::parse($item->date)->isoFormat('D MMMM Y');
                 })
