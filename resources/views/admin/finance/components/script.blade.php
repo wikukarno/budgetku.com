@@ -91,9 +91,9 @@
             { data: 'DT_RowIndex', name: 'id'},
             { data: 'category_finance.name_category_finances', name: 'category_finance.name_category_finances' },
             { data: 'name_item', name: 'name_item' },
-            { data: 'purchase_date', name: 'purchase_date' },
-            { data: 'purchase_by', name: 'purchase_by' },
             { data: 'price', name: 'price' },
+            { data: 'purchase_by', name: 'purchase_by' },
+            { data: 'purchase_date', name: 'purchase_date' },
             {
                 data: 'action',
                 searchable: false,

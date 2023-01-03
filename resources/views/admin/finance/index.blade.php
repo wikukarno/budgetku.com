@@ -23,9 +23,9 @@
                                 <th>#</th>
                                 <th>Kategori</th>
                                 <th>Nama Barang / Item</th>
-                                <th>Tanggal Pembelian</th>
-                                <th>Metode Pembayaran</th>
                                 <th>Harga</th>
+                                <th>Metode Pembayaran</th>
+                                <th>Tanggal Pembelian</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
