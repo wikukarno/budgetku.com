@@ -65,7 +65,11 @@ class SalaryController extends Controller
             ['id' => $request->id_salary],
             [
                 'users_id' => Auth::user()->id,
-                'salary' => $request->salary,
+                'salary' => str_replace(
+                    ['Rp. ', '.'],
+                    ['', ''],
+                    $request->salary
+                ),
                 'date' => $request->date,
                 'description' => $request->description,
             ]
