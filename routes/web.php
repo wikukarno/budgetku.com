@@ -30,6 +30,10 @@ Route::get('/', function () {
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
+// route telegram
+Route::post('/telegram-bot', [TelegramBotWebHook::class, 'index']);
+Route::post('/telegram-bot/webhook', [TelegramBotWebHook::class, 'webhook']);
+
 Route::prefix('/pages/dashboard')
     ->middleware(['auth', 'owner'])
     ->group(function () {
