@@ -25,7 +25,6 @@ class TelegramBotWebHook extends Controller
             $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n Sekarang jam $sekarang";
             sendText($chatId, $text);
         }
-        // cek id
         if (strpos($message, "/id") === 0) {
             $text = "ID kamu adalah $chatId";
             sendText($chatId, $text);
