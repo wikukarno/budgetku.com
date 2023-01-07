@@ -17,7 +17,7 @@ class TelegramBotWebHook extends Controller
     public function webhook(Request $request)
     {
         $update = json_decode($request->getContent(), true);
-        $chatId = $update['message']['chat']['id'];
+        $chatId = '';
         $message = $update['message']['text'];
         $date = Carbon::now()->toDateTimeString();
 
