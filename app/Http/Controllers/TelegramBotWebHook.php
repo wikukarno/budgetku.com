@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,19 @@ class TelegramBotWebHook extends Controller
         if (strpos($message, "/start") === 0 || strpos($message, "/mulai") === 0) {
             $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n Sekarang jam $sekarang";
             sendText($chatId, $text);
+        }
+        // daftarkan telegram id
+        if (strpos($message, "/daftar") === 0) {
+            $email = substr($message, 8);
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $user->telegram_id = $chatId;
+                $user->telegram_username = $update['message']['chat']['username'];
+                $user->save();
+                $text = "Terima kasih $fromFirstName, akun Telegram kamu sudah terdaftar.";
+            } else {
+                $text = "Maaf $fromFirstName, akun Telegram kamu belum terdaftar.";
+            }
         }
         if (strpos($message, "/id") === 0) {
             $text = "ID kamu adalah $chatId";
