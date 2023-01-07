@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\PortofoliosController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TelegramBotWebHook;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
