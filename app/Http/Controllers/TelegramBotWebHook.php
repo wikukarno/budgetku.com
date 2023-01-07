@@ -22,7 +22,7 @@ class TelegramBotWebHook extends Controller
         $fromFirstName = "Wiku Karno";
         $sekarang = date("Y-m-d H:i:s");
         if (strpos($message, "/start") === 0 || strpos($message, "/mulai") === 0) {
-            $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n";
+            $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n Sekarang jam $sekarang";
             sendText($chatId, $text);
         }
     }
