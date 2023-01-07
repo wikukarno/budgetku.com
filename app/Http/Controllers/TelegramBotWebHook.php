@@ -16,9 +16,8 @@ class TelegramBotWebHook extends Controller
 
     public function webhook(Request $request)
     {
-
         $update = json_decode(file_get_contents('php://input'), true);
-        $chatId = '781699306';
+        $chatId = $update['message']['chat']['id'];
         $message = $update['message']['text'];
         $fromFirstName = "Wiku Karno";
         $sekarang = date("Y-m-d H:i:s");
@@ -26,6 +25,10 @@ class TelegramBotWebHook extends Controller
             $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n";
             sendText($chatId, $text);
             // Set Start Return
+        }
+        if (strpos($message, "/cekID") === 0) {
+            $text = "ID Telegram Anda : <code>$chatId</code>";
+            sendText($chatId, $text);
         }
     }
 }
