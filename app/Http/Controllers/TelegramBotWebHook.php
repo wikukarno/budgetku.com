@@ -23,12 +23,10 @@ class TelegramBotWebHook extends Controller
         $sekarang = date("Y-m-d H:i:s");
         if (strpos($message, "/start") === 0 || strpos($message, "/mulai") === 0) {
             $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n";
-            sendText($chatId, $text);
-            // Set Start Return
-        }
-        if (strpos($message, "/cekID") === 0) {
-            $text = "ID Telegram Anda : <code>$chatId</code>";
-            sendText($chatId, $text);
+            $text .= "Saat ini waktu di Indonesia adalah $sekarang \n\n";
+            $text .= "Silahkan ketik /help untuk melihat daftar perintah yang tersedia";
+            $url = 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/sendMessage?chat_id=' . $chatId . '&text=' . urlencode($text);
+            file_get_contents($url);
         }
     }
 }
