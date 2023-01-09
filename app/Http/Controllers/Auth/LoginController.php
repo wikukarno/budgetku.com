@@ -55,7 +55,7 @@ class LoginController extends Controller
                 'last_login_ip' => Request::ip(),
             ]);
             Auth::login($findUser);
-            sendText($user->telegram_id, $text);
+            sendText($findUser->telegram_id, $text);
             Mail::to(
                 $findUser->email
             )->send(new Login($findUser));
