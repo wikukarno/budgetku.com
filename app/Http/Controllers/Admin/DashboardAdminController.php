@@ -26,7 +26,9 @@ class DashboardAdminController extends Controller
             return $carry + $item->salary;
         }, 0) - $expenditure;
         $categoryFinances = CategoryFinance::count();
-        $todayExpenditure = $finances->where('created_at', Carbon::now()->isoFormat('D MMMM Y'))->reduce(function ($carry, $item) {
+        $todayExpenditure = $finances->where('created_at', date(
+            Carbon::now()->format('Y-m-d')
+        ))->reduce(function ($carry, $item) {
             return $carry + $item->price;
         }, 0);
         return view('admin.dashboard', compact('portofolios', 'finances', 'expenditure', 'categoryFinances', 'remainder', 'todayExpenditure'));
