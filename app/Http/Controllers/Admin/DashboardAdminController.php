@@ -28,7 +28,10 @@ class DashboardAdminController extends Controller
         $categoryFinances = CategoryFinance::count();
         // make todayExpenditure create date now
 
-        $todayExpenditure = $finances->where('created_at', Carbon::now())->reduce(function ($carry, $item) {
+        $todayExpenditure = $finances->where(
+            'purchase_date',
+            Carbon::now()->format('Y-m-d')
+        )->reduce(function ($carry, $item) {
             return $carry + $item->price;
         }, 0);
 
