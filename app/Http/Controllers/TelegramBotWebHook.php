@@ -39,8 +39,8 @@ class TelegramBotWebHook extends Controller
                 $user->save();
                 $text = "Terima kasih $fromFirstName, akun anda berhasil didaftarkan pada Bot Telegram WIKUARNO.ID.";
                 sendText($chatId, $text);
-            } else {
-                $text = "Maaf $fromFirstName, akun kamu belum terdaftar di Bot Telegram WIKUARNO.ID.";
+            } elseif (!$user) {
+                $text = "Maaf email yang kamu masukkan tidak terdaftar di WIKUARNO.ID.";
                 sendText($chatId, $text);
             }
         }
