@@ -20,7 +20,7 @@ class TelegramBotWebHook extends Controller
         $update = json_decode(file_get_contents('php://input'), true);
         $chatId = $update['message']['chat']['id'];
         $message = $update['message']['text'];
-        $fromFirstName = "Wiku Karno";
+        $fromFirstName = User::where('telegram_id', $chatId)->first()->name;
         $sekarang = date("Y-m-d H:i:s");
         if (strpos($message, "/start") === 0 || strpos($message, "/mulai") === 0) {
             $text = "Halo $fromFirstName, Selamat datang di Bot Telegram Saya. \n\n Sekarang jam $sekarang";
