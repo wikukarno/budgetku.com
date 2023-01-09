@@ -30,14 +30,14 @@ class TelegramBotWebHook extends Controller
         if (strpos($message, "/daftar") === 0) {
             $email = str_replace("/daftar ", "", $message);
             $user = User::where('email', $email)->first();
-            if ($user->telegram_id == null) {
+            if ($user->telegram_id != null) {
+                $text = "Maaf $fromFirstName, akun kamu sudah terdaftar di Bot Telegram WIKUARNO.ID.";
+                sendText($chatId, $text);
+            } elseif ($user->telegram_id == null) {
                 $user->telegram_id = $chatId;
                 $user->telegram_username = $fromFirstName;
                 $user->save();
                 $text = "Terima kasih $fromFirstName, akun anda berhasil didaftarkan pada Bot Telegram WIKUARNO.ID.";
-                sendText($chatId, $text);
-            } elseif ($user->telegram_id != null) {
-                $text = "Maaf $fromFirstName, akun kamu sudah terdaftar di Bot Telegram WIKUARNO.ID.";
                 sendText($chatId, $text);
             } else {
                 $text = "Maaf $fromFirstName, akun kamu belum terdaftar di Bot Telegram WIKUARNO.ID.";
