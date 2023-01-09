@@ -44,12 +44,18 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('google')->user();
         $findUser = User::where('email', $user->email)->first();
+        $text = "
+            Terdeteksi login pada akun anda pada tanggal " . Carbon::now()->format('d-m-Y') . " pukul " . Carbon::now()->format('H:i:s') .
+            " dengan IP Address " . Request::ip() .
+            " jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
+        ";
         if ($findUser) {
             $findUser->update([
                 'last_login_at' => Carbon::now()->toDateTimeString(),
                 'last_login_ip' => Request::ip(),
             ]);
             Auth::login($findUser);
+            sendText($user->telegram_id, $text);
             Mail::to(
                 $findUser->email
             )->send(new Login($findUser));
@@ -62,10 +68,16 @@ class LoginController extends Controller
     // send email login
     protected function authenticated($request, $user)
     {
+        $text = "
+            Terdeteksi login pada akun anda pada tanggal " . Carbon::now()->format('d-m-Y') . " pukul " . Carbon::now()->format('H:i:s') .
+            " dengan IP Address " . Request::ip() .
+            " jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
+        ";
         $user->update([
             'last_login_at' => Carbon::now()->toDateTimeString(),
             'last_login_ip' => Request::ip(),
         ]);
+        sendText($user->telegram_id, $text);
         Mail::to($request->user())->send(new Login($user));
     }
 
