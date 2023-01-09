@@ -58,5 +58,18 @@ class TelegramBotWebHook extends Controller
                 sendText($chatId, $text);
             }
         }
+        // aktifkan akun
+        if (strpos($message, "/aktifkan") === 0) {
+            $user = User::where('telegram_id', $chatId)->first();
+            $user->deleted_at = null;
+            $user->save();
+            if ($user) {
+                $text = "Hallo $fromFirstName, akun anda berhasil kami aktifkan kembali, \nTerimakasih.";
+                sendText($chatId, $text);
+            } else {
+                $text = "Maaf $fromFirstName, akun kamu belum terdaftar di Bot Telegram Saya.";
+                sendText($chatId, $text);
+            }
+        }
     }
 }
