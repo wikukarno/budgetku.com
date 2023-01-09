@@ -83,6 +83,7 @@
     $('#tb_finance').dataTable({
         processing: true,
         serverSide: true,
+        order : [[5, 'desc']],
         ajax: {
             type: 'GET',
             url: "{{ route('finance.index') }}",
