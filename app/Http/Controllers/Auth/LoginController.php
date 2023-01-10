@@ -45,8 +45,8 @@ class LoginController extends Controller
         $user = Socialite::driver('google')->user();
         $findUser = User::where('email', $user->email)->first();
         $text = "
-            Terdeteksi login pada akun anda pada " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-            " dengan IP Address " . Request::ip() . 
+            Dear " . $findUser->name . "Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
+            " dengan IP Address " . Request::ip() .
             " Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
         ";
         if ($findUser) {
@@ -69,8 +69,8 @@ class LoginController extends Controller
     protected function authenticated($request, $user)
     {
         $text = "
-            Terdeteksi login pada akun anda pada " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-        " dengan IP Address " . Request::ip() . 
+            Dear " . $findUser->name . "Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
+            " dengan IP Address " . Request::ip() .
             " Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
         ";
         $user->update([
