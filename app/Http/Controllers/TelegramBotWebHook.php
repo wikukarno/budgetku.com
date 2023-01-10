@@ -61,7 +61,7 @@ class TelegramBotWebHook extends Controller
         }
         // aktifkan akun
         if (strpos($message, "/aktifkan") === 0) {
-            $user = User::where('telegram_id', $chatId)->withTrashed()->first();
+            $user = User::withTrashed()->get();
             $user->restore();
 
             if ($user) {
