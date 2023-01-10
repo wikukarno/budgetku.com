@@ -49,9 +49,9 @@ class TelegramBotWebHook extends Controller
         // amankan akun
         if (strpos($message, "/amankan") === 0) {
             $user = User::where('telegram_id', $chatId)->first();
-            $user->delete();
-
+            
             if ($user) {
+                $user->delete();
                 $text = "Hallo $fromFirstName, akun anda berhasil kami amankan, \nkamu bisa mengaktifkan kembali akun kamu dengan cara /aktifkan";
                 sendText($chatId, $text);
             } else {
