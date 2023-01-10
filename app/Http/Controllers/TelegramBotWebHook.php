@@ -27,7 +27,7 @@ class TelegramBotWebHook extends Controller
             sendText($chatId, $text);
         }
         // daftarkan telegram id
-        if (strpos($message, "/daftar") === 0) {
+        elseif (strpos($message, "/daftar") === 0) {
             $email = str_replace("/daftar ", "", $message);
             $user = User::where('email', $email)->first();
             if ($user) {
@@ -42,12 +42,12 @@ class TelegramBotWebHook extends Controller
             }
         }
         // cek id
-        if (strpos($message, "/id") === 0) {
+        elseif (strpos($message, "/id") === 0) {
             $text = "ID kamu adalah $chatId";
             sendText($chatId, $text);
         }
         // amankan akun
-        if (strpos($message, "/amankan") === 0) {
+        elseif (strpos($message, "/amankan") === 0) {
             $user = User::where('telegram_id', $chatId)->first();
             $user->delete();
 
@@ -60,7 +60,7 @@ class TelegramBotWebHook extends Controller
             }
         }
         // aktifkan akun
-        if (strpos($message, "/aktifkan") === 0) {
+        elseif (strpos($message, "/aktifkan") === 0) {
             $user = User::withTrashed()->where('telegram_id', $chatId)->restore();
 
             if ($user) {
