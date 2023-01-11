@@ -50,7 +50,7 @@ class Login extends Mailable
                 'user' => $this->user,
                 'ip' => $this->user->last_login_ip,
                 'time' => $this->user->last_login_at,
-                'url' => 'https://api-wikukarno.wikukarno.id/password/reset',
+                'url' => 'https://api-wikukarno.wikukarno.id/amankan',
             ],
         );
     }

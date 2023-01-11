@@ -7,6 +7,7 @@ use App\Models\CategoryFinance;
 use App\Models\Finance;
 use App\Models\Portofolio;
 use App\Models\Salary;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,5 +31,13 @@ class DashboardAdminController extends Controller
             return $carry + $item->price;
         }, 0);
         return view('admin.dashboard', compact('portofolios', 'finances', 'expenditure', 'categoryFinances', 'remainder', 'todayExpenditure'));
+    }
+
+    // fungsi amankan akun
+    public function amankan(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        $user->delete();
+        return redirect()->route('login')->with('success', 'Akun anda berhasil kami amankan');
     }
 }

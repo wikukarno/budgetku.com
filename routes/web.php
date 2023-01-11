@@ -35,6 +35,9 @@ Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 Route::post('/telegram-bot', [TelegramBotWebHook::class, 'index']);
 Route::post('/telegram-bot/webhook', [TelegramBotWebHook::class, 'webhook']);
 
+// fitur amankan akun
+Route::post('/amankan', [DashboardAdminController::class, 'amankan'])->name('amankan');
+
 Route::prefix('/pages/dashboard')
     ->middleware(['auth', 'owner'])
     ->group(function () {
