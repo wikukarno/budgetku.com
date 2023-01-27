@@ -83,9 +83,10 @@
     $('#tb_finance').dataTable({
         processing: true,
         serverSide: true,
-        dom: 'Bfrtip',
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        dom: 'lBfrtip',
         buttons: [
-        'copy', 'csv', 'excel', 'pdf', 'print'
+        'copy', 'csv', 'excel', 'pdf', 'print',
         ],
         order : [[5, 'desc']],
         ajax: {
@@ -106,7 +107,7 @@
             }
         ]
     });
-
+    
     $('#form-finance').submit(function(e){
         e.preventDefault();
         var formData = new FormData(this);
