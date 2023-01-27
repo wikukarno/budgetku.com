@@ -83,6 +83,10 @@
     $('#tb_finance').dataTable({
         processing: true,
         serverSide: true,
+        dom: 'Bfrtip',
+        buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
         order : [[5, 'desc']],
         ajax: {
             type: 'GET',
