@@ -47,7 +47,7 @@ class LoginController extends Controller
         $text = "
             Dear " . $findUser->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
             " dengan IP Address " . Request::ip() .
-            " Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
+            "\n\n Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
         ";
         if ($findUser) {
             $findUser->update([
