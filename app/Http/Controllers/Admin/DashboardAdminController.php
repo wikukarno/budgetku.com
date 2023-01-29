@@ -17,7 +17,11 @@ class DashboardAdminController extends Controller
     public function index()
     {
         $portofolios = Portofolio::count();
-        $salary = Salary::where('users_id', Auth::user()->id)->get();
+        $salary = Salary::where('users_id', Auth::user()->id)
+            ->whereBetween('date', [
+                Carbon::now()->startOfMonth()->format('Y-m-d'), 
+                Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->get();
         $finances = Finance::where('users_id', Auth::user()->id)->get();
         $expenditure = $finances->reduce(function ($carry, $item) {
             return $carry + $item->price;
@@ -30,7 +34,25 @@ class DashboardAdminController extends Controller
         $todayExpenditure = $finances->where('purchase_date', Carbon::now()->format('Y-m-d'))->reduce(function ($carry, $item) {
             return $carry + $item->price;
         }, 0);
-        return view('admin.dashboard', compact('portofolios', 'finances', 'expenditure', 'categoryFinances', 'remainder', 'todayExpenditure'));
+
+        $weeklyReport = $finances->whereBetween('purchase_date', [Carbon::now()->startOfWeek()->format('Y-m-d'), Carbon::now()->endOfWeek()->format('Y-m-d')])->reduce(function ($carry, $item) {
+            return $carry + $item->price;
+        }, 0);
+
+        $anualReport = $finances->whereBetween('purchase_date', [Carbon::now()->startOfYear()->format('Y-m-d'), Carbon::now()->endOfYear()->format('Y-m-d')])->reduce(function ($carry, $item) {
+            return $carry + $item->price;
+        }, 0);
+
+        return view('admin.dashboard', compact(
+            'portofolios', 
+            'finances',
+            'expenditure', 
+            'categoryFinances', 
+            'remainder', 
+            'todayExpenditure', 
+            'weeklyReport', 
+            'anualReport'
+        ));
     }
 
     // fungsi amankan akun
