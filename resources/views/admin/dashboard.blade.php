@@ -17,7 +17,8 @@
                     <div class="col-8">
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan {{
-                                \Carbon\Carbon::now()->isoFormat('MMMM') }}</p>
+                                \Carbon\Carbon::parse($getMonthly->date)->isoFormat('MMMM')
+                                 }}</p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($remainder, 0, ',', '.') }}
                                 {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
@@ -67,9 +68,9 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold">Pengeluaran Minggu Ini
                                 {{
-                                    \Carbon\Carbon::now()->addDays(-6)->isoFormat('DD MMMM YYYY')
-                                 . ' - ' .
-                                 \Carbon\Carbon::now()->isoFormat('dddd') == 'Minggu' ?
+                                \Carbon\Carbon::now()->addDays(-6)->isoFormat('DD MMMM YYYY')
+                                . ' - ' .
+                                \Carbon\Carbon::now()->isoFormat('dddd') == 'Minggu' ?
                                 \Carbon\Carbon::now()->isoFormat('DD') :
                                 \Carbon\Carbon::now()->startOfWeek()->isoFormat('DD') . ' - ' .
                                 \Carbon\Carbon::now()->endOfWeek()->isoFormat('DD MMMM YYYY')
