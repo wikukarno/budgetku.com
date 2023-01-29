@@ -46,5 +46,33 @@ class TelegramBotWebHook extends Controller
             $text = "ID kamu adalah $chatId";
             sendText($chatId, $text);
         }
+
+        // amankan akun
+        if (strpos($message, "/amankan") === 0) {
+            $user = User::where('telegram_id', $chatId)->first();
+            if ($user) {
+                $user->deleted_at = Carbon::now()->toDateTimeString();
+                $user->save();
+                $text = "Akun kamu berhasil di amankan.";
+                sendText($chatId, $text);
+            } else {
+                $text = "Akun kamu belum terdaftar di Bot Telegram WIKUARNO.ID.";
+                sendText($chatId, $text);
+            }
+        }
+
+        // hidupkan akun
+        if (strpos($message, "/hidupkan") === 0) {
+            $user = User::where('telegram_id', $chatId)->first();
+            if ($user) {
+                $user->deleted_at = null;
+                $user->save();
+                $text = "Akun kamu berhasil di hidupkan.";
+                sendText($chatId, $text);
+            } else {
+                $text = "Akun kamu belum terdaftar di Bot Telegram WIKUARNO.ID.";
+                sendText($chatId, $text);
+            }
+        }
     }
 }
