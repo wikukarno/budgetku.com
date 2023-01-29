@@ -11,6 +11,29 @@
     </title>
     @stack('before-styles')
     @include('includes.admin.styles')
+    <style>
+        .bullet {
+            animation: pulse 1.5s linear infinite;
+            background-color: #db0000;
+            border-radius: 50%;
+            content: "";
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+
+        }
+
+        @keyframes pulse {
+
+            /* 50% {
+                opacity: 0;
+            } */
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
     @stack('after-styles')
 </head>
 

@@ -6,7 +6,31 @@
 <div class="row mb-3">
     <div class="col-12">
         <h6 class="font-weight-bolder mb-0">Dashboard</h6>
-        </nav>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-xl-12 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <div class="d-flex align-items-center pt-3">
+                                <span class="bullet"></span>
+                                <h6 class="ps-2 font-weight-bolder mb-0">
+                                    {{ $keterangan }}
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                            <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row mb-3">
@@ -18,7 +42,7 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan {{
                                 \Carbon\Carbon::parse($getMonthly->date)->isoFormat('MMMM')
-                                 }}</p>
+                                }}</p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($remainder, 0, ',', '.') }}
                                 {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}

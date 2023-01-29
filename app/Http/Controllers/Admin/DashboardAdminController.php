@@ -44,6 +44,10 @@ class DashboardAdminController extends Controller
             return $carry + $item->price;
         }, 0);
 
+        $keterangan = $expenditure >= $remainder ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
+
+
+
         return view('admin.dashboard', compact(
             'portofolios',
             'getMonthly',
@@ -54,15 +58,8 @@ class DashboardAdminController extends Controller
             'remainder',
             'todayExpenditure',
             'weeklyReport',
-            'anualReport'
+            'anualReport',
+            'keterangan'
         ));
-    }
-
-    // fungsi amankan akun
-    public function amankan(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-        $user->delete();
-        return redirect()->route('login')->with('success', 'Akun anda berhasil kami amankan');
     }
 }
