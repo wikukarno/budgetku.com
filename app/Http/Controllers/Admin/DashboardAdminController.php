@@ -18,9 +18,10 @@ class DashboardAdminController extends Controller
     {
         $portofolios = Portofolio::count();
         $salary = Salary::where('users_id', Auth::user()->id)
-            ->whereBetween('date', [
+            ->where('date', [
+                Carbon::now()->format('Y-m-d')
                 // Carbon::now()->startOfMonth()->format('Y-m-d'), 
-                Carbon::now()->endOfMonth()->format('Y-m-d')
+                // Carbon::now()->endOfMonth()->format('Y-m-d')
             ])
             ->get();
         $finances = Finance::where('users_id', Auth::user()->id)->get();
