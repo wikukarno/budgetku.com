@@ -19,8 +19,9 @@ class DashboardAdminController extends Controller
         $portofolios = Portofolio::count();
         $salary = Salary::where('users_id', Auth::user()->id)
             ->whereBetween('date', [
-                Carbon::now()->startOfMonth()->format('Y-m-d'), 
-                Carbon::now()->endOfMonth()->format('Y-m-d')])
+                // Carbon::now()->startOfMonth()->format('Y-m-d'), 
+                Carbon::now()->endOfMonth()->format('Y-m-d')
+            ])
             ->get();
         $finances = Finance::where('users_id', Auth::user()->id)->get();
         $expenditure = $finances->reduce(function ($carry, $item) {
@@ -44,13 +45,13 @@ class DashboardAdminController extends Controller
         }, 0);
 
         return view('admin.dashboard', compact(
-            'portofolios', 
+            'portofolios',
             'finances',
-            'expenditure', 
-            'categoryFinances', 
-            'remainder', 
-            'todayExpenditure', 
-            'weeklyReport', 
+            'expenditure',
+            'categoryFinances',
+            'remainder',
+            'todayExpenditure',
+            'weeklyReport',
             'anualReport'
         ));
     }
