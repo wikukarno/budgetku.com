@@ -41,7 +41,7 @@
                     <div class="col-8">
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan {{
-                                \Carbon\Carbon::parse($getMonthly->date)->isoFormat('MMMM')
+                                \Carbon\Carbon::parse($getMonthly->date)->isoFormat('MMMM') ?? ''
                                 }}</p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($remainder, 0, ',', '.') }}
