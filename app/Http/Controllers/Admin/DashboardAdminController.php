@@ -17,23 +17,34 @@ class DashboardAdminController extends Controller
     public function index()
     {
         $portofolios = Portofolio::count();
-        $getMonthly = Salary::where('users_id', Auth::user()->id)
-            ->where('date', '<=',  Carbon::now()->startOfMonth()->format('Y-m-d'))
-            ->get();
         // $getMonthly = Salary::where('users_id', Auth::user()->id)
-        //     ->where('date', '<=', Carbon::now())->first();
-        dd($getMonthly);
+        //     ->where('date', '<=',  Carbon::now()->startOfMonth()->format('Y-m-d'))
+        //     ->first();
+        $getMonthly = Salary::where('users_id', Auth::user()->id)
+            ->whereMonth('date', '<=', 
+            Carbon::now()->startOfMonth()->format('m'))->first();
+        
+        // dd($getMonthly);
         $salary = Salary::where('users_id', Auth::user()->id)
             ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
             ->get();
-        $finances = Finance::where('users_id', Auth::user()->id)->get();
+
+        $finances = Finance::where('users_id', Auth::user()->id)
+        ->whereBetween('purchase_date', [Carbon::now()->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+        ->get();
+
         $expenditure = $finances->reduce(function ($carry, $item) {
             return $carry + $item->price;
         }, 0);
 
-        
-
         $remainder = $getMonthly->salary - $expenditure;
+
+
+        // $remainder = $finances->reduce(function ($carry, $item) {
+        //     return $carry + $item->price;
+        // }, 0) - $expenditure;
+
+        // $remainder = $getMonthly->salary - $expenditure;
 
 
         $categoryFinances = CategoryFinance::count();
@@ -45,7 +56,7 @@ class DashboardAdminController extends Controller
             return $carry + $item->price;
         }, 0);
 
-        $anualReport = $finances->whereBetween('purchase_date', [Carbon::now()->startOfYear()->format('Y-m-d'), Carbon::now()->endOfYear()->format('Y-m-d')])->reduce(function ($carry, $item) {
+        $anualReport = Finance::whereIn('purchase_date', [Carbon::now()->startOfYear()->format('Y-m-d'), Carbon::now()->endOfYear()->format('Y-m-d')])->get()->reduce(function ($carry, $item) {
             return $carry + $item->price;
         }, 0);
 
