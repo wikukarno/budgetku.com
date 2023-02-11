@@ -17,9 +17,12 @@ class DashboardAdminController extends Controller
     public function index()
     {
         $portofolios = Portofolio::count();
+        // $getMonthly = Salary::where('users_id', Auth::user()->id)
+        //     ->where('date', '<=',  Carbon::now()->startOfMonth()->format('Y-m-d'))
+        //     ->first();
         $getMonthly = Salary::where('users_id', Auth::user()->id)
-            ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
-            ->first();
+            ->where('date', '<=', Carbon::now())->first();
+
         $salary = Salary::where('users_id', Auth::user()->id)
             ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
             ->get();
@@ -28,9 +31,11 @@ class DashboardAdminController extends Controller
             return $carry + $item->price;
         }, 0);
 
-        $remainder = $salary->reduce(function ($carry, $item) {
-            return $carry + $item->salary;
-        }, 0) - $expenditure;
+        
+
+        $remainder = $getMonthly->salary - $expenditure;
+
+
         $categoryFinances = CategoryFinance::count();
         $todayExpenditure = $finances->where('purchase_date', Carbon::now()->format('Y-m-d'))->reduce(function ($carry, $item) {
             return $carry + $item->price;
