@@ -56,9 +56,8 @@ class DashboardAdminController extends Controller
             return $carry + $item->price;
         }, 0);
 
-        $anualReport = Finance::whereIn('purchase_date', [Carbon::now()->startOfYear()->format('Y-m-d'), Carbon::now()->endOfYear()->format('Y-m-d')])->get()->reduce(function ($carry, $item) {
-            return $carry + $item->price;
-        }, 0);
+        $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
+
 
         $keterangan = $expenditure >= $remainder ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
 
