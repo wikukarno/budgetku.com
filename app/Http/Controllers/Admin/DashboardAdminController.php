@@ -17,11 +17,11 @@ class DashboardAdminController extends Controller
     public function index()
     {
         $portofolios = Portofolio::count();
-        // $getMonthly = Salary::where('users_id', Auth::user()->id)
-        //     ->where('date', '<=',  Carbon::now()->startOfMonth()->format('Y-m-d'))
-        //     ->first();
         $getMonthly = Salary::where('users_id', Auth::user()->id)
-            ->where('date', '<=', Carbon::now())->first();
+            ->where('date', '<=',  Carbon::now()->startOfMonth()->format('Y-m-d'))
+            ->first();
+        // $getMonthly = Salary::where('users_id', Auth::user()->id)
+        //     ->where('date', '<=', Carbon::now())->first();
 
         $salary = Salary::where('users_id', Auth::user()->id)
             ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
