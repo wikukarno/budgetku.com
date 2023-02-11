@@ -22,7 +22,7 @@ class DashboardAdminController extends Controller
             ->first();
         // $getMonthly = Salary::where('users_id', Auth::user()->id)
         //     ->where('date', '<=', Carbon::now())->first();
-
+        dd($getMonthly);
         $salary = Salary::where('users_id', Auth::user()->id)
             ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
             ->get();
