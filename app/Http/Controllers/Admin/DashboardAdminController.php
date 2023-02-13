@@ -17,14 +17,11 @@ class DashboardAdminController extends Controller
     public function index()
     {
         $portofolios = Portofolio::count();
-        // $getMonthly = Salary::where('users_id', Auth::user()->id)
-        //     ->where('date', '<=',  Carbon::now()->startOfMonth()->format('Y-m-d'))
-        //     ->first();
+
         $getMonthly = Salary::where('users_id', Auth::user()->id)
             ->whereMonth('date', '<=', 
             Carbon::now()->startOfMonth()->format('m'))->first();
-        
-        // dd($getMonthly);
+
         $salary = Salary::where('users_id', Auth::user()->id)
             ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
             ->get();
@@ -39,15 +36,8 @@ class DashboardAdminController extends Controller
 
         $remainder = $getMonthly->salary - $expenditure;
 
-
-        // $remainder = $finances->reduce(function ($carry, $item) {
-        //     return $carry + $item->price;
-        // }, 0) - $expenditure;
-
-        // $remainder = $getMonthly->salary - $expenditure;
-
-
         $categoryFinances = CategoryFinance::count();
+
         $todayExpenditure = $finances->where('purchase_date', Carbon::now()->format('Y-m-d'))->reduce(function ($carry, $item) {
             return $carry + $item->price;
         }, 0);
@@ -57,7 +47,6 @@ class DashboardAdminController extends Controller
         }, 0);
 
         $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
-
 
         $keterangan = $expenditure >= $remainder ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
 
