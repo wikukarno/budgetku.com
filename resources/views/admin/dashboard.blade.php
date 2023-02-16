@@ -67,11 +67,11 @@
                             <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
                                 @if ($expenditure > $remainder)
-                                    <span class="position-absolute top-0 start-30 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
+                                    <span class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
                                         <span class="visually-hidden">New alerts</span>
                                     </span>
                                     @else
-                                    <span class="position-absolute top-0 start-30 bullet translate-middle p-2 bg-success border border-light rounded-circle">
+                                    <span class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-success border border-light rounded-circle">
                                         <span class="visually-hidden">New alerts</span>
                                     </span>
                                 @endif
