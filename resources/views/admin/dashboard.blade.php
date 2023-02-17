@@ -8,31 +8,6 @@
         <h6 class="font-weight-bolder mb-0">Dashboard</h6>
     </div>
 </div>
-{{-- <div class="row mb-3">
-    <div class="col-xl-12 col-sm-12 mb-3">
-        <div class="card">
-            <div class="card-body p-3">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <div class="d-flex align-items-center pt-3">
-                                <span class="bullet"></span>
-                                <p class="ps-2 mb-0">
-                                    {{ $keterangan }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
 <div class="row mb-3">
     <div class="col-xl-6 col-sm-6 mb-3">
         <div class="card">
@@ -78,6 +53,57 @@
                             </p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($expenditure, 0, ',', '.') }} 
+                                
+                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-xl-6 col-sm-6 mb-3">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Tagihan Perbulan {{
+                                \Carbon\Carbon::now()->isoFormat('MMMM') ?? ''
+                                }}</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                Rp.{{ number_format($monthlyBills, 0, ',', '.') }}
+                                {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                            <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-sm-6 mb-xl-0">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Tagihan Pertahun
+                                {{ \Carbon\Carbon::now()->isoFormat('YYYY') }}
+                            </p>
+                            <h5 class="font-weight-bolder mb-0">
+                                Rp.{{ number_format($yearlyBills, 0, ',', '.') }} 
                                 
                                 {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
                             </h5>

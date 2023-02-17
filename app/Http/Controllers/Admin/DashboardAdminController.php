@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bill;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
 use App\Models\Portofolio;
@@ -50,6 +51,9 @@ class DashboardAdminController extends Controller
 
         $keterangan = $expenditure >= $remainder ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
 
+        $monthlyBills = Bill::where('siklus_tagihan', 0)->sum('harga_tagihan');
+
+        $yearlyBills = Bill::where('siklus_tagihan', 1)->sum('harga_tagihan');
 
 
         return view('admin.dashboard', compact(
@@ -63,7 +67,9 @@ class DashboardAdminController extends Controller
             'todayExpenditure',
             'weeklyReport',
             'anualReport',
-            'keterangan'
+            'keterangan',
+            'monthlyBills',
+            'yearlyBills'
         ));
     }
 }
