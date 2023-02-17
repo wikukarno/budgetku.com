@@ -70,7 +70,10 @@ class BillController extends Controller
     {
         Bill::create([
             'nama_tagihan' => $request->nama_tagihan,
-            'harga_tagihan' => $request->harga_tagihan,
+            'harga_tagihan' => str_replace(
+                ['Rp', '.'], ['', ''], 
+                $request->harga_tagihan
+            ),
             'pemilik_tagihan' => $request->pemilik_tagihan,
             'siklus_tagihan' => $request->siklus_tagihan,
             'jatuh_tempo_tagihan' => $request->jatuh_tempo_tagihan,
