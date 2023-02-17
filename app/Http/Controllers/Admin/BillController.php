@@ -26,10 +26,10 @@ class BillController extends Controller
                     return 'Rp.' . number_format($item->harga_tagihan, 0, ',', '.');
                 })
                 ->editColumn('siklus_tagihan', function ($item) {
-                    return $item->siklus_tagihan == 1 ? 'Bulanan' : 'Tahunan';
+                    return $item->siklus_tagihan == 0 ? 'Bulanan' : 'Tahunan';
                 })
                 ->editColumn('metode_pembayaran', function ($item) {
-                    return $item->metode_pembayaran == 1 ? 'Cash' : 'Transfer';
+                    return $item->metode_pembayaran == 0 ? 'Cash' : 'Transfer';
                 })
                 ->editColumn('jatuh_tempo_tagihan', function ($item) {
                     return Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat('D MMMM Y');
