@@ -44,21 +44,21 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('google')->user();
         $findUser = User::where('email', $user->email)->first();
-        $text = "
-            Dear " . $findUser->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-            " dengan IP Address " . Request::ip() .
-            "\n\n Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
-        ";
+        // $text = "
+        //     Dear " . $findUser->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
+        //     " dengan IP Address " . Request::ip() .
+        //     "\n\n Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
+        // ";
         if ($findUser) {
-            $findUser->update([
-                'last_login_at' => Carbon::now()->toDateTimeString(),
-                'last_login_ip' => Request::ip(),
-            ]);
+            // $findUser->update([
+            //     'last_login_at' => Carbon::now()->toDateTimeString(),
+            //     'last_login_ip' => Request::ip(),
+            // ]);
             Auth::login($findUser);
-            sendText($findUser->telegram_id, $text);
-            Mail::to(
-                $findUser->email
-            )->send(new Login($findUser));
+            // sendText($findUser->telegram_id, $text);
+            // Mail::to(
+            //     $findUser->email
+            // )->send(new Login($findUser));
             return redirect()->intended('pages/dashboard');
         } else {
             return redirect()->route('login');
@@ -68,17 +68,17 @@ class LoginController extends Controller
     // send email login
     protected function authenticated($request, $user)
     {
-        $text = "
-            Dear " . $user->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-            " dengan IP Address " . Request::ip() .
-            " Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
-        ";
-        $user->update([
-            'last_login_at' => Carbon::now()->toDateTimeString(),
-            'last_login_ip' => Request::ip(),
-        ]);
-        sendText($user->telegram_id, $text);
-        Mail::to($request->user())->send(new Login($user));
+        // $text = "
+        //     Dear " . $user->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
+        //     " dengan IP Address " . Request::ip() .
+        //     " Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
+        // ";
+        // $user->update([
+        //     'last_login_at' => Carbon::now()->toDateTimeString(),
+        //     'last_login_ip' => Request::ip(),
+        // ]);
+        // sendText($user->telegram_id, $text);
+        // Mail::to($request->user())->send(new Login($user));
     }
 
     protected $maxAttempts = 1;
