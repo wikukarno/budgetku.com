@@ -15,11 +15,11 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pendapatan Bulan {{
-                                \Carbon\Carbon::parse($getMonthly->date)->isoFormat('MMMM') ?? ''
-                                }}</p>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Gaji Bulan 
+                                {{ \Carbon\Carbon::parse($tanggalBulanKemarin)->isoFormat('MMMM') }}
+                            </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($remainder, 0, ',', '.') }}
+                                Rp.{{ number_format($sisaGaji, 0, ',', '.') }}
                                 {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
                             </h5>
                         </div>
@@ -41,7 +41,7 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
-                                @if ($expenditure > $remainder)
+                                @if ($gajiSekarang > $pengeluaran)
                                     <span class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
                                         <span class="visually-hidden">New alerts</span>
                                     </span>
@@ -52,7 +52,7 @@
                                 @endif
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($expenditure, 0, ',', '.') }} 
+                                Rp.{{ number_format($monthlyReport, 0, ',', '.') }} 
                                 
                                 {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
                             </h5>

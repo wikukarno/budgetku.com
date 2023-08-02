@@ -19,37 +19,49 @@ class DashboardAdminController extends Controller
     {
         $portofolios = Portofolio::count();
 
-        $getMonthly = Salary::where('users_id', Auth::user()->id)
-            ->whereMonth('date', '<=', 
-            Carbon::now()->startOfMonth()->format('m'))->first();
+        $tanggalBulanKemarin = Carbon::now()->subMonth()->day(29)->format('Y-m-d');
 
-        $salary = Salary::where('users_id', Auth::user()->id)
-            ->where('date', '<=', Carbon::now()->startOfMonth()->format('Y-m-d'))
-            ->get();
+        $tanggalBulanIni = Carbon::now()->format('Y-m-d');
 
-        $finances = Finance::where('users_id', Auth::user()->id)
-        ->whereBetween('purchase_date', [Carbon::now()->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
-        ->get();
+        $gajiSekarang = Salary::where('users_id', Auth::user()->id)
+            ->whereBetween('date', [$tanggalBulanKemarin, $tanggalBulanIni])
+            ->pluck('salary', 'date')->toArray();
 
-        $expenditure = $finances->reduce(function ($carry, $item) {
-            return $carry + $item->price;
-        }, 0);
+        $pengeluaran = Finance::where('users_id', Auth::user()->id)
+            ->whereBetween('purchase_date', [$tanggalBulanKemarin, $tanggalBulanIni])
+            ->pluck('price')->toArray();
 
-        $remainder = $getMonthly->salary - $expenditure;
+        $sisaGaji = array_sum($gajiSekarang) - array_sum($pengeluaran);
 
         $categoryFinances = CategoryFinance::count();
 
-        $todayExpenditure = $finances->where('purchase_date', Carbon::now()->format('Y-m-d'))->reduce(function ($carry, $item) {
-            return $carry + $item->price;
-        }, 0);
+        $pengeluaranHariIni = Finance::where('users_id', Auth::user()->id)
+            ->where('purchase_date', Carbon::now()->format('Y-m-d'))
+            ->pluck('price')->toArray();
 
-        $weeklyReport = $finances->whereBetween('purchase_date', [Carbon::now()->startOfWeek()->format('Y-m-d'), Carbon::now()->endOfWeek()->format('Y-m-d')])->reduce(function ($carry, $item) {
-            return $carry + $item->price;
-        }, 0);
+        $todayExpenditure = array_sum($pengeluaranHariIni);
+
+        $laporanMingguan = Finance::where('users_id', Auth::user()->id)
+            ->whereBetween('purchase_date', [Carbon::now()->startOfWeek()->format('Y-m-d'), Carbon::now()->endOfWeek()->format('Y-m-d')])
+            ->pluck('price')->toArray();
+
+        $weeklyReport = array_sum($laporanMingguan);
+
+        $pengeluaranBulanIni = Finance::where('users_id', Auth::user()->id)
+            ->whereMonth('purchase_date', Carbon::now()->format('m'))
+            ->pluck('price')->toArray();
+
+        $monthlyReport = array_sum($pengeluaranBulanIni);
+
+        $laporanTahunan = Finance::where('users_id', Auth::user()->id)
+            ->whereYear('purchase_date', Carbon::now()->format('Y'))
+            ->pluck('price')->toArray();
+
+        $anualReport = array_sum($laporanTahunan);
 
         $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
-        $keterangan = $expenditure >= $remainder ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
+        $keterangan = $sisaGaji <= 0 ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
 
         $monthlyBills = Bill::where('siklus_tagihan', 0)->sum('harga_tagihan');
 
@@ -58,18 +70,20 @@ class DashboardAdminController extends Controller
 
         return view('admin.dashboard', compact(
             'portofolios',
-            'getMonthly',
-            'salary',
-            'finances',
-            'expenditure',
+            'gajiSekarang',
+            'sisaGaji',
+            'pengeluaran',
             'categoryFinances',
-            'remainder',
             'todayExpenditure',
             'weeklyReport',
             'anualReport',
             'keterangan',
             'monthlyBills',
-            'yearlyBills'
+            'yearlyBills',
+            'tanggalBulanIni',
+            'tanggalBulanKemarin',
+            'monthlyReport'
+
         ));
     }
 }
