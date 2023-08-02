@@ -48,7 +48,7 @@ class DashboardAdminController extends Controller
         $weeklyReport = array_sum($laporanMingguan);
 
         $pengeluaranBulanIni = Finance::where('users_id', Auth::user()->id)
-            ->whereMonth('purchase_date', Carbon::now()->format('m'))
+            ->whereBetween('purchase_date', [$tanggalBulanKemarin, $tanggalBulanIni])
             ->pluck('price')->toArray();
 
         $monthlyReport = array_sum($pengeluaranBulanIni);
