@@ -6,6 +6,20 @@
 <div class="row mb-3">
     <div class="col-12">
         <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+        <p class="text-sm mb-0">
+            {{-- Here’s what’s happening with your business today. --}}
+            Ini adalah halaman dashboard, Anda dapat melihat laporan keuangan Anda disini.
+        </p>
+        
+        @if ($sisaGaji <= $monthlyReport)
+            <span class="text-danger text-sm font-weight-bolder">
+                {{ $keterangan }}, Anda telah melebihi batas pengeluaran bulan ini.
+            </span>
+        @else
+            <span class="text-success text-sm font-weight-bolder">
+                {{ $keterangan }}
+            </span>
+        @endif
     </div>
 </div>
 <div class="row mb-3">
@@ -15,7 +29,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Gaji Bulan 
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Gaji Bulan
                                 {{ \Carbon\Carbon::parse($tanggalBulanKemarin)->isoFormat('MMMM') }}
                             </p>
                             <h5 class="font-weight-bolder mb-0">
@@ -41,20 +55,22 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
-                                @if ($gajiSekarang > $pengeluaran)
-                                    <span class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
-                                        <span class="visually-hidden">New alerts</span>
+                                {{-- // kalau gaji sekarang lebih kecil dari pengeluaran bulan ini maka tampilkan bullet
+                                merah --}}
+                                @if ($sisaGaji <= $monthlyReport) <span
+                                    class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">New alerts</span>
                                     </span>
                                     @else
-                                    <span class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-success border border-light rounded-circle">
+                                    <span
+                                        class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-success border border-light rounded-circle">
                                         <span class="visually-hidden">New alerts</span>
                                     </span>
-                                @endif
+                                    @endif
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($monthlyReport, 0, ',', '.') }} 
-                                
-                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
+                                Rp.{{ number_format($monthlyReport, 0, ',', '.') }}
+
                             </h5>
                         </div>
                     </div>
@@ -103,8 +119,8 @@
                                 {{ \Carbon\Carbon::now()->isoFormat('YYYY') }}
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($yearlyBills, 0, ',', '.') }} 
-                                
+                                Rp.{{ number_format($yearlyBills, 0, ',', '.') }}
+
                                 {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
                             </h5>
                         </div>
