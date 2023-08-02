@@ -61,7 +61,7 @@ class DashboardAdminController extends Controller
 
         $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
-        $keterangan = $sisaGaji <= 0 ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Anda masih aman dalam pengeluaran';
+        $keterangan = $sisaGaji <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
 
         $monthlyBills = Bill::where('siklus_tagihan', 0)->sum('harga_tagihan');
 
