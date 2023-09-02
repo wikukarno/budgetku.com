@@ -7,7 +7,6 @@
     <div class="col-12">
         <h6 class="font-weight-bolder mb-0">Dashboard</h6>
         <p class="text-sm mb-0">
-            {{-- Here’s what’s happening with your business today. --}}
             Ini adalah halaman dashboard, Anda dapat melihat laporan keuangan Anda disini.
         </p>
         
@@ -30,11 +29,10 @@
                     <div class="col-8">
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Gaji Bulan
-                                {{ \Carbon\Carbon::parse($tanggalBulanKemarin)->isoFormat('MMMM') }}
+                                {{ \Carbon\Carbon::parse($tanggalGajiBulanKemarin)->isoFormat('MMMM') }}
                             </p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($sisaGaji, 0, ',', '.') }}
-                                {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
                             </h5>
                         </div>
                     </div>
@@ -55,8 +53,6 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
-                                {{-- // kalau gaji sekarang lebih kecil dari pengeluaran bulan ini maka tampilkan bullet
-                                merah --}}
                                 @if ($sisaGaji <= $monthlyReport) <span
                                     class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
                                     <span class="visually-hidden">New alerts</span>
@@ -96,7 +92,6 @@
                                 }}</p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($monthlyBills, 0, ',', '.') }}
-                                {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
                             </h5>
                         </div>
                     </div>

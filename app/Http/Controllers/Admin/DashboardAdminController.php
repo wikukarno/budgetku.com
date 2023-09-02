@@ -19,19 +19,51 @@ class DashboardAdminController extends Controller
     {
         $portofolios = Portofolio::count();
 
-        $tanggalBulanKemarin = Carbon::now()->subMonth()->day(29)->format('Y-m-d');
+        // $tanggalGajiBulanKemarin = Carbon::now()->subMonth()->format('Y-m-d');
+        $tanggalGajiBulanKemarin = Salary::where('users_id', Auth::user()->id)
+            ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
+            // dd($tanggalGajiBulanKemarin);
 
-        $tanggalBulanIni = Carbon::now()->format('Y-m-d');
+        // ambil data gaji bulan kemarin
+        $salary = Salary::where('users_id', Auth::user()->id)
+            ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->sum('salary');
+            // dd($salary);
 
-        $gajiSekarang = Salary::where('users_id', Auth::user()->id)
-            ->whereBetween('date', [$tanggalBulanKemarin, $tanggalBulanIni])
-            ->pluck('salary', 'date')->toArray();
-
+        // pengeluara bulan ini dan bulan kemarin
         $pengeluaran = Finance::where('users_id', Auth::user()->id)
-            ->whereBetween('purchase_date', [$tanggalBulanKemarin, $tanggalBulanIni])
-            ->pluck('price')->toArray();
+            ->where('purchase_date', '>=', $tanggalGajiBulanKemarin)->sum('price');
+            // ->where('purchase_date', '<=', Carbon::now()->isoFormat('Y-m-d'))->pluck('price')->toArray();
 
-        $sisaGaji = array_sum($gajiSekarang) - array_sum($pengeluaran);
+        // $pengeluaran = Finance::where('users_id', Auth::user()->id)
+        //     ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, Carbon::now()->isoFormat('Y-m-d')])->pluck('price')->toArray();
+
+            // dd($pengeluaran);
+
+
+        // dd($pengeluaran);
+
+            // dd($pengeluaran);
+        // $pengeluaran = Finance::where('users_id', Auth::user()->id)
+        //     ->whereMonth('purchase_date', Carbon::now()->format('m'))
+        //     ->pluck('price')->toArray();
+
+        // sisa gaji bulan kemarin - pengeluaran bulan ini
+        $sisaGaji = $salary - $pengeluaran;
+
+        // monthly report
+        $monthlyReport = Finance::where('users_id', Auth::user()->id)
+            ->where('purchase_date', '>=' , $tanggalGajiBulanKemarin)->sum('price');
+
+        // $tanggalBulanIni = Carbon::now()->format('Y-m-d');
+
+        // $gajiSekarang = Salary::where('users_id', Auth::user()->id)
+        //     ->whereBetween('date', [$tanggalGajiBulanKemarin, $tanggalBulanIni])
+        //     ->pluck('salary', 'date')->toArray();
+
+        // $pengeluaran = Finance::where('users_id', Auth::user()->id)
+        //     ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, $tanggalBulanIni])
+        //     ->pluck('price')->toArray();
+
 
         $categoryFinances = CategoryFinance::count();
 
@@ -47,11 +79,11 @@ class DashboardAdminController extends Controller
 
         $weeklyReport = array_sum($laporanMingguan);
 
-        $pengeluaranBulanIni = Finance::where('users_id', Auth::user()->id)
-            ->whereBetween('purchase_date', [$tanggalBulanKemarin, $tanggalBulanIni])
-            ->pluck('price')->toArray();
+        // $pengeluaranBulanIni = Finance::where('users_id', Auth::user()->id)
+        //     ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, $tanggalBulanIni])
+        //     ->pluck('price')->toArray();
 
-        $monthlyReport = array_sum($pengeluaranBulanIni);
+        // $monthlyReport = array_sum($pengeluaranBulanIni);
 
         $laporanTahunan = Finance::where('users_id', Auth::user()->id)
             ->whereYear('purchase_date', Carbon::now()->format('Y'))
@@ -70,7 +102,7 @@ class DashboardAdminController extends Controller
 
         return view('admin.dashboard', compact(
             'portofolios',
-            'gajiSekarang',
+            // 'gajiSekarang',
             'sisaGaji',
             'pengeluaran',
             'categoryFinances',
@@ -80,10 +112,9 @@ class DashboardAdminController extends Controller
             'keterangan',
             'monthlyBills',
             'yearlyBills',
-            'tanggalBulanIni',
-            'tanggalBulanKemarin',
+            // 'tanggalBulanIni',
+            'tanggalGajiBulanKemarin',
             'monthlyReport'
-
         ));
     }
 }
