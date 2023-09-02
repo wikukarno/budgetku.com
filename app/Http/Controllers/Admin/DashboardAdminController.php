@@ -19,33 +19,16 @@ class DashboardAdminController extends Controller
     {
         $portofolios = Portofolio::count();
 
-        // $tanggalGajiBulanKemarin = Carbon::now()->subMonth()->format('Y-m-d');
         $tanggalGajiBulanKemarin = Salary::where('users_id', Auth::user()->id)
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
-            // dd($tanggalGajiBulanKemarin);
 
         // ambil data gaji bulan kemarin
         $salary = Salary::where('users_id', Auth::user()->id)
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->sum('salary');
-            // dd($salary);
 
         // pengeluara bulan ini dan bulan kemarin
         $pengeluaran = Finance::where('users_id', Auth::user()->id)
             ->where('purchase_date', '>=', $tanggalGajiBulanKemarin)->sum('price');
-            // ->where('purchase_date', '<=', Carbon::now()->isoFormat('Y-m-d'))->pluck('price')->toArray();
-
-        // $pengeluaran = Finance::where('users_id', Auth::user()->id)
-        //     ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, Carbon::now()->isoFormat('Y-m-d')])->pluck('price')->toArray();
-
-            // dd($pengeluaran);
-
-
-        // dd($pengeluaran);
-
-            // dd($pengeluaran);
-        // $pengeluaran = Finance::where('users_id', Auth::user()->id)
-        //     ->whereMonth('purchase_date', Carbon::now()->format('m'))
-        //     ->pluck('price')->toArray();
 
         // sisa gaji bulan kemarin - pengeluaran bulan ini
         $sisaGaji = $salary - $pengeluaran;
@@ -53,17 +36,6 @@ class DashboardAdminController extends Controller
         // monthly report
         $monthlyReport = Finance::where('users_id', Auth::user()->id)
             ->where('purchase_date', '>=' , $tanggalGajiBulanKemarin)->sum('price');
-
-        // $tanggalBulanIni = Carbon::now()->format('Y-m-d');
-
-        // $gajiSekarang = Salary::where('users_id', Auth::user()->id)
-        //     ->whereBetween('date', [$tanggalGajiBulanKemarin, $tanggalBulanIni])
-        //     ->pluck('salary', 'date')->toArray();
-
-        // $pengeluaran = Finance::where('users_id', Auth::user()->id)
-        //     ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, $tanggalBulanIni])
-        //     ->pluck('price')->toArray();
-
 
         $categoryFinances = CategoryFinance::count();
 
@@ -78,12 +50,6 @@ class DashboardAdminController extends Controller
             ->pluck('price')->toArray();
 
         $weeklyReport = array_sum($laporanMingguan);
-
-        // $pengeluaranBulanIni = Finance::where('users_id', Auth::user()->id)
-        //     ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, $tanggalBulanIni])
-        //     ->pluck('price')->toArray();
-
-        // $monthlyReport = array_sum($pengeluaranBulanIni);
 
         $laporanTahunan = Finance::where('users_id', Auth::user()->id)
             ->whereYear('purchase_date', Carbon::now()->format('Y'))
