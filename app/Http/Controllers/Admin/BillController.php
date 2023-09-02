@@ -32,7 +32,7 @@ class BillController extends Controller
                     return $item->metode_pembayaran == 0 ? 'Cash' : 'Transfer';
                 })
                 ->editColumn('jatuh_tempo_tagihan', function ($item) {
-                    return Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat('D MMMM Y');
+                    return Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat('D MMMM');
                 })
                 ->editColumn('action', function ($item) {
                     return '
