@@ -5,7 +5,7 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href=" {{ route('dashboard') }} ">
             <img src="{{ asset('assets/img/logo.png') }}" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold">WIKUKARNO.ID</span>
+            <span class="ms-1 font-weight-bold">WIKUKARNO.COM</span>
         </a>
     </div>
     <hr class="horizontal dark mt-0">
