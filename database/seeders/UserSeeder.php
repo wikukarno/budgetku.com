@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'name'          => 'Wiku Karno',
             'email'         => 'prasetyagama2@gmail.com',
             'roles'         => 'Owner',
-            'password'      => bcrypt('123456'), // password
+            'password'      => bcrypt('Buc!nNy4Ri$ka9anteng424431'), // password
             'created_at'    => date('Y-m-d h:i:s'),
             'updated_at'    => date('Y-m-d h:i:s'),
         ];

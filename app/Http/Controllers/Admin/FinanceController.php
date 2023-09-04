@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FinanceRequest;
+use App\Mail\UangKeluar;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class FinanceController extends Controller
 {
@@ -87,6 +90,8 @@ class FinanceController extends Controller
             ]
         );
 
+        Mail::to('prasetyagama2@gmail.com')->send(new UangKeluar($data));
+        
         if ($data) {
             return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
         } else {

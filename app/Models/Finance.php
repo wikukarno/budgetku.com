@@ -19,6 +19,10 @@ class Finance extends Model
         'purchase_by',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id', 'id');
+    }
     public function category_finance()
     {
         return $this->belongsTo(CategoryFinance::class, 'category_finances_id', 'id');
