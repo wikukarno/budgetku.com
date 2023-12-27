@@ -20,10 +20,16 @@ class DashboardAdminController extends Controller
         $portofolios = Portofolio::count();
 
         $tanggalGajiBulanKemarin = Salary::where('users_id', Auth::user()->id)
+            ->where('tipe', 'gaji')
+            ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
+
+        $tanggalUangTambahBulanKemarin = Salary::where('users_id', Auth::user()->id)
+            ->where('tipe', 'tambahan')
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
 
         // ambil data gaji bulan kemarin
         $salary = Salary::where('users_id', Auth::user()->id)
+            ->whereIn('tipe', ['gaji', 'saham', 'bonus', 'tambahan', 'thr'])
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->sum('salary');
 
         // pengeluara bulan ini dan bulan kemarin
@@ -32,6 +38,7 @@ class DashboardAdminController extends Controller
 
         // sisa gaji bulan kemarin - pengeluaran bulan ini
         $sisaGaji = $salary - $pengeluaran;
+        // dd($sisaGaji);
 
         // monthly report
         $monthlyReport = Finance::where('users_id', Auth::user()->id)
