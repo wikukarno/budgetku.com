@@ -23,22 +23,24 @@ class DashboardAdminController extends Controller
             ->where('tipe', 'gaji')
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
 
-        // $tanggalUangTambahBulanKemarin = Salary::where('users_id', Auth::user()->id)
-        //     ->where('tipe', 'tambahan')
-        //     ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
+        $listPendapatan = Salary::where('users_id', Auth::user()->id)
+            ->whereBetween('date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->sum('salary');
+            // dd($listPendapatan);
 
         // ambil data gaji bulan kemarin
         $salary = Salary::where('users_id', Auth::user()->id)
-            ->whereIn('tipe', ['gaji', 'saham', 'bonus', 'tambahan', 'thr'])
+            ->where('tipe', ['gaji'])
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->sum('salary');
 
         // pengeluara bulan ini dan bulan kemarin
         $pengeluaran = Finance::where('users_id', Auth::user()->id)
-            ->where('purchase_date', '>=', $tanggalGajiBulanKemarin)->sum('price');
+            // ->where('purchase_date', '>=', $tanggalGajiBulanKemarin)->sum('price');
+            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->sum('price');
 
-        // sisa gaji bulan kemarin - pengeluaran bulan ini
-        $sisaGaji = $salary - $pengeluaran;
-        // dd($sisaGaji);
+        // total pendapatan
+        $totalPendapatan = $listPendapatan - $pengeluaran;
 
         // monthly report
         $monthlyReport = Finance::where('users_id', Auth::user()->id)
@@ -66,7 +68,7 @@ class DashboardAdminController extends Controller
 
         $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
-        $keterangan = $sisaGaji <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
+        $keterangan = $totalPendapatan <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
 
         $monthlyBills = Bill::where('siklus_tagihan', 0)->sum('harga_tagihan');
 
@@ -76,7 +78,7 @@ class DashboardAdminController extends Controller
         return view('admin.dashboard', compact(
             'portofolios',
             // 'gajiSekarang',
-            'sisaGaji',
+            'totalPendapatan',
             'pengeluaran',
             'categoryFinances',
             'todayExpenditure',

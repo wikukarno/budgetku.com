@@ -10,7 +10,7 @@
             Ini adalah halaman dashboard, Anda dapat melihat laporan keuangan Anda disini.
         </p>
         
-        @if ($sisaGaji <= $monthlyReport)
+        @if ($totalPendapatan <= $monthlyReport)
             <span class="text-danger text-sm font-weight-bolder">
                 {{ $keterangan }}, Anda telah melebihi batas pengeluaran bulan ini.
             </span>
@@ -28,11 +28,11 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Gaji Bulan
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Pendapatan Bulan
                                 {{ \Carbon\Carbon::parse($tanggalGajiBulanKemarin)->isoFormat('MMMM') }}
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($sisaGaji, 0, ',', '.') }}
+                                Rp.{{ number_format($totalPendapatan, 0, ',', '.') }}
                             </h5>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
-                                @if ($sisaGaji <= $monthlyReport) <span
+                                @if ($totalPendapatan <= $monthlyReport) <span
                                     class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
                                     <span class="visually-hidden">New alerts</span>
                                     </span>
