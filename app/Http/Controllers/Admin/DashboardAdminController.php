@@ -23,9 +23,9 @@ class DashboardAdminController extends Controller
             ->where('tipe', 'gaji')
             ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
 
-        $tanggalUangTambahBulanKemarin = Salary::where('users_id', Auth::user()->id)
-            ->where('tipe', 'tambahan')
-            ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
+        // $tanggalUangTambahBulanKemarin = Salary::where('users_id', Auth::user()->id)
+        //     ->where('tipe', 'tambahan')
+        //     ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
 
         // ambil data gaji bulan kemarin
         $salary = Salary::where('users_id', Auth::user()->id)
