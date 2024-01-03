@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('users_id');
             $table->string('salary');
+            $table->enum('type', ['gaji', 'bonus', 'thr', 'saham', 'tambahan'])->default('gaji');
             $table->date('date');
             $table->text('description');
             $table->timestamps();
