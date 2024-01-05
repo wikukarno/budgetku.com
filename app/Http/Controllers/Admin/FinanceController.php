@@ -90,8 +90,6 @@ class FinanceController extends Controller
             ]
         );
 
-        Mail::to('riskaoktaviana83@gmail.com')->send(new UangKeluar($data));
-        
         if ($data) {
             return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
         } else {
