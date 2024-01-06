@@ -11,8 +11,8 @@
                                         document.write(new Date().getFullYear())
                                     </script>,
                                     All right reserved <i class="fa fa-heart text-primary"></i> by
-                                    <a href="https://wkukarno.id/" class="font-weight-bold"
-                                        target="_blank">wikukarno.id</a>
+                                    <a href="https://wkukarno.com/" class="font-weight-bold"
+                                        target="_blank">wikukarno.com</a>
                                 </div>
                             </div>
                         </div>

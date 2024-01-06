@@ -29,6 +29,10 @@ Route::get('/', function () {
     return abort(403, 'Forbidden');
 });
 
+Route::get('/keuanganku', function () {
+    return view('auth.login');
+});
+
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
@@ -50,7 +54,7 @@ Route::prefix('/pages/dashboard')
         Route::post('/delete/finance', [FinanceController::class, 'destroy']);
         Route::post('/show/salary', [SalaryController::class, 'show']);
         Route::post('/delete/salary', [SalaryController::class, 'destroy']);
-        
+
         Route::post('/delete/bill', [BillController::class, 'destroy']);
 
 
@@ -65,4 +69,4 @@ Route::prefix('/pages/dashboard')
     });
 
 
-Auth::routes(['register' => false, 'login' => false, 'reset' => false, 'verify' => false]);
+Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);

@@ -17,34 +17,52 @@ class DashboardAdminController extends Controller
 {
     public function index()
     {
-        $portofolios = Portofolio::count();
 
-        $tanggalGajiBulanKemarin = Salary::where('users_id', Auth::user()->id)
-            ->where('tipe', 'gaji')
-            ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->first()->date;
+        $userId = Auth::user()->id;
+        $lastMonth = Carbon::now()->subMonth();
+
+        $pengeluaran = 0;
+
+        $tanggalGajiBulanKemarin = Salary::where('users_id', $userId)
+        ->where('tipe', 'gaji')
+        ->whereDate('date', '>=', $lastMonth->startOfMonth())
+        ->whereDate('date', '<=', $lastMonth->endOfMonth())
+        ->whereYear('date', $lastMonth->year)
+        ->pluck('date')
+        ->groupBy(function ($date) {
+            return Carbon::parse($date)->format('m'); // grouping by months
+        });
+
+        // Kumpulkan semua rentang tanggal yang diperlukan
+        $rentangTanggal = [];
+
+        foreach ($tanggalGajiBulanKemarin as $month => $dates) {
+            $startDate = Carbon::parse($dates->first())->startOfMonth()->format('Y-m-d');
+            $endDate = Carbon::parse($dates->last())->endOfMonth()->format('Y-m-d');
+
+            $rentangTanggal[] = [$startDate, $endDate];
+        }
+
+        // Jalankan satu query di luar loop untuk menghitung total pengeluaran
+        foreach ($rentangTanggal as $range) {
+            $pengeluaran += Finance::where('users_id', Auth::user()->id)
+            ->whereBetween('purchase_date', $range)
+            ->sum('price');
+        }
+
 
         $listPendapatan = Salary::where('users_id', Auth::user()->id)
+            ->where('tipe', 'gaji')
             ->whereBetween('date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
             ->sum('salary');
-            // dd($listPendapatan);
 
-        // ambil data gaji bulan kemarin
-        $salary = Salary::where('users_id', Auth::user()->id)
-            ->where('tipe', ['gaji'])
-            ->whereMonth('date', Carbon::now()->subMonth()->format('m'))->sum('salary');
-
-        // pengeluara bulan ini dan bulan kemarin
-        $pengeluaran = Finance::where('users_id', Auth::user()->id)
-            // ->where('purchase_date', '>=', $tanggalGajiBulanKemarin)->sum('price');
-            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
-            ->sum('price');
-
-        // total pendapatan
+        // total pendapatan - pengeluaran
         $totalPendapatan = $listPendapatan - $pengeluaran;
 
         // monthly report
         $monthlyReport = Finance::where('users_id', Auth::user()->id)
-            ->where('purchase_date', '>=' , $tanggalGajiBulanKemarin)->sum('price');
+            ->whereMonth('purchase_date', Carbon::now()->format('m'))
+            ->sum('price');
 
         $categoryFinances = CategoryFinance::count();
 
@@ -60,11 +78,14 @@ class DashboardAdminController extends Controller
 
         $weeklyReport = array_sum($laporanMingguan);
 
+        // Pengeluaran tahun sebelumnya
+        $previeusYearReport = Finance::where('users_id', Auth::user()->id)
+            ->whereYear('purchase_date', Carbon::now()->subYear()->format('Y'))
+            ->sum('price');
+
         $laporanTahunan = Finance::where('users_id', Auth::user()->id)
             ->whereYear('purchase_date', Carbon::now()->format('Y'))
-            ->pluck('price')->toArray();
-
-        $anualReport = array_sum($laporanTahunan);
+            ->sum('price');
 
         $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
@@ -74,10 +95,10 @@ class DashboardAdminController extends Controller
 
         $yearlyBills = Bill::where('siklus_tagihan', 1)->sum('harga_tagihan');
 
-
+        $portofolios = Portofolio::count();
+        
         return view('admin.dashboard', compact(
             'portofolios',
-            // 'gajiSekarang',
             'totalPendapatan',
             'pengeluaran',
             'categoryFinances',
@@ -87,9 +108,9 @@ class DashboardAdminController extends Controller
             'keterangan',
             'monthlyBills',
             'yearlyBills',
-            // 'tanggalBulanIni',
             'tanggalGajiBulanKemarin',
-            'monthlyReport'
+            'monthlyReport',
+            'previeusYearReport',
         ));
     }
 }

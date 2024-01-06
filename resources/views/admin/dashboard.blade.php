@@ -28,8 +28,8 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Sisa Pendapatan Bulan
-                                {{ \Carbon\Carbon::parse($tanggalGajiBulanKemarin)->isoFormat('MMMM') }}
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Saldo
+                                {{-- {{ \Carbon\Carbon::parse($tanggalGajiBulanKemarin)->isoFormat('MMMM') }} --}}
                             </p>
                             <h5 class="font-weight-bolder mb-0">
                                 Rp.{{ number_format($totalPendapatan, 0, ',', '.') }}
@@ -52,6 +52,8 @@
                     <div class="col-8">
                         <div class="numbers">
                             <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
+                                {{ \Carbon\Carbon::now()->addDays(-30)->isoFormat('MMMM') }}
+                                &
                                 {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
                                 @if ($totalPendapatan <= $monthlyReport) <span
                                     class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
@@ -65,7 +67,7 @@
                                     @endif
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($monthlyReport, 0, ',', '.') }}
+                                Rp.{{ number_format($pengeluaran, 0, ',', '.') }}
 
                             </h5>
                         </div>
@@ -188,7 +190,31 @@
     </div>
 </div>
 <div class="row mb-3">
-    <div class="col-xl-12 col-sm-12 mb-xl-0 mb-3">
+    <div class="col-xl-6 col-sm-12 mb-xl-0 mb-3">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pengeluaran Tahun
+                                {{ \Carbon\Carbon::now()->addDays(-365)->isoFormat('YYYY') }}
+                            </p>
+                            <h5 class="font-weight-bolder mb-0">
+                                Rp.{{ number_format($previeusYearReport, 0, ',', '.') }}
+                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-sm-12 mb-xl-0 mb-3">
         <div class="card">
             <div class="card-body p-3">
                 <div class="row">
