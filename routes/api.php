@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AboutsController;
 use App\Http\Controllers\API\DocumentController;
 use App\Http\Controllers\API\FinancesController;
 use App\Http\Controllers\API\PortofoliosController;
+use App\Http\Controllers\API\ProxyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::get('/finance/{id}', [FinancesController::class, 'getFinances']);
 
-Route::get('portofolios', [PortofoliosController::class, 'all']);
-Route::get('abouts', [AboutsController::class, 'all']);
-Route::get('documents', [DocumentController::class, 'all']);
+// make route with token
+Route::middleware('access-token')
+    ->group(function(){
+        Route::get('portofolios', [PortofoliosController::class, 'all']);
+        Route::get('abouts', [AboutsController::class, 'all']);
+        Route::get('documents', [DocumentController::class, 'all']);
+    });
+

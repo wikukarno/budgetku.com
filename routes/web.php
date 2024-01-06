@@ -26,18 +26,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return abort(403, 'Forbidden');
 });
 
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
 // route telegram
-Route::post('/telegram-bot', [TelegramBotWebHook::class, 'index']);
-Route::post('/telegram-bot/webhook', [TelegramBotWebHook::class, 'webhook']);
+// Route::post('/telegram-bot', [TelegramBotWebHook::class, 'index']);
+// Route::post('/telegram-bot/webhook', [TelegramBotWebHook::class, 'webhook']);
 
 // fitur amankan akun
-Route::post('/amankan', [DashboardAdminController::class, 'amankan'])->name('amankan');
+// Route::post('/amankan', [DashboardAdminController::class, 'amankan'])->name('amankan');
 
 Route::prefix('/pages/dashboard')
     ->middleware(['auth', 'owner'])
@@ -65,4 +65,4 @@ Route::prefix('/pages/dashboard')
     });
 
 
-Auth::routes(['register' => false,]);
+Auth::routes(['register' => false, 'login' => false, 'reset' => false, 'verify' => false]);

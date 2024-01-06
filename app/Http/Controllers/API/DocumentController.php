@@ -9,18 +9,34 @@ use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
-    public function all()
+    public function all(Request $request)
     {
-        $document = Document::all();
-        if ($document) {
-            return ResponseFormatter::success(
-                $document,
-                'Data dokumen berhasil diambil'
-            );
-        } else {
+        try {
+            $token = $request->header('Authorization');
+
+            // check token
+            if (!$token) {
+                return response()->json([
+                    'message' => 'Token tidak valid'
+                ], 401);
+            }
+            $document = Document::first();
+            if ($document) {
+                return ResponseFormatter::success(
+                    $document,
+                    'Data dokumen berhasil diambil'
+                );
+            } else {
+                return ResponseFormatter::error(
+                    null,
+                    'Data tidak ada!',
+                    404
+                );
+            }
+        } catch (\Throwable $th) {
             return ResponseFormatter::error(
                 null,
-                'Data dokumen tidak ada',
+                'Data tidak ada!',
                 404
             );
         }

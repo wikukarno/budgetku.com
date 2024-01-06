@@ -11,16 +11,33 @@ class PortofoliosController extends Controller
 {
     public function all(Request $request)
     {
-        $portofolio = Portofolio::all();
-        if ($portofolio) {
-            return ResponseFormatter::success(
-                $portofolio,
-                'Data portofolio berhasil diambil'
-            );
-        } else {
+        try {
+            $token = $request->header('Authorization');
+
+            // check token
+            if (!$token) {
+                return response()->json([
+                    'message' => 'Token tidak valid'
+                ], 401);
+            }
+
+            $portofolio = Portofolio::all();
+            if ($portofolio) {
+                return ResponseFormatter::success(
+                    $portofolio,
+                    'Data berhasil diambil!'
+                );
+            } else {
+                return ResponseFormatter::error(
+                    null,
+                    'Data tidak ada!',
+                    404
+                );
+            }
+        } catch (\Throwable $th) {
             return ResponseFormatter::error(
                 null,
-                'Data portofolio tidak ada',
+                'Data tidak ada!',
                 404
             );
         }
