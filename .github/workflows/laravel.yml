@@ -34,8 +34,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
-          username_github: ${{ secrets.USERNAME_GITHUB }}
-          password_github: ${{ secrets.PASSWORD_GITHUB }}
           script: |
             cd /var/www/api.wikukarno.com
             git pull
