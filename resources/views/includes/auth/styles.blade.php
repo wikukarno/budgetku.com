@@ -1,12 +1,17 @@
-<link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/apple-icon.png') }}">
-<link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
-<!--     Fonts and icons     -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-<!-- Nucleo Icons -->
-<link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
-<link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
-<!-- Font Awesome Icons -->
-<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-<link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
-<!-- CSS Files -->
-<link id="pagestyle" href="{{ asset('assets/css/soft-ui-dashboard.css?v=1.0.6') }}" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<!-- plugins:css -->
+<link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
+<!-- endinject -->
+<!-- Plugin css for this page -->
+<link rel="stylesheet" href="{{ asset('assets/vendors/jvectormap/jquery-jvectormap.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/vendors/flag-icon-css/css/flag-icon.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/vendors/owl-carousel-2/owl.carousel.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/vendors/owl-carousel-2/owl.theme.default.min.css') }}">
+<!-- End plugin css for this page -->
+<!-- inject:css -->
+<!-- endinject -->
+<!-- Layout styles -->
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+<!-- End layout styles -->
+<link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />

@@ -30,6 +30,7 @@
         <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+    @include('components.modal-logout')
     @stack('before-scripts')
     @include('includes.admin.scripts')
     @stack('after-scripts')

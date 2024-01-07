@@ -135,6 +135,14 @@
                 <span class="menu-title">Profile</span>
             </a>
         </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/account') ? 'active' : '' }}">
+            <a class="nav-link" href="javascript:void(0)" onclick="logout()">
+                <span class="menu-icon">
+                    <i class="mdi mdi-arrow-left-bold-circle"></i>
+                </span>
+                <span class="menu-title">Keluar</span>
+            </a>
+        </li>
     </ul>
 </nav>
 <!-- partial -->
