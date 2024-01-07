@@ -25,15 +25,11 @@ jobs:
     needs: laravel-tests
     steps:
       - uses: actions/checkout@v3
-      - name: Configure SSH and deploy
-        uses: appleboy/ssh-action@v1.0.3
+      - name: SSH and Deploy
+        uses: easingthemes/ssh-deploy@v2.1.5
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          # passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          fingerprint: ${{ secrets.SSH_FINGERPRINT }}
-          script: |
-            cd /var/www/api.wikukarno.com
-            git pull origin master
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "cd /var/www/api.wikukarno.com && git pull origin master"
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT }}
