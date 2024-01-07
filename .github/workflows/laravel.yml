@@ -43,6 +43,7 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
+          pubkeys: ${{ secrets.PUBKEYS }}
           script: |
             cd /var/www/api.wikukarno.com'
             ls -la
