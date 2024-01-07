@@ -12,6 +12,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request as HttpRequest;
 
 class LoginController extends Controller
 {
@@ -92,5 +93,19 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function logout(HttpRequest $request)
+    {
+        $user = Auth::user();
+        // $text = "
+        //     Dear " . $user->name . " Terdeteksi Logout pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
+        //     " dengan IP Address " . Request::ip() .
+        //     "\n\n Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
+        // ";
+        // sendText($user->telegram_id, $text);
+        // Mail::to($request->user())->send(new Login($user));
+        Auth::logout();
+        return redirect()->route('login');
     }
 }
