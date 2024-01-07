@@ -3,286 +3,238 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="row mb-3">
-    <div class="col-12">
-        <h6 class="font-weight-bolder mb-0">Dashboard</h6>
-        <p class="text-sm mb-0">
-            Ini adalah halaman dashboard, Anda dapat melihat laporan keuangan Anda disini.
-        </p>
-        
-        @if ($totalPendapatan <= $monthlyReport)
-            <span class="text-danger text-sm font-weight-bolder">
-                {{ $keterangan }}, Anda telah melebihi batas pengeluaran bulan ini.
-            </span>
-        @else
-            <span class="text-success text-sm font-weight-bolder">
-                {{ $keterangan }}
-            </span>
-        @endif
-    </div>
-</div>
-<div class="row mb-3">
-    <div class="col-xl-6 col-sm-6 mb-3">
+
+<div class="row">
+    <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Saldo
-                                {{-- {{ \Carbon\Carbon::parse($tanggalGajiBulanKemarin)->isoFormat('MMMM') }} --}}
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-9">
+                        <div class="d-flex align-items-center align-self-start">
+                            <h3 class="mb-0">
                                 Rp.{{ number_format($totalPendapatan, 0, ',', '.') }}
-                            </h5>
+                            </h3>
+                            {{-- <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p> --}}
                         </div>
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                    {{-- <div class="col-3">
+                        <div class="icon icon-box-success ">
+                            <span class="mdi mdi-arrow-top-right icon-item"></span>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
+                <h6 class="text-muted font-weight-normal">Saldo</h6>
             </div>
         </div>
     </div>
-    <div class="col-xl-6 col-sm-6 mb-xl-0">
+    <div class="col-xl-8 col-sm-6 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Pengeluaran Bulan
-                                {{ \Carbon\Carbon::now()->addDays(-30)->isoFormat('MMMM') }}
-                                &
-                                {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
-                                @if ($totalPendapatan <= $monthlyReport) <span
-                                    class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-danger border border-light rounded-circle">
-                                    <span class="visually-hidden">New alerts</span>
-                                    </span>
-                                    @else
-                                    <span
-                                        class="position-absolute top-0 start-0 bullet translate-middle p-2 bg-success border border-light rounded-circle">
-                                        <span class="visually-hidden">New alerts</span>
-                                    </span>
-                                    @endif
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-9">
+                        <div class="d-flex align-items-center align-self-start">
+                            <h3 class="mb-0">
                                 Rp.{{ number_format($pengeluaran, 0, ',', '.') }}
-
-                            </h5>
+                            </h3>
+                            {{-- <p class="text-success ms-2 mb-0 font-weight-medium">+11%</p> --}}
                         </div>
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                    {{-- <div class="col-3">
+                        <div class="icon icon-box-success">
+                            <span class="mdi mdi-arrow-top-right icon-item"></span>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
+                <h6 class="text-muted font-weight-normal">
+                    Pengeluaran Bulan {{ \Carbon\Carbon::now()->addDays(-30)->isoFormat('MMMM') }}
+                    &
+                    {{ \Carbon\Carbon::now()->isoFormat('MMMM') }}
+                </h6>
             </div>
         </div>
     </div>
 </div>
-<div class="row mb-3">
-    <div class="col-xl-6 col-sm-6 mb-3">
+<div class="row">
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Tagihan Perbulan {{
-                                \Carbon\Carbon::now()->isoFormat('MMMM') ?? ''
-                                }}</p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-9">
+                        <div class="d-flex align-items-center align-self-start">
+                            <h3 class="mb-0">
                                 Rp.{{ number_format($monthlyBills, 0, ',', '.') }}
-                            </h5>
+                            </h3>
+                            {{-- <p class="text-danger ms-2 mb-0 font-weight-medium">-2.4%</p> --}}
                         </div>
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                    {{-- <div class="col-3">
+                        <div class="icon icon-box-danger">
+                            <span class="mdi mdi-arrow-bottom-left icon-item"></span>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
+                <h6 class="text-muted font-weight-normal">Tagihan Perbulan</h6>
             </div>
         </div>
     </div>
-    <div class="col-xl-6 col-sm-6 mb-xl-0">
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold position-relative">Tagihan Pertahun
-                                {{ \Carbon\Carbon::now()->isoFormat('YYYY') }}
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-9">
+                        <div class="d-flex align-items-center align-self-start">
+                            <h3 class="mb-0">
                                 Rp.{{ number_format($yearlyBills, 0, ',', '.') }}
-
-                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
-                            </h5>
+                            </h3>
+                            {{-- <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p> --}}
                         </div>
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                    {{-- <div class="col-3">
+                        <div class="icon icon-box-success ">
+                            <span class="mdi mdi-arrow-top-right icon-item"></span>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
+                <h6 class="text-muted font-weight-normal">Tagihan Pertahun</h6>
             </div>
         </div>
     </div>
 </div>
-<div class="row mb-3">
-    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-3">
+<div class="row">
+    <div class="col-sm-4 grid-margin">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
+                <h5>Pengeluaran minggu ini</h5>
+                <h6 class="text-muted">
+                    {{
+                    \Carbon\Carbon::now()->addDays(-6)->isoFormat('DD MMMM YYYY')
+                    . ' - ' .
+                    \Carbon\Carbon::now()->isoFormat('dddd') == 'Minggu' ?
+                    \Carbon\Carbon::now()->isoFormat('DD') :
+                    \Carbon\Carbon::now()->startOfWeek()->isoFormat('DD') . ' - ' .
+                    \Carbon\Carbon::now()->endOfWeek()->isoFormat('DD MMMM YYYY')
+                    }}
+                </h6>
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pengeluaran Minggu Ini
-                                {{
-                                \Carbon\Carbon::now()->addDays(-6)->isoFormat('DD MMMM YYYY')
-                                . ' - ' .
-                                \Carbon\Carbon::now()->isoFormat('dddd') == 'Minggu' ?
-                                \Carbon\Carbon::now()->isoFormat('DD') :
-                                \Carbon\Carbon::now()->startOfWeek()->isoFormat('DD') . ' - ' .
-                                \Carbon\Carbon::now()->endOfWeek()->isoFormat('DD MMMM YYYY')
-                                }}
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                            <h2 class="mb-0">
                                 Rp.{{ number_format($weeklyReport, 0, ',', '.') }}
-                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
-                            </h5>
+                            </h2>
+                            {{-- <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p> --}}
                         </div>
+                        {{-- <h6 class="text-muted font-weight-normal">11.38% Since last month</h6> --}}
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    {{-- <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-codepen text-primary ms-auto"></i>
+                    </div> --}}
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-6 col-sm-6 mb-xl-0">
+    <div class="col-sm-4 grid-margin">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
+                <h5>Pengeluaran hari ini</h5>
+                <h6 class="text-muted">
+                    {{ \Carbon\Carbon::now()->isoFormat('dddd, DD MMMM YYYY') }}
+                </h6>
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pengeluaran Hari
-                                {{ \Carbon\Carbon::now()->isoFormat('dddd') }}
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                            <h2 class="mb-0">
                                 Rp.{{ number_format($todayExpenditure, 0, ',', '.') }}
-                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
-                            </h5>
+                            </h2>
+                            {{-- <p class="text-success ms-2 mb-0 font-weight-medium">+8.3%</p> --}}
                         </div>
+                        {{-- <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6> --}}
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    {{-- <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-wallet-travel text-danger ms-auto"></i>
+                    </div> --}}
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row mb-3">
-    <div class="col-xl-6 col-sm-12 mb-xl-0 mb-3">
+    <div class="col-sm-4 grid-margin">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body">
+                <h5>Pengeluaran Tahun ini</h5>
+                <h6 class="text-muted">
+                    {{ \Carbon\Carbon::now()->isoFormat('YYYY') }} <a href="#">Detail pengeluaran</a>
+                </h6>
                 <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pengeluaran Tahun
-                                {{ \Carbon\Carbon::now()->addDays(-365)->isoFormat('YYYY') }}
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
-                                Rp.{{ number_format($previeusYearReport, 0, ',', '.') }}
-                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-sm-12 mb-xl-0 mb-3">
-        <div class="card">
-            <div class="card-body p-3">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Pengeluaran Tahun
-                                {{ \Carbon\Carbon::now()->isoFormat('YYYY') }}
-                            </p>
-                            <h5 class="font-weight-bolder mb-0">
+                    <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                            <h2 class="mb-0">
                                 Rp.{{ number_format($anualReport, 0, ',', '.') }}
-                                {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
-                            </h5>
+                            </h2>
+                            {{-- <p class="text-danger ms-2 mb-0 font-weight-medium">-2.1% </p> --}}
                         </div>
+                        {{-- <h6 class="text-muted font-weight-normal">2.27% Since last month</h6> --}}
                     </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
+                    {{-- <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-monitor text-success ms-auto"></i>
+                    </div> --}}
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="row mb-3">
-    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
+
+
+<div class="row ">
+    <div class="col-12 grid-margin">
         <div class="card">
-            <div class="card-body p-3">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Kategori Keuangan</p>
-                            <h5 class="font-weight-bolder mb-0">
-                                {{ $categoryFinances }}
-                                {{-- <span class="text-danger text-sm font-weight-bolder">-2%</span> --}}
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-            <div class="card-body p-3">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Portofolio</p>
-                            <h5 class="font-weight-bolder mb-0">
-                                {{ $portofolios }}
-                                {{-- <span class="text-danger text-sm font-weight-bolder">-2%</span> --}}
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                            <i class="ni ni-image text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                    </div>
+            <div class="card-body">
+                <h4 class="card-title">Data Tagihan</h4>
+                <div class="table-responsive">
+                    <table id="tb_tagihan" class="table table-hover scroll-horizontal-vertical w-100">
+                        <thead>
+                            <tr>
+                                <th> No </th>
+                                <th> Nama Tagihan </th>
+                                <th> Harga Tagihan </th>
+                                <th> Jatuh Tempo </th>
+                                <th> Siklus </th>
+                                <th> Tipe Pembayaran </th>
+                                <th> Aksi & Status </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('after-scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $('#tb_tagihan').dataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                type: 'GET',
+                url: "{!! url()->current() !!}",
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'id'},
+                { data: 'nama_tagihan', name: 'nama_tagihan' },
+                { data: 'harga_tagihan', name: 'harga_tagihan' },
+                { data: 'jatuh_tempo_tagihan', name: 'jatuh_tempo_tagihan' },
+                { data: 'siklus_tagihan', name: 'siklus_tagihan' },
+                { data: 'metode_pembayaran', name: 'metode_pembayaran' },
+                {
+                    data: 'action',
+                    searchable: false,
+                    sortable: false
+                }
+            ]
+        });
+    </script>
+@endpush

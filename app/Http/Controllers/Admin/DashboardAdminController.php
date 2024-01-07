@@ -96,6 +96,36 @@ class DashboardAdminController extends Controller
         $yearlyBills = Bill::where('siklus_tagihan', 1)->sum('harga_tagihan');
 
         $portofolios = Portofolio::count();
+
+        if (request()->ajax()) {
+            $query = Bill::where('siklus_tagihan', 0);
+
+            return datatables()->of($query)
+                ->addIndexColumn()
+                ->editColumn('harga_tagihan', function ($item) {
+                    return 'Rp.' . number_format($item->harga_tagihan, 0, ',', '.');
+                })
+                ->editColumn('siklus_tagihan', function ($item) {
+                    return $item->siklus_tagihan == 0 ? 'Bulanan' : 'Tahunan';
+                })
+                ->editColumn('metode_pembayaran', function ($item) {
+                    return $item->metode_pembayaran == 0 ? 'Cash' : 'Transfer';
+                })
+                ->editColumn('jatuh_tempo_tagihan', function ($item) {
+                    return Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat('D MMMM');
+                })
+                ->editColumn('action', function ($item) {
+                    return '
+                        <a href="' . route('bill.edit', $item->id) . '" class="btn btn-warning">Edit
+                        </a>
+                        <a href="javascript:void(0)" onclick="deleteBill(' . $item->id . ')">
+                            <button type="button" class="btn btn-danger">Delete</button>
+                        </a>
+                    ';
+                })
+                ->rawColumns(['action', 'date', 'salary'])
+                ->make(true);
+        }
         
         return view('admin.dashboard', compact(
             'portofolios',

@@ -1,3 +1,7 @@
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
     function addFinance() {
         $('#financeModalLabel').html('Tambah Data Keuangan');
@@ -98,7 +102,6 @@
             { data: 'category_finance.name_category_finances', name: 'category_finance.name_category_finances' },
             { data: 'name_item', name: 'name_item' },
             { data: 'price', name: 'price' },
-            { data: 'purchase_by', name: 'purchase_by' },
             { data: 'purchase_date', name: 'purchase_date' },
             {
                 data: 'action',

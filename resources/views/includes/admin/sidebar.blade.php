@@ -1,115 +1,140 @@
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white"
-    id="sidenav-main">
-    <div class="sidenav-header">
-        <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-            aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0" href=" {{ route('dashboard') }} ">
-            <img src="{{ asset('assets/img/logo.png') }}" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold">WIKUKARNO.COM</span>
+<!-- partial:partials/_sidebar.html -->
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+        <a class="sidebar-brand brand-logo text-white" href="/" style="text-decoration: none">
+            {{-- <img src="assets/images/logo.svg" alt="logo" /> --}}
+            WIKUKARNO.COM
+        </a>
+        <a class="sidebar-brand brand-logo-mini text-white" href="/">
+            WK
         </a>
     </div>
-    <hr class="horizontal dark mt-0">
-    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link {{ (request()->is('pages/dashboard') ? 'active' : '') }}"
-                    href="{{ route('dashboard') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-gauge-high text-white"></i>
+    <ul class="nav">
+        <li class="nav-item profile">
+            <div class="profile-desc">
+                <div class="profile-pic">
+                    <div class="count-indicator">
+                        <img class="img-xs rounded-circle " src="{{ asset('assets/images/bocil2.jpg') }}" alt="">
+                        <span class="count bg-success"></span>
                     </div>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/category-finance') ? 'active' : '' }} {{ request()->is('pages/dashboard/keuangan/{id}/edit') ? 'active' : '' }}"
-                    href="{{ route('category-finance.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-list text-white"></i>
+                    <div class="profile-name">
+                        <h5 class="mb-0 font-weight-normal">{{ Auth::user()->name }}</h5>
+                        <span>{{ Auth::user()->roles }}</span>
                     </div>
-                    <span class="nav-link-text ms-1">Kategori Keuangan</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/bill') ? 'active' : '' }} {{ request()->is('pages/dashboard/bill/create') ? 'active' : '' }}"
-                    href="{{ route('bill.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-regular fa-list-alt text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Tagihan</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/salary') ? 'active' : '' }}"
-                    href="{{ route('salary.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-money-bill-trend-up text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Uang Masuk</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/finance') ? 'active' : '' }} {{ request()->is('pages/dashboard/keuangan/{id}/edit') ? 'active' : '' }}"
-                    href="{{ route('finance.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-money-bill-trend-up text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Uang Keluar</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/about') ? 'active' : '' }} {{ request()->is('pages/dashboard/about/create') ? 'active' : '' }}"
-                    href="{{ route('about.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-regular fa-address-card text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Tentang</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/portofolio') ? 'active' : '' }} {{ request()->is('pages/dashboard/portofolio/{id}/edit') ? 'active' : '' }}"
-                    href="{{ route('portofolio.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-regular fa-images text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Portofolio</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/document') ? 'active' : '' }} {{ request()->is('pages/dashboard/document/{id}/edit') ? 'active' : '' }}"
-                    href="{{ route('document.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-file text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Document</span>
-                </a>
-            </li>
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('pages/dashboard/account') ? 'active' : '' }}"
-                    href="{{ route('account.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa-regular fa-user text-white"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Profile</span>
-                </a>
-            </li>
-        </ul>
-
-    </div>
-    <div class="sidenav-footer mx-3 ">
-        <a class="btn bg-gradient-primary mt-3 w-100 text-white" href="javascript:void(0)" data-bs-toggle="modal"
-            data-bs-target="#logoutModal"><i class="fa-solid fa-right-from-bracket"></i>
-            Keluar</a>
-    </div>
-</aside>
+                </div>
+                <a href="#" id="profile-dropdown" data-bs-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list"
+                    aria-labelledby="profile-dropdown">
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-settings text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-onepassword  text-info"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-calendar-today text-success"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item nav-category">
+            <span class="nav-link">Navigation</span>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('dashboard') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/category-finance') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('category-finance.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Kategori Keuangan</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/bill') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('bill.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Tagihan</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/salary') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('salary.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Uang masuk</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/finance') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('finance.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Uang keluar</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/about') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('about.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Tentang</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/portofolio') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('portofolio.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Portofolio</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/document') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('document.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Document</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->is('pages/dashboard/account') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('account.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Profile</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<!-- partial -->

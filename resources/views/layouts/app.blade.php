@@ -2,51 +2,35 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-    <link rel="shortcut icon" href="{{ url('assets/img/logo.svg') }}">
-    <title>
-        @yield('title')
-    </title>
+    <title>@yield('title')</title>
     @stack('before-styles')
     @include('includes.admin.styles')
-    <style>
-        .bullet {
-            animation: blinker 1.5s linear infinite;
-        }
-
-        @keyframes blinker {
-
-            /* 50% {
-                opacity: 0;
-            } */
-            50% {
-                opacity: 0;
-            }
-        }
-    </style>
     @stack('after-styles')
 </head>
 
-<body class="g-sidenav-show  bg-gray-100">
-
-    @include('includes.admin.sidebar')
-
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-
-        @include('includes.admin.navbar')
-
-        <div class="container-fluid py-4">
-
-            @yield('content')
+<body>
+    <div class="container-scroller">
+        @include('includes.admin.sidebar')
+        <div class="container-fluid page-body-wrapper">
+            @include('includes.admin.navbar')
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    @yield('content')
+                </div>
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+                @include('includes.admin.footer')
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
         </div>
-        @include('includes.admin.footer')
-    </main>
-
-    {{-- @include('includes.admin.sidebar-plugin') --}}
-
-    @stack('before-scripts')@include('components.modal-logout')
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    @stack('before-scripts')
     @include('includes.admin.scripts')
     @stack('after-scripts')
 </body>

@@ -22,10 +22,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Kategori</th>
-                                <th>Nama Barang / Item</th>
+                                <th>Nama Item</th>
                                 <th>Harga</th>
-                                <th>Metode Pembayaran</th>
-                                <th>Tanggal Pembelian</th>
+                                <th>Tanggal</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

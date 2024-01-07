@@ -1,28 +1,29 @@
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg px-0 py-1 mx-4 shadow-none border-radius-xl bg-white" id="navbarBlur"
-    navbar-scroll="true">
-    <div class="navbar-content ms-auto">
-        <ul class="navbar-nav mb-lg-0 my-3">
-            <figure class="figure d-flex align-items-center me-3 pt-3">
-                <p class="me-3 mt-2">Hi <b>{{ Auth::user()->name }}</b></p>
-                @if (Auth::user()->avatar != null)
-                <img src="{{ Storage::url(Auth::user()->avatar) }}" class="figure-img img-fluid"
-                    style="object-fit: cover; border-radius: 50%; max-height: 45px" alt="">
-                @else
-                <img src="{{ asset('assets/img/avatar.png') }}" class="figure-img img-fluid"
-                    style="object-fit: cover; border-radius: 50%; max-height: 45px" alt="">
-                @endif
-            </figure>
-        </ul>
-    </div>
-    <div class="nav-item d-xl-none ps-3 d-flex align-items-center me-3">
-        <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
-            <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line"></i>
-                <i class="sidenav-toggler-line"></i>
-                <i class="sidenav-toggler-line"></i>
-            </div>
+<!-- partial:partials/_navbar.html -->
+<nav class="navbar p-0 fixed-top d-flex flex-row">
+    <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo-mini" href="index.html">
+            <img src="assets/images/logo-mini.svg" alt="logo" />
         </a>
     </div>
+    <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-menu"></span>
+        </button>
+        <ul class="navbar-nav navbar-nav-right">
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="#">
+                    <div class="navbar-profile">
+                        <p class="mb-0 d-none d-sm-block navbar-profile-name">
+                            {{ Auth::user()->name }}
+                        </p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+            data-toggle="offcanvas">
+            <span class="mdi mdi-format-line-spacing"></span>
+        </button>
+    </div>
 </nav>
-<!-- End Navbar -->
+<!-- partial -->
