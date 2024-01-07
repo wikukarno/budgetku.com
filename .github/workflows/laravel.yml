@@ -9,10 +9,25 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run Laravel Tests
+        run: php artisan test
+
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name : "Setup SSH"
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
@@ -20,7 +35,7 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: "SSH to Deploy Contabo Server"
+      - name: SSH to Deploy Contabo Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -30,4 +45,6 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd /var/www/api.wikukarno.com
-            ls -la
+            git pull origin master
+            # Add any other deployment steps
+
