@@ -35,5 +35,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /var/www/api.wikukarno.com'
+            cd /var/www/api.wikukarno.com
             ls -la
