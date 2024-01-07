@@ -32,7 +32,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: riska
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }} # Default is 22
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_FINGERPRINT }}
           script: |
             cd /var/www/api.wikukarno.com
             git pull origin master
