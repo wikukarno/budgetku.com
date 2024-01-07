@@ -3,7 +3,7 @@
     <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
         <a class="sidebar-brand brand-logo text-white" href="/" style="text-decoration: none">
             {{-- <img src="assets/images/logo.svg" alt="logo" /> --}}
-            <b>WIKUKARNO.COM</b>
+            <b>WIKUKARNO.COMmmmm</b>
         </a>
         <a class="sidebar-brand brand-logo-mini text-white" href="/">
             WK

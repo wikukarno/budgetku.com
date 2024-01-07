@@ -36,4 +36,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /var/www/api.wikukarno.com
-            ls -la
+            git pull
