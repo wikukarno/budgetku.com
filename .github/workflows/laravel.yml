@@ -38,4 +38,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /var/www/api.wikukarno.com
-            git pull origin master
+            ls -la
