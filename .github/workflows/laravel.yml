@@ -33,7 +33,6 @@ jobs:
           host: ${{ secrets.HOST }}
           password: ${{ secrets.PASSWORD }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
             cd /var/www/api.wikukarno.com
