@@ -19,18 +19,17 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      
 
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Configure SSH
-        uses: webfactory/ssh-agent@v0.5.0
+      - name: Configure SSH and deploy
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Add Host to known_hosts
-        run: ssh-keyscan -H 46.250.234.163 >> ~/.ssh/known_hosts
-      - name: Deploy to Contabo Server
-        run: |
-          cd /var/www/api.wikukarno.com
-          git pull origin master
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /var/www/api.wikukarno.com
+            git pull origin master
