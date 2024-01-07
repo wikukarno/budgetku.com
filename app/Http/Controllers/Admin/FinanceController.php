@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FinanceRequest;
+use App\Jobs\ProcessUangKeluarEmail;
+use App\Jobs\ProcessUangMasukEmail;
 use App\Mail\UangKeluar;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
@@ -12,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Process\Process;
 
 class FinanceController extends Controller
 {
@@ -71,30 +74,43 @@ class FinanceController extends Controller
      */
     public function store(FinanceRequest $request)
     {
-        $data = Finance::updateOrCreate(
-            [
-                'id' => $request->id_finance
-            ],
+        try {
+            $data = Finance::updateOrCreate(
+                [
+                    'id' => $request->id_finance
+                ],
 
-            [
-                'users_id' => Auth::user()->id,
-                'category_finances_id' => $request->category_finances_id,
-                'name_item' => $request->name_item,
-                'price' => str_replace(
-                    ['Rp. ', '.'],
-                    ['', ''],
-                    $request->price
-                ),
-                'purchase_date' => $request->purchase_date,
-                'purchase_by' => $request->purchase_by,
-            ]
-        );
+                [
+                    'users_id' => Auth::user()->id,
+                    'category_finances_id' => $request->category_finances_id,
+                    'name_item' => $request->name_item,
+                    'price' => str_replace(
+                        ['Rp. ', '.'],
+                        ['', ''],
+                        $request->price
+                    ),
+                    'purchase_date' => $request->purchase_date,
+                    'purchase_by' => $request->purchase_by,
+                ]
+            );
 
-        Mail::to($request->email)->send(new UangKeluar($data));
+            $user = User::where('email', Auth::user()->email)->firstOrFail();
+            
+            $data = [
+                'finance' => $data,
+                'user' => $user
+            ];
 
-        if ($data) {
-            return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
-        } else {
+            ProcessUangKeluarEmail::dispatch(
+                $data
+            );
+
+            if ($data) {
+                return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
+            } else {
+                return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+            }
+        } catch (\Throwable $th) {
             return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
         }
     }

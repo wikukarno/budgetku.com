@@ -6,17 +6,18 @@ use App\Models\Finance;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class UangKeluar extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $finance;
+
     /**
      * Create a new message instance.
      *
+     * @param  Finance  $finance
      * @return void
      */
     public function __construct(Finance $finance)
@@ -25,39 +26,13 @@ class UangKeluar extends Mailable
     }
 
     /**
-     * Get the message envelope.
+     * Build the message.
      *
-     * @return \Illuminate\Mail\Mailables\Envelope
+     * @return $this
      */
-    public function envelope()
+    public function build()
     {
-        return new Envelope(
-            subject: 'Notifikasi Uang Keluar',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     *
-     * @return \Illuminate\Mail\Mailables\Content
-     */
-    public function content()
-    {
-        return new Content(
-            markdown: 'emails.uang-keluar',
-            with: [
-                'finance' => $this->finance,
-            ],
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array
-     */
-    public function attachments()
-    {
-        return [];
+        return $this->markdown('emails.uang-keluar')
+            ->subject('Notifikasi Uang Keluar');
     }
 }
