@@ -27,17 +27,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH to Deploy Contabo Server
-        # uses: appleboy/ssh-action@master
+      - name: Configure SSH
         uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-public-key: ${{ secrets.SSH_PUBLIC_KEY }}
-          ssh-known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          ssh-strict: true
-          ssh-opts: "-o StrictHostKeyChecking=no"
-          script: |
-            cd /var/www/api.wikukarno.com
-            git pull origin master
-            
+          run: |
+            ssh-keyscan -H 46.250.234.163 >> ~/.ssh/known_hosts
+            ssh-add <(echo "$SSH_PRIVATE_KEY")
+      - name: Deploy to Contabo Server
+        run: |
+          ssh root@46.250.234.163 "cd /var/www/api.wikukarno.com && git pull origin master"
