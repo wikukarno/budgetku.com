@@ -28,7 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: SSH to Deploy Contabo Server
-        uses: appleboy/ssh-action@master
+        # uses: appleboy/ssh-action@master
+        uses: webfactory/ssh-agent@v0.5.0
         with:
           port: ${{ secrets.PORT }}
           host: ${{ secrets.HOST }}
