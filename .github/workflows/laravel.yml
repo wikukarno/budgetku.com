@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.1"
@@ -28,10 +27,11 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          username: ${{ secrets.SSH_USERNAME }}
+          # key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          fingerprint: ${{ secrets.SSH_FINGERPRINT }}
+          # fingerprint: ${{ secrets.SSH_FINGERPRINT }}
           script: |
             cd /var/www/api.wikukarno.com
             ls -la
