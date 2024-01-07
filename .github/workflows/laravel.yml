@@ -34,7 +34,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd /var/www/api.wikukarno.com
-            git pull origin master
+            git pull
             composer install
             php artisan migrate --force
             php artisan config:cache
