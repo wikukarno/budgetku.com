@@ -30,19 +30,13 @@ jobs:
       - name: SSH to Deploy Contabo Server
         uses: appleboy/ssh-action@master
         with:
+          port: ${{ secrets.PORT }}
           host: ${{ secrets.HOST }}
-          password: ${{ secrets.PASSWORD }}
           username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          port: ${{ secrets.PORT }}
           script: |
             cd /var/www/api.wikukarno.com
-            composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-            php artisan migrate
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan optimize
             git pull origin master
             
