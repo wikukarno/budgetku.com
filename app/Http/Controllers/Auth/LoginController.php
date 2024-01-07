@@ -97,15 +97,11 @@ class LoginController extends Controller
 
     public function logout(HttpRequest $request)
     {
-        $user = Auth::user();
-        // $text = "
-        //     Dear " . $user->name . " Terdeteksi Logout pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-        //     " dengan IP Address " . Request::ip() .
-        //     "\n\n Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
-        // ";
-        // sendText($user->telegram_id, $text);
-        // Mail::to($request->user())->send(new Login($user));
-        Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('keuangan');
+    }
+
+    public function showLoginForm()
+    {
+        return abort(404, 'Not Found');
     }
 }

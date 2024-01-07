@@ -31,7 +31,7 @@ Route::get('/', function () {
 
 Route::get('/keuanganku', function () {
     return view('auth.login');
-});
+})->name('keuangan');
 
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
