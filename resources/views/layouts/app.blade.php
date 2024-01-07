@@ -5,6 +5,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {{-- pavicon --}}
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
     <title>@yield('title')</title>
     @stack('before-styles')
     @include('includes.admin.styles')
