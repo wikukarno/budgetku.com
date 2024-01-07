@@ -28,9 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: SSH to Deploy Contabo Server
-        uses: appleboy/ssh-action@0.1.4
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
+          password: ${{ secrets.PASSWORD }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           script: |
