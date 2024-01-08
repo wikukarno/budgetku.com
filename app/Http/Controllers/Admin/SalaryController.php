@@ -80,7 +80,7 @@ class SalaryController extends Controller
             ]
         );
 
-        $user = User::where('email', Auth::user()->email)->firstOrFail();
+        $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
         $data = [
             'salary' => $data,
             'user' => $user
