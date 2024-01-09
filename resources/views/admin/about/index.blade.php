@@ -8,8 +8,6 @@
         <div class="card">
             <div class="card-header d-lg-flex d-md-flex align-items-center justify-content-between">
                 <h4>Tentang Saya</h4>
-                <a href="{{ route('about.create') }}" class="btn btn-primary mt-3"><i
-                        class="fa-solid fa-circle-plus"></i> &nbsp; Tambah Data</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -32,6 +30,9 @@
 @endsection
 
 @push('after-scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script>
     $('#tb_about').dataTable({
             processing: true,

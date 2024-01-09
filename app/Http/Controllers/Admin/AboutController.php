@@ -44,7 +44,7 @@ class AboutController extends Controller
      */
     public function create()
     {
-        return view('admin.about.create');
+        return abort(404);
     }
 
     /**
@@ -68,7 +68,7 @@ class AboutController extends Controller
      */
     public function show($id)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -106,6 +106,6 @@ class AboutController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return abort(404);
     }
 }

@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return abort(403, 'Forbidden');
+    return abort(404);
 });
 
 Route::get('/keuanganku', function () {
