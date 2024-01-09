@@ -37,7 +37,7 @@ jobs:
           script: |
             cd /var/www/api.wikukarno.com
             ls -la
-            # git pull origin master
+            git pull origin master
             # composer install
             # php artisan migrate --force
             # php artisan config:cache
