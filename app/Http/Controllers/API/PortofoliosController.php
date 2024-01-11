@@ -35,11 +35,7 @@ class PortofoliosController extends Controller
                 );
             }
         } catch (\Throwable $th) {
-            return ResponseFormatter::error(
-                null,
-                'Data tidak ada!',
-                404
-            );
+            return abort(404);
         }
     }
 }
