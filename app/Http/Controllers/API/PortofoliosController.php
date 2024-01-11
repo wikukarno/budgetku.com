@@ -14,11 +14,9 @@ class PortofoliosController extends Controller
         try {
             $token = $request->header('Authorization');
 
-            // check token
+            // Jika tidak ada token, kembalikan error 404
             if (!$token) {
-                return response()->json([
-                    'message' => 'Token tidak valid'
-                ], 401);
+                return abort(404, 'Token tidak valid');
             }
 
             $portofolio = Portofolio::all();
@@ -35,7 +33,8 @@ class PortofoliosController extends Controller
                 );
             }
         } catch (\Throwable $th) {
-            return abort(404);
+            // Tangkap kesalahan lainnya dan kembalikan error 404
+            return abort(404, $th->getMessage());
         }
     }
 }

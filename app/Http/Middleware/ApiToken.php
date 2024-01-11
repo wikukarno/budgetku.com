@@ -19,15 +19,19 @@ class ApiToken
     {
         $token = $request->header('Authorization');
 
+        // Pertama, periksa apakah token ada
+        if (!$token) {
+            return abort(404, 'Token tidak ditemukan');
+        }
+
+        // Kemudian, cari user berdasarkan token
         $user = User::where('api_token', $token)->first();
-        if ($token) {
-            if ($user) {
-                return $next($request);
-            } else {
-                return response()->json([
-                    'message' => 'Token tidak valid'
-                ], 401);
-            }
+        if ($user) {
+            // Jika user ditemukan, lanjutkan dengan request
+            return $next($request);
+        } else {
+            // Jika user tidak ditemukan, kembalikan error
+            return abort(404, 'Token tidak valid');
         }
     }
 }
