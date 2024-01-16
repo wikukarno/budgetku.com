@@ -28,14 +28,7 @@ class DashboardAdminController extends Controller
         ->whereDate('date', '>=', $lastMonth->startOfMonth())
         ->whereDate('date', '<=', $lastMonth->endOfMonth())
         ->whereYear('date', $lastMonth->year)
-        ->pluck('date')
-        ->groupBy(function($date) {
-            return Carbon::parse($date)->format('m');
-        });
-
-        foreach ($tanggalGajiBulanKemarin as $key => $value) {
-            $tanggalGajiBulanKemarin = $value;
-        }
+        ->pluck('date');
 
         $listPendapatan = Salary::where('users_id', Auth::user()->id)
             ->where('tipe', 'gaji')
@@ -43,11 +36,11 @@ class DashboardAdminController extends Controller
             ->sum('salary');
 
         $pengeluaran = Finance::where('users_id', Auth::user()->id)
-            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
             ->sum('price');
 
-
         // total pendapatan - pengeluaran
+        // $totalPendapatan = reduce
         $totalPendapatan = $listPendapatan - $pengeluaran;
 
         // monthly report
