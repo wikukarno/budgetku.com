@@ -29,32 +29,23 @@ class DashboardAdminController extends Controller
         ->whereDate('date', '<=', $lastMonth->endOfMonth())
         ->whereYear('date', $lastMonth->year)
         ->pluck('date')
-        ->groupBy(function ($date) {
-            return Carbon::parse($date)->format('m'); // grouping by months
+        ->groupBy(function($date) {
+            return Carbon::parse($date)->format('m');
         });
 
-        // Kumpulkan semua rentang tanggal yang diperlukan
-        $rentangTanggal = [];
-
-        foreach ($tanggalGajiBulanKemarin as $month => $dates) {
-            $startDate = Carbon::parse($dates->first())->startOfMonth()->format('Y-m-d');
-            $endDate = Carbon::parse($dates->last())->endOfMonth()->format('Y-m-d');
-
-            $rentangTanggal[] = [$startDate, $endDate];
+        foreach ($tanggalGajiBulanKemarin as $key => $value) {
+            $tanggalGajiBulanKemarin = $value;
         }
-
-        // Jalankan satu query di luar loop untuk menghitung total pengeluaran
-        foreach ($rentangTanggal as $range) {
-            $pengeluaran += Finance::where('users_id', Auth::user()->id)
-            ->whereBetween('purchase_date', $range)
-            ->sum('price');
-        }
-
 
         $listPendapatan = Salary::where('users_id', Auth::user()->id)
             ->where('tipe', 'gaji')
-            ->whereBetween('date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->whereBetween('date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('m')])
             ->sum('salary');
+
+        $pengeluaran = Finance::where('users_id', Auth::user()->id)
+            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->sum('price');
+
 
         // total pendapatan - pengeluaran
         $totalPendapatan = $listPendapatan - $pengeluaran;
