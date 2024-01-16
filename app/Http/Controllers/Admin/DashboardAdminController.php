@@ -36,7 +36,7 @@ class DashboardAdminController extends Controller
             ->sum('salary');
 
         $pengeluaran = Finance::where('users_id', Auth::user()->id)
-            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin[1], Carbon::now()->endOfMonth()->format('Y-m-d')])
             ->sum('price');
 
         // total pendapatan - pengeluaran
