@@ -38,8 +38,8 @@ class FinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" onclick="updateFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-warning">Edit</button>
+                        <a href="' . route('finance.edit', $item->id) . '" class="btn btn-warning">
+                            Edit
                         </a>
                         <a href="javascript:void(0)" onclick="deleteFinance(' . $item->id . ')">
                             <button type="button" class="btn btn-danger">Delete</button>
@@ -63,7 +63,8 @@ class FinanceController extends Controller
      */
     public function create()
     {
-        return view('admin.finance.create');
+        $categories = CategoryFinance::all();
+        return view('admin.finance.create', compact('categories'));
     }
 
     /**
@@ -72,27 +73,22 @@ class FinanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FinanceRequest $request)
+    public function store(Request $request, Finance $finance)
     {
         try {
-            $data = Finance::updateOrCreate(
-                [
-                    'id' => $request->id_finance
-                ],
-
-                [
-                    'users_id' => Auth::user()->id,
-                    'category_finances_id' => $request->category_finances_id,
-                    'name_item' => $request->name_item,
-                    'price' => str_replace(
-                        ['Rp. ', '.'],
-                        ['', ''],
-                        $request->price
-                    ),
-                    'purchase_date' => $request->purchase_date,
-                    'purchase_by' => $request->purchase_by,
-                ]
-            );
+            $this->authorize('create', $finance);
+            $data = Finance::create([
+                'users_id' => Auth::user()->id,
+                'category_finances_id' => $request->category_finances_id,
+                'name_item' => $request->name_item,
+                'price' => str_replace(
+                    ['Rp. ', '.'],
+                    ['', ''],
+                    $request->price
+                ),
+                'purchase_date' => $request->purchase_date,
+                'purchase_by' => $request->purchase_by,
+            ]);
 
             $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
             
@@ -135,7 +131,9 @@ class FinanceController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Finance::findOrFail($id);
+        $categories = CategoryFinance::all();
+        return view('admin.finance.edit', compact('data', 'categories'));
     }
 
     /**
@@ -145,24 +143,31 @@ class FinanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(FinanceRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $data = [
-            'users_id' => $request->users_id,
-            'category_finances_id' => $request->category_finances_id,
-            'name_item' => $request->name_item,
-            'price' => $request->price,
-            'purchase_date' => $request->purchase_date,
-            'purchase_by' => $request->purchase_by,
-        ];
+        try {
+            $data = Finance::findOrFail($id);
+            $this->authorize('update', $data);
+            $item = $data->update([
+                'users_id' => Auth::user()->id,
+                'category_finances_id' => $request->category_finances_id,
+                'name_item' => $request->name_item,
+                'price' => str_replace(
+                    ['Rp. ', '.'],
+                    ['', ''],
+                    $request->price
+                ),
+                'purchase_date' => $request->purchase_date,
+                'purchase_by' => $request->purchase_by,
+            ]);
 
-        $item = Finance::findOrFail($id);
 
-        $item->update($data);
-
-        if ($item) {
-            return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
-        } else {
+            if ($item) {
+                return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
+            } else {
+                return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+            }
+        } catch (\Throwable $th) {
             return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
         }
     }
@@ -175,13 +180,20 @@ class FinanceController extends Controller
      */
     public function destroy(Request $request)
     {
-        $item = Finance::find($request->id);
-        $item->delete();
+        try {
+            $item = Finance::find($request->id);
+            $this->authorize('delete', $item);
+            $item->delete();
 
-        if ($item) {
-            return redirect()->route('finance.index')->with('success', 'Data berhasil dihapus');
-        } else {
-            return redirect()->route('finance.index')->with('error', 'Data gagal dihapus');
+            return response()->json([
+                'code' => 200,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Data gagal dihapus'
+            ]);
         }
     }
 }

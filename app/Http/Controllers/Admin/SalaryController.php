@@ -130,21 +130,21 @@ class SalaryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = Salary::find($id);
-        $this->authorize('update', $data);
-        $data->users_id = Auth::user()->id;
-        $data->salary = str_replace(
-            ['Rp.', '.'],
-            ['', ''],
-            $request->salary
-        );
-        $data->date = $request->date;
-        $data->description = $request->description;
-        $data->save();
+        try {
+            $data = Salary::find($id);
+            $this->authorize('update', $data);
+            $data->users_id = Auth::user()->id;
+            $data->salary = str_replace(
+                ['Rp.', '.'],
+                ['', ''],
+                $request->salary
+            );
+            $data->date = $request->date;
+            $data->description = $request->description;
+            $data->save();
 
-        if ($data) {
             return redirect()->route('salary.index');
-        } else {
+        } catch (\Throwable $th) {
             return redirect()->route('salary.index');
         }
     }
@@ -157,14 +157,20 @@ class SalaryController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = Salary::find($request->id);
-        $this->authorize('delete', $data);
-        $data->delete();
+        try {
+            $data = Salary::find($request->id);
+            $this->authorize('delete', $data);
+            $data->delete();
 
-        if ($data) {
-            return redirect()->route('salary.index');
-        } else {
-            return redirect()->route('salary.index');
+            return response()->json([
+                'code' => 200,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Data gagal dihapus'
+            ]);
         }
     }
 }

@@ -65,11 +65,19 @@
                     },
                     success: function(res){
                         $('#tb_salary').DataTable().ajax.reload();
-                        Swal.fire(
-                            'Terhapus!',
-                            'Data berhasil dihapus.',
-                            'success'
-                        )
+                        if(res.code == 200){
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Data berhasil dihapus.',
+                                icon: 'success',
+                            });
+                        }else{
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: 'Data gagal dihapus.',
+                                icon: 'error',
+                            });
+                        }
                     },
                     error: function(xhr){
                         Swal.fire({
