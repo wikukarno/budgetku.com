@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -38,6 +39,11 @@ class AuthController extends Controller
                 'email' => 'email|required',
                 'password' => 'required'
             ]);
+
+            // // jika limit login melebihi batas maka abort 429
+            // if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
+            //     return response()->json(['message' => 'Too many login attempts. Please try again later.'], 429);
+            // }
 
             // cek user di database
             $user = User::select('id', 'name', 'email', 'avatar', 'password')->where('email', $request->email)->first();

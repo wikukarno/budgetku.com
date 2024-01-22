@@ -33,8 +33,8 @@ class SalaryController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" onclick="updateSalary(' . $item->id . ')">
-                            <button type="button" class="btn btn-warning">Edit</button>
+                        <a href="'. route('salary.edit', $item->id) .'" class="btn btn-warning">
+                            Edit
                         </a>
                         <a href="javascript:void(0)" onclick="deleteSalary(' . $item->id . ')">
                             <button type="button" class="btn btn-danger">Delete</button>
@@ -64,21 +64,34 @@ class SalaryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SalaryRequest $request)
+    public function store(Request $request, Salary $salary)
     {
-        $data = Salary::updateOrCreate(
-            ['id' => $request->id_salary],
-            [
-                'users_id' => Auth::user()->id,
-                'salary' => str_replace(
-                    ['Rp. ', '.'],
-                    ['', ''],
-                    $request->salary
-                ),
-                'date' => $request->date,
-                'description' => $request->description,
-            ]
-        );
+        $this->authorize('create', $salary);
+        
+        // $data = Salary::updateOrCreate(
+        //     ['id' => $request->id_salary],
+        //     [
+        //         'users_id' => Auth::user()->id,
+        //         'salary' => str_replace(
+        //             ['Rp. ', '.'],
+        //             ['', ''],
+        //             $request->salary
+        //         ),
+        //         'date' => $request->date,
+        //         'description' => $request->description,
+        //     ]
+        // );
+
+        $data = Salary::create([
+            'users_id' => Auth::user()->id,
+            'salary' => str_replace(
+                ['Rp. ', '.'],
+                ['', ''],
+                $request->salary
+            ),
+            'date' => $request->date,
+            'description' => $request->description,
+        ]);
 
         $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
         $data = [
@@ -116,7 +129,10 @@ class SalaryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Salary::find($id);
+        return view('admin.salary.edit', [
+            'data' => $data
+        ]);
     }
 
     /**
@@ -128,7 +144,23 @@ class SalaryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = Salary::find($id);
+        $this->authorize('update', $data);
+        $data->users_id = Auth::user()->id;
+        $data->salary = str_replace(
+            ['Rp. ', '.'],
+            ['', ''],
+            $request->salary
+        );
+        $data->date = $request->date;
+        $data->description = $request->description;
+        $data->save();
+
+        if ($data) {
+            return redirect()->route('salary.index');
+        } else {
+            return redirect()->route('salary.index');
+        }
     }
 
     /**
@@ -140,6 +172,7 @@ class SalaryController extends Controller
     public function destroy(Request $request)
     {
         $data = Salary::find($request->id);
+        $this->authorize('delete', $data);
         $data->delete();
 
         if ($data) {

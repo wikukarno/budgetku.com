@@ -12,7 +12,7 @@
                     <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
                             <h3 class="mb-0">
-                                Rp.{{ number_format($totalPendapatan, 0, ',', '.') }}
+                                Rp.{{ number_format($totalPendapatan, 0, ',', '.') ?? 0 }}
                             </h3>
                             {{-- <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p> --}}
                         </div>

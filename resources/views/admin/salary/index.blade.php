@@ -35,15 +35,78 @@
         </div>
     </div>
 </div>
-@include('admin.salary.components.modal-salary')
 @endsection
 
 
 
 @push('after-scripts')
-@include('admin.salary.components.script')
+<script>
+    function deleteSalary(id){
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Data ini akan dihapus!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus data!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type:"POST",
+                    url: "{{ url('/pages/dashboard/delete/salary') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id:id
+                    },
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $(".preloader").fadeIn();
+                    },
+                    success: function(res){
+                        $('#tb_salary').DataTable().ajax.reload();
+                        Swal.fire(
+                            'Terhapus!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        )
+                    },
+                    error: function(xhr){
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Data gagal dihapus.',
+                            icon: 'error',
+                        });
+                    },
+                    complete: function(){
+                        $(".preloader").fadeOut();
+                    }
+                });
+            }
+        })
+    }
+
+    $('#tb_salary').dataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            type: 'GET',
+            url: "{{ route('salary.index') }}",
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'id'},
+            { data: 'salary', name: 'salary' },
+            { data: 'date', name: 'date' },
+            { data: 'description', name: 'description' },
+            {
+                data: 'action',
+                searchable: false,
+                sortable: false
+            }
+        ]
+    });
+</script>
 @endpush
 
 @push('after-styles')
-@include('admin.salary.components.style')
 @endpush

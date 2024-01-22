@@ -31,10 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // make route with token
 Route::middleware('access-token')
-    ->group(function(){
+    ->group(function () {
         Route::get('portofolios', [PortofoliosController::class, 'all']);
         Route::get('abouts', [AboutsController::class, 'all']);
         Route::get('documents', [DocumentController::class, 'all']);
-        Route::post('login', [AuthController::class, 'login']);
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:3,1');
     });
-
