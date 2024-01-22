@@ -67,20 +67,6 @@ class SalaryController extends Controller
     public function store(Request $request, Salary $salary)
     {
         $this->authorize('create', $salary);
-        
-        // $data = Salary::updateOrCreate(
-        //     ['id' => $request->id_salary],
-        //     [
-        //         'users_id' => Auth::user()->id,
-        //         'salary' => str_replace(
-        //             ['Rp. ', '.'],
-        //             ['', ''],
-        //             $request->salary
-        //         ),
-        //         'date' => $request->date,
-        //         'description' => $request->description,
-        //     ]
-        // );
 
         $data = Salary::create([
             'users_id' => Auth::user()->id,
@@ -148,7 +134,7 @@ class SalaryController extends Controller
         $this->authorize('update', $data);
         $data->users_id = Auth::user()->id;
         $data->salary = str_replace(
-            ['Rp. ', '.'],
+            ['Rp.', '.'],
             ['', ''],
             $request->salary
         );

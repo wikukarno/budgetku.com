@@ -15,7 +15,7 @@
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label for="salary">Uang Masuk</label>
-                                    <input type="text" name="salary" id="salary" class="form-control" value="Rp.{{ number_format($data->salary, 0, ',', '.') }}"
+                                    <input type="text" name="salary" id="salary" class="form-control" value="Rp. {{ number_format($data->salary, 0, ',', '.') }}"
                                         required>
                                 </div>
                             </div>
