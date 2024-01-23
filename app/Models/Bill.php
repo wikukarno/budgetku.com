@@ -19,4 +19,9 @@ class Bill extends Model
         'metode_pembayaran',
         'keterangan_tagihan',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'pemilik_tagihan', 'id');
+    }
 }

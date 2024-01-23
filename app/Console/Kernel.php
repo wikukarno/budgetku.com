@@ -2,32 +2,35 @@
 
 namespace App\Console;
 
+use App\Mail\BillMail;
+use App\Models\Bill;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->command('sendBill')->dailyAt('08:00');
+
+        $billBulanan = Bill::with('user')
+            ->where('siklus_tagihan', 0)
+            ->whereDate('jatuh_tempo_tagihan', Carbon::now()->addDays(1)->toDateString())
+            ->get();
+
+        foreach ($billBulanan as $bill) {
+            $schedule->call(function () use ($bill) {
+                Log::info('Sending email to ' . 'prasetyagama2@gmail.com');
+                Mail::to('prasetyagama2@gmail.com')->send(new BillMail($bill));
+            })->dailyAt('07:00');
+        }
     }
 
-    /**
-     * Register the commands for the application.
-     *
-     * @return void
-     */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
-
+        $this->load(__DIR__ . '/Commands');
         require base_path('routes/console.php');
     }
 }
