@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
             $schedule->call(function () use ($bill) {
                 Log::info('Sending email to ' . 'prasetyagama2@gmail.com');
                 Mail::to('prasetyagama2@gmail.com')->send(new BillMail($bill));
-            })->dailyAt('07:00');
+            })->everyMinute();
         }
     }
 
