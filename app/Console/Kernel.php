@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){
             $billsDueTomorrow = Bill::with('user')
                 ->where('siklus_tagihan', 0)
-                ->whereDate('jatuh_tempo_tagihan', Carbon::now()->addDay(2)->toDateString())
+                ->whereDate('jatuh_tempo_tagihan', Carbon::now())
                 ->get();
 
             foreach ($billsDueTomorrow as $bill) {
