@@ -26,7 +26,19 @@ class Kernel extends ConsoleKernel
         //     })->everyMinute();
         // }
 
-        $schedule->call(function () {
+        // $schedule->call(function () {
+        //     $billsDueTomorrow = Bill::with('user')
+        //         ->where('siklus_tagihan', 0)
+        //         ->whereDate('jatuh_tempo_tagihan', Carbon::now()->addDay(2)->toDateString())
+        //         ->get();
+
+        //     foreach ($billsDueTomorrow as $bill) {
+        //         Log::info('Sending email to prasetyagama2@gmail.com');
+        //         Mail::to('prasetyagama2@gmail.com')->send(new BillMail($bill));
+        //     }
+        // })->everyMinute();
+
+        $schedule->call(function(){
             $billsDueTomorrow = Bill::with('user')
                 ->where('siklus_tagihan', 0)
                 ->whereDate('jatuh_tempo_tagihan', Carbon::now()->addDay(2)->toDateString())
