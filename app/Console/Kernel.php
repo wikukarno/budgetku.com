@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
                 ->get();
 
             foreach ($billsDueTomorrow as $bill) {
+                Log::info('Sending email to prasetyagama2@gmail.com');
                 Mail::to('prasetyagama2@gmail.com')->send(new BillMail($bill));
             }
         })->everyMinute();
