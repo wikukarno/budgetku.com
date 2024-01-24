@@ -1,26 +1,62 @@
-<!-- plugins:js -->
+<script src="{{ asset('assets/js/jquery-3.7.0.min.js') }}"></script>
+
 <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-<!-- endinject -->
-<!-- Plugin js for this page -->
+
 <script src="{{ asset('assets/vendors/chart.js/Chart.min.js') }}"></script>
-<script src="{{ asset('assets/vendors/progressbar.js/progressbar.min.js') }}"></script>
-<script src="{{ asset('assets/vendors/jvectormap/jquery-jvectormap.min.js') }}"></script>
-<script src="{{ asset('assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
-<script src="{{ asset('assets/vendors/owl-carousel-2/owl.carousel.min.js') }}"></script>
+
 <script src="{{ asset('assets/js/jquery.cookie.js') }}" type="text/javascript"></script>
-<!-- End plugin js for this page -->
-<!-- inject:js -->
+
 <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
+
 <script src="{{ asset('assets/js/hoverable-collapse.js') }}"></script>
+
 <script src="{{ asset('assets/js/misc.js') }}"></script>
-<script src="{{ asset('assets/js/settings.js') }}"></script>
-<script src="{{ asset('assets/js/todolist.js') }}"></script>
-<!-- endinject -->
-<!-- Custom js for this page -->
+
 <script src="{{ asset('assets/js/dashboard.js') }}"></script>
-<!-- End custom js for this page -->
+
+<script src="{{ asset('assets/js/todolist.js') }}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
+    integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
+
 <script>
-    function logout(){
-        $('#logoutModal').modal('show');
-    }
+    ClassicEditor
+        .create( document.querySelector( '.ckeditor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
 </script>
+
+{{-- <script>
+    ClassicEditor
+        .create( document.querySelector( '.ckeditor' ) )
+        .then( editor => {
+                console.log( editor );
+        } )
+        .catch( error => {
+                console.error( error );
+        } );
+</script> --}}

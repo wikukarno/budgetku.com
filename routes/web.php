@@ -43,10 +43,10 @@ Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 // fitur amankan akun
 // Route::post('/amankan', [DashboardAdminController::class, 'amankan'])->name('amankan');
 
-Route::prefix('/pages/dashboard')
+Route::prefix('/pages/admin')
     ->middleware(['auth', 'owner'])
     ->group(function () {
-        Route::get('/', [DashboardAdminController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
         Route::post('/ubah-profile', [AccountController::class, 'ubahProfile'])->name('ubah-profile');
         Route::post('/show/finance', [FinanceController::class, 'show']);
         Route::post('/show/kategori', [CategoryFinanceController::class, 'show']);

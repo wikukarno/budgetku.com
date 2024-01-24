@@ -1,148 +1,101 @@
-<!-- partial:partials/_sidebar.html -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
-    <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-        <a class="sidebar-brand brand-logo text-white" href="/" style="text-decoration: none">
-            {{-- <img src="assets/images/logo.svg" alt="logo" /> --}}
-            <b>WIKUKARNO.COM</b>
-        </a>
-        <a class="sidebar-brand brand-logo-mini text-white" href="/">
-            WK
-        </a>
-    </div>
     <ul class="nav">
-        <li class="nav-item profile">
-            <div class="profile-desc">
-                <div class="profile-pic">
-                    <div class="count-indicator">
-                        <img class="img-xs rounded-circle " src="{{ asset('assets/images/bocil2.jpg') }}" alt="">
-                        <span class="count bg-success"></span>
-                    </div>
-                    <div class="profile-name">
-                        <h5 class="mb-0 font-weight-normal">{{ Auth::user()->name }}</h5>
-                        <span>{{ Auth::user()->roles }}</span>
-                    </div>
+        <li class="nav-item nav-profile">
+            <a href="#" class="nav-link">
+                <div class="nav-profile-image">
+                    @if (Auth::user()->foto_profile == null)
+                    <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="image" />
+                    @else
+                    <img src="{{ Storage::url(Auth::user()->foto_profile) }}" alt="image" />
+                    <span class="login-status online"></span>
+                    @endif
                 </div>
-                <a href="#" id="profile-dropdown" data-bs-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
-                <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list"
-                    aria-labelledby="profile-dropdown">
-                    <a href="#" class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-settings text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-onepassword  text-info"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-calendar-today text-success"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
-                        </div>
-                    </a>
+                <div class="nav-profile-text d-flex flex-column">
+                    <span class="font-weight-bold mb-2">{{ Auth::user()->name ?? '' }}</span>
+                    <span class="text-secondary text-small">{{ Auth::user()->roles ?? '' }}</span>
                 </div>
-            </div>
+                <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+            </a>
         </li>
-        <li class="nav-item nav-category">
-            <span class="nav-link">Navigation</span>
-        </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('dashboard') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
+
+
+
+
+
+        @if (Auth::user()->roles == 'Owner')
+        <li class="nav-item {{ (request()->is('pages/admin/dashboard') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('dashboard') }}">
                 <span class="menu-title">Dashboard</span>
+                <i class="mdi mdi-home menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/category-finance') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('category-finance.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
+        <li class="nav-item {{ (request()->is('pages/admin/category') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('category-finance.index') }}">
+                <span class="menu-title">
+                    Category Finance
                 </span>
-                <span class="menu-title">Kategori Keuangan</span>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/bill') ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('pages/admin/bill') ? 'active' : '') }}">
             <a class="nav-link" href="{{ route('bill.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
-                <span class="menu-title">Tagihan</span>
+                <span class="menu-title">Bill</span>
+                <i class="mdi mdi-cash-multiple menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/salary') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('salary.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
-                <span class="menu-title">Uang masuk</span>
+        <li class="nav-item {{ (request()->is('pages/admin/salary') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('salary.index') }}">
+                <span class="menu-title">Salary</span>
+                <i class="mdi mdi mdi-currency-usd menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/finance') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('finance.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
-                <span class="menu-title">Uang keluar</span>
+        <li class="nav-item {{ (request()->is('pages/admin/finance') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('finance.index') }}">
+                <span class="menu-title">Finance</span>
+                <i class="mdi mdi-cash-100 menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/about') ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('pages/admin/about') ? 'active' : '') }}">
             <a class="nav-link" href="{{ route('about.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
-                <span class="menu-title">Tentang</span>
+                <span class="menu-title">About</span>
+                <i class="mdi mdi-information-outline menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/portofolio') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('portofolio.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
+        <li class="nav-item {{ (request()->is('pages/admin/portofolio') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('portofolio.index') }}">
                 <span class="menu-title">Portofolio</span>
+                <i class="mdi mdi-folder-multiple-image menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/document') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('document.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
+        <li class="nav-item {{ (request()->is('pages/admin/document') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('document.index') }}">
                 <span class="menu-title">Document</span>
+                <i class="mdi mdi-folder-multiple-image menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/account') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('account.index') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
-                <span class="menu-title">Profile</span>
+        <li class="nav-item {{ (request()->is('pages/admin/account') ? 'active' : '') }}">
+            <a class="nav-link"
+                href="{{ route('account.index') }}">
+                <span class="menu-title">Account</span>
+                <i class="mdi mdi-account-box-outline menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->is('pages/dashboard/account') ? 'active' : '' }}">
-            <a class="nav-link" href="javascript:void(0)" onclick="logout()">
-                <span class="menu-icon">
-                    <i class="mdi mdi-arrow-left-bold-circle"></i>
-                </span>
-                <span class="menu-title">Keluar</span>
-            </a>
+        <li class="nav-item sidebar-actions">
+            <span class="nav-link d-grid">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-block col btn-lg btn-gradient-primary mt-4">
+                        Keluar
+                    </button>
+                </form>
+            </span>
         </li>
+        @endif
     </ul>
 </nav>
-<!-- partial -->

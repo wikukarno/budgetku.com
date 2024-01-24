@@ -9,7 +9,7 @@
     @include display-flex;
     @include align-items(center);
     padding:15px 15px;
-    font-weight: normal;
+    font-family: $type1-regular;
     font-size: $default-font-size;
 
     i {

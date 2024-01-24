@@ -1,3 +1,13 @@
+var ChartColor = ["#5D62B4", "#54C3BE", "#EF726F", "#F9C446", "rgb(93.0, 98.0, 180.0)", "#21B7EC", "#04BCCC"];
+var primaryColor = getComputedStyle(document.body).getPropertyValue('--primary');
+var secondaryColor = getComputedStyle(document.body).getPropertyValue('--secondary');
+var successColor = getComputedStyle(document.body).getPropertyValue('--success');
+var warningColor = getComputedStyle(document.body).getPropertyValue('--warning');
+var dangerColor = getComputedStyle(document.body).getPropertyValue('--danger');
+var infoColor = getComputedStyle(document.body).getPropertyValue('--info');
+var darkColor = getComputedStyle(document.body).getPropertyValue('--dark');
+var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
+
 (function($) {
   'use strict';
   $(function() {
@@ -10,30 +20,30 @@
     //Add active class to nav-link based on url dynamically
     //Active class can be hard coded directly in html file also as required
 
-    // function addActiveClass(element) {
-    //   if (current === "") {
-    //     //for root url
-    //     if (element.attr('href').indexOf("index.html") !== -1) {
-    //       element.parents('.nav-item').last().addClass('active');
-    //       if (element.parents('.sub-menu').length) {
-    //         element.closest('.collapse').addClass('show');
-    //         element.addClass('active');
-    //       }
-    //     }
-    //   } else {
-    //     //for other url
-    //     if (element.attr('href').indexOf(current) !== -1) {
-    //       element.parents('.nav-item').last().addClass('active');
-    //       if (element.parents('.sub-menu').length) {
-    //         element.closest('.collapse').addClass('show');
-    //         element.addClass('active');
-    //       }
-    //       if (element.parents('.submenu-item').length) {
-    //         element.addClass('active');
-    //       }
-    //     }
-    //   }
-    // }
+    function addActiveClass(element) {
+      if (current === "") {
+        //for root url
+        if (element.attr('href').indexOf("index.html") !== -1) {
+          element.parents('.nav-item').last().addClass('active');
+          if (element.parents('.sub-menu').length) {
+            element.closest('.collapse').addClass('show');
+            element.addClass('active');
+          }
+        }
+      } else {
+        //for other url
+        if (element.attr('href').indexOf(current) !== -1) {
+          element.parents('.nav-item').last().addClass('active');
+          if (element.parents('.sub-menu').length) {
+            element.closest('.collapse').addClass('show');
+            element.addClass('active');
+          }
+          if (element.parents('.submenu-item').length) {
+            element.addClass('active');
+          }
+        }
+      }
+    }
 
     var current = location.pathname.split("/").slice(-1)[0].replace(/^\/|\/$/g, '');
     $('.nav li a', sidebar).each(function() {
@@ -59,12 +69,6 @@
     function applyStyles() {
       //Applying perfect scrollbar
       if (!body.hasClass("rtl")) {
-        if ($('.settings-panel .tab-content .tab-pane.scroll-wrapper').length) {
-          const settingsPanelScroll = new PerfectScrollbar('.settings-panel .tab-content .tab-pane.scroll-wrapper');
-        }
-        if ($('.chats').length) {
-          const chatsScroll = new PerfectScrollbar('.chats');
-        }
         if (body.hasClass("sidebar-fixed")) {
           var fixedSidebarScroll = new PerfectScrollbar('#sidebar .nav');
         }
@@ -106,18 +110,35 @@
         }
       }
     })
-    if ($.cookie('corona-free-banner')!="true") {
+    if ($.cookie('purple-free-banner')!="true") {
       document.querySelector('#proBanner').classList.add('d-flex');
+      document.querySelector('.navbar').classList.remove('fixed-top');
     }
     else {
       document.querySelector('#proBanner').classList.add('d-none');
+      document.querySelector('.navbar').classList.add('fixed-top');
+    }
+    
+    if ($( ".navbar" ).hasClass( "fixed-top" )) {
+      document.querySelector('.page-body-wrapper').classList.remove('pt-0');
+      document.querySelector('.navbar').classList.remove('pt-5');
+    }
+    else {
+      document.querySelector('.page-body-wrapper').classList.add('pt-0');
+      document.querySelector('.navbar').classList.add('pt-5');
+      document.querySelector('.navbar').classList.add('mt-3');
+      
     }
     document.querySelector('#bannerClose').addEventListener('click',function() {
       document.querySelector('#proBanner').classList.add('d-none');
       document.querySelector('#proBanner').classList.remove('d-flex');
+      document.querySelector('.navbar').classList.remove('pt-5');
+      document.querySelector('.navbar').classList.add('fixed-top');
+      document.querySelector('.page-body-wrapper').classList.add('proBanner-padding-top');
+      document.querySelector('.navbar').classList.remove('mt-3');
       var date = new Date();
       date.setTime(date.getTime() + 24 * 60 * 60 * 1000); 
-      $.cookie('corona-free-banner', "true", { expires: date });
+      $.cookie('purple-free-banner', "true", { expires: date });
     });
   });
 })(jQuery);

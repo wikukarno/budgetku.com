@@ -3,7 +3,9 @@
 namespace App\Mail;
 
 use App\Models\Bill;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -21,6 +23,6 @@ class BillMail extends Mailable
     public function build()
     {
         return $this->markdown('emails.bill')
-            ->subject('Notifikasi Uang Keluar');
+            ->subject('Tagihan');
     }
 }
