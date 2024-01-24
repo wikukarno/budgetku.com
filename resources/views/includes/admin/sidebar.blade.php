@@ -24,15 +24,13 @@
 
         @if (Auth::user()->roles == 'Owner')
         <li class="nav-item {{ (request()->is('pages/admin/dashboard') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('dashboard') }}">
+            <a class="nav-link" href="{{ route('dashboard') }}">
                 <span class="menu-title">Dashboard</span>
                 <i class="mdi mdi-home menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/category') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('category-finance.index') }}">
+            <a class="nav-link" href="{{ route('category.index') }}">
                 <span class="menu-title">
                     Category Finance
                 </span>
@@ -46,15 +44,13 @@
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/salary') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('salary.index') }}">
+            <a class="nav-link" href="{{ route('salary.index') }}">
                 <span class="menu-title">Salary</span>
                 <i class="mdi mdi mdi-currency-usd menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/finance') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('finance.index') }}">
+            <a class="nav-link" href="{{ route('finance.index') }}">
                 <span class="menu-title">Finance</span>
                 <i class="mdi mdi-cash-100 menu-icon"></i>
             </a>
@@ -66,22 +62,19 @@
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/portofolio') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('portofolio.index') }}">
+            <a class="nav-link" href="{{ route('portofolio.index') }}">
                 <span class="menu-title">Portofolio</span>
                 <i class="mdi mdi-folder-multiple-image menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/document') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('document.index') }}">
+            <a class="nav-link" href="{{ route('document.index') }}">
                 <span class="menu-title">Document</span>
                 <i class="mdi mdi-folder-multiple-image menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/account') ? 'active' : '') }}">
-            <a class="nav-link"
-                href="{{ route('account.index') }}">
+            <a class="nav-link" href="{{ route('account.index') }}">
                 <span class="menu-title">Account</span>
                 <i class="mdi mdi-account-box-outline menu-icon"></i>
             </a>

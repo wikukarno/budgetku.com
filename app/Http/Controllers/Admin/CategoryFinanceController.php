@@ -72,9 +72,9 @@ class CategoryFinanceController extends Controller
         );
 
         if ($data) {
-            return redirect()->route('category-finance.index')->with('success', 'Data berhasil disimpan');
+            return redirect()->route('category.index')->with('success', 'Data berhasil disimpan');
         } else {
-            return redirect()->route('category-finance.index')->with('error', 'Data gagal disimpan');
+            return redirect()->route('category.index')->with('error', 'Data gagal disimpan');
         }
     }
 

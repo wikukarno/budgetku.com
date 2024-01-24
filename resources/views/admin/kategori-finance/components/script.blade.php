@@ -86,7 +86,7 @@
         
         $.ajax({
             type: 'POST',
-            url: "{{ route('category-finance.store') }}",
+            url: "{{ route('category.store') }}",
             data: formData,
             cache: false,
             contentType: false,
@@ -112,7 +112,7 @@
             serverSide: true,
             ajax: {
                 type: 'get',
-                url: "{{ route('category-finance.index') }}",
+                url: "{{ route('category.index') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'id'},

@@ -64,7 +64,7 @@ Route::prefix('/pages/admin')
         Route::resource('bill', BillController::class);
         Route::resource('salary', SalaryController::class);
         Route::resource('finance', FinanceController::class);
-        Route::resource('category-finance', CategoryFinanceController::class);
+        Route::resource('category', CategoryFinanceController::class);
         Route::resource('account', AccountController::class);
     });
 
