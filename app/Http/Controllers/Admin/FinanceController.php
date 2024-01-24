@@ -73,10 +73,9 @@ class FinanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Finance $finance)
+    public function store(Request $request)
     {
         try {
-            $this->authorize('create', $finance);
             $data = Finance::create([
                 'users_id' => Auth::user()->id,
                 'category_finances_id' => $request->category_finances_id,
@@ -86,11 +85,12 @@ class FinanceController extends Controller
                     ['', ''],
                     $request->price
                 ),
-                'purchase_date' => $request->purchase_date,
-                'purchase_by' => $request->purchase_by,
+                'purchase_date' => $request->purchase_date ?? Carbon::now(),
+                'purchase_by' => $request->purchase_by ?? 'Tunai',
             ]);
 
-            $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
+            // $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
+            $user = User::where('email', 'prasetyagama2@gmail.com')->firstOrFail();
             
             $data = [
                 'finance' => $data,

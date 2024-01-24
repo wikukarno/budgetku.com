@@ -42,19 +42,19 @@
                             <div class="col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="purchase_date">Tanggal Bayar</label>
-                                    <input type="date" name="purchase_date" id="purchase_date" class="form-control" required>
+                                    <input type="date" name="purchase_date" id="purchase_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="name">Metode Pembayaran</label>
                                     <input type="text" name="purchase_by" id="purchase_by" class="form-control"
-                                        placeholder="Kes, gopay, transfer, dll" required>
+                                        placeholder="Tunai, gopay, transfer, dll">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group text-end mt-5">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <a href="{{ route('finance.index') }}" class="btn btn-secondary" data-bs-dismiss="modal">Batal</a>
                             <button type="submit" id="btnSaveKeuangan" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>

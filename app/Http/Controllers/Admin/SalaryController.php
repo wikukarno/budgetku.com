@@ -55,7 +55,7 @@ class SalaryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.salary.create');
     }
 
     /**
