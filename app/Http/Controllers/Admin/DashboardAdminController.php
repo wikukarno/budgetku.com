@@ -23,25 +23,22 @@ class DashboardAdminController extends Controller
 
         $pengeluaran = 0;
 
-        $tanggalGajiBulanKemarin = Salary::where('users_id', $userId)
-        ->where('tipe', 'gaji')
-        ->whereDate('date', '>=', $lastMonth->startOfMonth())
-        ->whereDate('date', '<=', $lastMonth->endOfMonth())
-        ->whereYear('date', $lastMonth->year)
-        ->pluck('date');
+        $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->pluck('date')->toArray();
 
-        $listPendapatan = Salary::where('users_id', Auth::user()->id)
-            ->where('tipe', 'gaji')
-            ->whereBetween('date', [$tanggalGajiBulanKemarin, Carbon::now()->endOfMonth()->format('m')])
+        
+        $salary = Salary::where('users_id', $userId)
+            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
             ->sum('salary');
 
-        $pengeluaran = Finance::where('users_id', Auth::user()->id)
-            ->whereBetween('purchase_date', [$tanggalGajiBulanKemarin[1], Carbon::now()->endOfMonth()->format('Y-m-d')])
+
+        $pengeluaran = Finance::where('users_id', $userId)
+            ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
             ->sum('price');
 
-        // total pendapatan - pengeluaran
-        // $totalPendapatan = reduce
-        $totalPendapatan = $listPendapatan - $pengeluaran;
+
+        $totalPendapatan = $salary - $pengeluaran;
 
         // monthly report
         $monthlyReport = Finance::where('users_id', Auth::user()->id)
@@ -122,9 +119,9 @@ class DashboardAdminController extends Controller
             'keterangan',
             'monthlyBills',
             'yearlyBills',
-            'tanggalGajiBulanKemarin',
             'monthlyReport',
             'previeusYearReport',
+
         ));
     }
 }
