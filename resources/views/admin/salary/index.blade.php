@@ -9,7 +9,7 @@
             <div class="card-header d-lg-flex d-md-flex align-items-center justify-content-between">
                 <h4>Daftar Uang Masuk</h4>
                 <div class="form-group">
-                    <a href="javascript:void(0)" class="btn btn-primary mt-3" onclick="addSalary();"><i
+                    <a href="{{ route('salary.create') }}" class="btn btn-primary mt-3" onclick="addSalary();"><i
                             class="fa-solid fa-circle-plus"></i>
                         &nbsp;
                         Tambah Data</a>
