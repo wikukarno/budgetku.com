@@ -64,10 +64,8 @@ class SalaryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Salary $salary)
+    public function store(Request $request)
     {
-        $this->authorize('create', $salary);
-
         $data = Salary::create([
             'users_id' => Auth::user()->id,
             'salary' => str_replace(
@@ -141,6 +139,7 @@ class SalaryController extends Controller
                 $request->salary
             );
             $data->date = $request->date;
+            $data->tipe = $request->tipe;
             $data->description = $request->description;
             $data->save();
 
