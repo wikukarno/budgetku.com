@@ -76,6 +76,7 @@ class SalaryController extends Controller
                 $request->salary
             ),
             'date' => $request->date,
+            'tipe' => $request->tipe,
             'description' => $request->description,
         ]);
 

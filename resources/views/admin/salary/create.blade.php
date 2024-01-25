@@ -28,6 +28,20 @@
                         <div class="row">
                             <div class="col-12 col-lg-12">
                                 <div class="form-group">
+                                    <label for="salary">Uang Masuk</label>
+                                    <select name="tipe" id="tipe" class="form-select">
+                                        <option value="gaji">Gaji</option>
+                                        <option value="saham">Saham</option>
+                                        <option value="thr">THR</option>
+                                        <option value="bonus">Bonus</option>
+                                        <option value="tambahan">Uang Tambahan</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <div class="form-group">
                                     <label for="description">Keterangan</label>
                                     <input type="text" name="description" id="description" class="form-control" required>
                                 </div>
