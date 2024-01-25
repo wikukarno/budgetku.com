@@ -18,10 +18,13 @@ class BillController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Bill::query();
+            $query = Bill::with('user')->where('users_id', auth()->user()->id)->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->editColumn('pemilik_tagihan', function ($item) {
+                    return $item->user->name;
+                })
                 ->editColumn('harga_tagihan', function ($item) {
                     return 'Rp.' . number_format($item->harga_tagihan, 0, ',', '.');
                 })

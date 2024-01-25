@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 col-lg-12">
         <div class="card">
             <div class="card-header d-lg-flex d-md-flex align-items-center justify-content-between">
                 <h4>Daftar Tagihan Bulanan & Tahunan</h4>
@@ -38,7 +38,6 @@
         </div>
     </div>
 </div>
-@include('admin.bill.components.modal-bill')
 @endsection
 
 

@@ -22,6 +22,6 @@ class Bill extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'pemilik_tagihan', 'id');
+        return $this->belongsTo(User::class, 'users_id', 'id');
     }
 }

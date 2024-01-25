@@ -49,7 +49,7 @@
                             <div class="col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="purchase_date">Tanggal Bayar</label>
-                                    <input type="date" name="purchase_date" id="purchase_date" class="form-control" value="{{ $data->purchase_date }}" required>
+                                    <input type="text" name="purchase_date" id="date" class="form-control" value="{{ $data->purchase_date }}" required>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-4">

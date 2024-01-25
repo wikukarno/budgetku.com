@@ -53,8 +53,8 @@
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                                 <label for="jatuh_tempo_tagihan">Jatuh Tempo Tagihan</label>
-                                <input class="form-control" type="date" name="jatuh_tempo_tagihan"
-                                    id="jatuh_tempo_tagihan" value="{{ \Carbon\Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat(
+                                <input class="form-control" type="text" name="jatuh_tempo_tagihan"
+                                    id="date" value="{{ \Carbon\Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat(
                                     'YYYY-MM-DD') }}">
                             </div>
                         </div>

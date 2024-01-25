@@ -21,7 +21,7 @@
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
                                     <label for="date">Tanggal</label>
-                                    <input type="date" name="date" id="date" class="form-control" required>
+                                    <input type="text" name="date" id="date" class="form-control" required>
                                 </div>
                             </div>
                         </div>
