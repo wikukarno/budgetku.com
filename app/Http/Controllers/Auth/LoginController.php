@@ -34,7 +34,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/pages/dashboard';
+    protected $redirectTo = '/pages/admin/dashboard';
 
     public function redirectToProvider()
     {
@@ -60,7 +60,7 @@ class LoginController extends Controller
             // Mail::to(
             //     $findUser->email
             // )->send(new Login($findUser));
-            return redirect()->intended('pages/dashboard');
+            return redirect()->intended('pages/admin/dashboard');
         } else {
             return redirect()->route('login');
         }
