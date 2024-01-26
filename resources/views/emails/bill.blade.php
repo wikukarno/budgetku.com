@@ -1,19 +1,27 @@
 <x-mail::message>
-    # Halo, {{ $bill->pemilik_tagihan }}!
+    # Halo, Pelanggan!
 
     Ini adalah pengingat bahwa tagihan bulanan Anda sudah tersedia.
+    dan akan jatuh tempo pada tanggal {{ $due_date }}.
 
-    **Detail Tagihan:**
-    - **Nama Tagihan:** {{ $bill->nama_tagihan }}
-    - **Jumlah Tagihan:** Rp. {{ number_format($bill->harga_tagihan, 0, ',', '.') }}
-    - **Tanggal Jatuh Tempo:** {{ \Carbon\Carbon::parse($bill->jatuh_tempo_tagihan)->isoFormat('dddd, D MMMM Y') }}
+    <x-slot:subcopy>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($bills as $bill)
+                    <tr>
+                        <td>{{ $bill->nama_tagihan }}</td>
+                        <td>Rp. {{ number_format($bill->harga_tagihan, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </x-slot:subcopy>
 
-    Mohon lakukan pembayaran sebelum tanggal jatuh tempo untuk menghindari denda keterlambatan.
-
-    Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi kami.
-
-    Terima kasih atas perhatian Anda.
-
-    Salam,
-    Tim {{ config('app.name') }}
+    {{-- Salam, Tim {{ config('app.name') }} --}}
 </x-mail::message>
