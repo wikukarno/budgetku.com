@@ -7,6 +7,7 @@ use App\Http\Requests\BillRequest;
 use App\Models\Bill;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BillController extends Controller
 {
@@ -77,7 +78,7 @@ class BillController extends Controller
                 ['Rp', '.'], ['', ''], 
                 $request->harga_tagihan
             ),
-            'pemilik_tagihan' => $request->pemilik_tagihan,
+            'users_id' => Auth::user()->id,
             'siklus_tagihan' => $request->siklus_tagihan,
             'jatuh_tempo_tagihan' => $request->jatuh_tempo_tagihan,
             'metode_pembayaran' => $request->metode_pembayaran,
@@ -128,7 +129,7 @@ class BillController extends Controller
                 ['', ''],
                 $request->harga_tagihan
             ),
-            'pemilik_tagihan' => $request->pemilik_tagihan,
+            'users_id' => Auth::user()->id,
             'siklus_tagihan' => $request->siklus_tagihan,
             'jatuh_tempo_tagihan' => $request->jatuh_tempo_tagihan,
             'metode_pembayaran' => $request->metode_pembayaran,
