@@ -21,7 +21,6 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Pemilik Tagihan</th>
                                 <th>Nama</th>
                                 <th>Harga</th>
                                 <th>Siklus</th>

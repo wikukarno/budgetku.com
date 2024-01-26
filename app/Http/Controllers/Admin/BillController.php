@@ -23,9 +23,6 @@ class BillController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('pemilik_tagihan', function ($item) {
-                    return $item->user->name;
-                })
                 ->editColumn('harga_tagihan', function ($item) {
                     return 'Rp.' . number_format($item->harga_tagihan, 0, ',', '.');
                 })
@@ -40,10 +37,11 @@ class BillController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="'. route('bill.edit', $item->id) .'" class="btn btn-warning">Edit
+                        <a href="'. route('bill.edit', $item->id) .'" class="btn btn-warning btn-sm">
+                            <i class="fa fa-pencil-alt"></i>
                         </a>
-                        <a href="javascript:void(0)" onclick="deleteBill(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                        <a href="javascript:void(0)" onclick="deleteBill(' . $item->id . ')" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i>
                         </a>
                     ';
                 })

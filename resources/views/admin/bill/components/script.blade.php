@@ -1,6 +1,3 @@
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
 
@@ -51,7 +48,6 @@
         },
         columns: [
             { data: 'DT_RowIndex', name: 'id'},
-            { data: 'pemilik_tagihan', name: 'pemilik_tagihan' },
             { data: 'nama_tagihan', name: 'nama_tagihan' },
             { data: 'harga_tagihan', name: 'harga_tagihan' },
             { data: 'siklus_tagihan', name: 'siklus_tagihan' },
