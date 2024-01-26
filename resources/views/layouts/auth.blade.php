@@ -8,13 +8,13 @@
     <title>
         Administrator Of Wiku Karno
     </title>
-    @include('includes.auth.styles')
+    @include('includes.admin.styles')
 </head>
 
 <body class="">
     <main class="main-content  mt-0">
         @yield('content')
-        @include('includes.auth.scripts')
+        @include('includes.admin.scripts')
     </main>
 </body>
 

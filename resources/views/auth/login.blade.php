@@ -30,10 +30,10 @@
                                 <label>Password *</label>
                                 <input type="password" name="password" class="form-control p_input">
                             </div>
-                            <div class="text-center d-grid">
+                            <div class="text-center d-grid mb-3">
                                 <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
                             </div>
-                            <div class="d-grid">
+                            <div class="d-grid mb-3">
                                 <a href="{{ url('/auth/redirect') }}" class="btn btn-google btn-lg col">
                                     <i class="mdi mdi-google-plus"></i> Google </a>
                             </div>
