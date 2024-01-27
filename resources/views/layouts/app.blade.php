@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="container-scroller">
+    {{-- <div class="container-scroller"> --}}
 
         @include('includes.admin.navbar')
         <!-- partial -->
@@ -32,7 +32,7 @@
             <!-- main-panel ends -->
         </div>
         <!-- page-body-wrapper ends -->
-    </div>
+    {{-- </div> --}}
     <!-- container-scroller -->
     @stack('before-scripts')
     @include('includes.admin.scripts')
