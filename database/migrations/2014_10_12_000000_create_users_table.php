@@ -19,11 +19,13 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('roles')->default('user'); //make new field roles and give it value user by default
             $table->string('avatar')->nullable(); // path of avatar
+            $table->string('api_token')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 
