@@ -22,7 +22,7 @@ class BillMail extends Mailable
 
     public function build()
     {
-        $due_date = Carbon::now()->addDay()->format('Y-m-d'); // Mendapatkan tanggal untuk hari berikutnya
+        $due_date = Carbon::now()->addDay(2)->format('Y-m-d'); // Mendapatkan tanggal untuk hari berikutnya
         return $this->markdown('emails.bill')
         ->subject('Tagihan')
         ->with([

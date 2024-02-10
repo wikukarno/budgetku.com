@@ -19,40 +19,40 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
 
             $bills = Bill::select('jatuh_tempo_tagihan')
-            ->where('siklus_tagihan', 0)
-            ->get();
+                ->where('siklus_tagihan', 0)
+                ->get();
 
             $billDates = $bills->pluck('jatuh_tempo_tagihan')->map(function ($date) {
                 // Mengurangi satu hari dari tanggal jatuh tempo
-                return Carbon::parse($date)->subDay()->format('Y-m-d');
+                return Carbon::parse($date)->subDay(2)->format('d');
             });
 
             $uniqueDates = $billDates->unique();
 
             // Mendapatkan tanggal hari ini
-            $today = Carbon::now()->format('Y-m-d');
+            $today = Carbon::now()->format('d');
 
             foreach ($uniqueDates as $date) {
-                if ($date == $today) {
-                    $dueDate = Carbon::parse($date)->addDay()->format('Y-m-d');
+                try {
+                    if ($date == $today) {
 
-                    // Ambil semua tagihan yang jatuh tempo pada tanggal tersebut
-                    $billsDueTomorrow = Bill::with('user')
-                        ->where('siklus_tagihan', 0)
-                        ->whereDate('jatuh_tempo_tagihan', $dueDate)
-                        ->get();
+                        $dueDate = date('d', strtotime('+2 days'));
 
-                    if ($billsDueTomorrow->isNotEmpty()) {
-                        // kirim log
-                        Log::info('Sending email to prasetyagama2@gmail.com' . $dueDate);
-                        // Kirim email
-                        Mail::to('prasetyagama2@gmail.com')->send(new BillMail($billsDueTomorrow));
-                    }else{
-                        Log::info('Tidak ada tagihan yang jatuh tempo pada tanggal ' . $dueDate);
+                        // Ambil semua tagihan yang jatuh tempo pada tanggal tersebut
+                        $billsDueTomorrow = Bill::with('user')
+                            ->where('siklus_tagihan', 0)
+                            ->whereDay('jatuh_tempo_tagihan', $dueDate)
+                            ->get();
+
+                        if ($billsDueTomorrow->isNotEmpty()) {
+                            // Kirim email
+                            Mail::to('prasetyagama2@gmail.com')->send(new BillMail($billsDueTomorrow));
+                        }
                     }
+                } catch (\Throwable $th) {
+                    Log::error($th);
                 }
             }
-
         })->dailyAt('07:00')->timezone('Asia/Jakarta');
     }
 
