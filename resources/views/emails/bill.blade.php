@@ -1,5 +1,5 @@
 <x-mail::message>
-    # Halo, Pelanggan!
+    # Halo, {{ $user->name }}!
 
     Ini adalah pengingat bahwa tagihan bulanan Anda sudah tersedia.
     dan akan jatuh tempo pada tanggal {{ $due_date }}.
@@ -23,5 +23,5 @@
         </table>
     </x-slot:subcopy>
 
-    {{-- Salam, Tim {{ config('app.name') }} --}}
+    Salam, Tim {{ config('app.name') }}
 </x-mail::message>

@@ -23,11 +23,13 @@ class BillMail extends Mailable
     public function build()
     {
         $due_date = Carbon::now()->addDay(2)->format('Y-m-d'); // Mendapatkan tanggal untuk hari berikutnya
+        $user = $this->bills->first()->user; // Mengambil user pertama dari tagihan
         return $this->markdown('emails.bill')
         ->subject('Tagihan')
         ->with([
             'bills' => $this->bills,
             'due_date' => $due_date,
+            'user' => $user
         ]);
     }
 }
