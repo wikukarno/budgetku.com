@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class BillMail extends Mailable
 {
@@ -22,14 +23,16 @@ class BillMail extends Mailable
 
     public function build()
     {
-        $due_date = Carbon::now()->addDay(2)->format('Y-m-d'); // Mendapatkan tanggal untuk hari berikutnya
+
+        $due_date = Carbon::parse($this->bills->first()->jatuh_tempo_tagihan)->isoFormat('dddd, D MMMM Y');
+        
         $user = $this->bills->first()->user; // Mengambil user pertama dari tagihan
         return $this->markdown('emails.bill')
-        ->subject('Tagihan')
-        ->with([
-            'bills' => $this->bills,
-            'due_date' => $due_date,
-            'user' => $user
-        ]);
+            ->subject('Tagihan')
+            ->with([
+                'bills' => $this->bills,
+                'due_date' => $due_date, // Mengirim tanggal jatuh tempo ke view
+                'user' => $user
+            ]);
     }
 }
