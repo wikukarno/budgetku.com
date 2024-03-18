@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // make route with token
 Route::middleware('access-token')
     ->group(function () {
+        Route::get('email_checkers', [AuthController::class, 'checkEmail']);
         Route::get('portofolios', [PortofoliosController::class, 'all']);
         Route::get('abouts', [AboutsController::class, 'all']);
         Route::get('documents', [DocumentController::class, 'all']);

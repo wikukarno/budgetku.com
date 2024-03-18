@@ -99,4 +99,26 @@ class AuthController extends Controller
             return response()->json(['message' => $th->getMessage()], 500);
         }
     }
+
+    public function checkEmail(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'email|required'
+            ]);
+
+            $user = User::select('email')->where('email', $request->email)->first();
+
+            if (!$user) {
+                return response()->json(['message' => 'Email not found'], 404);
+            }
+
+            return response()->json([
+                'message' => 'Email found',
+                'data' => $user
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage()], 500);
+        }
+    }
 }

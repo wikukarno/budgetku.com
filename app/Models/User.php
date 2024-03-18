@@ -26,7 +26,7 @@ class User extends Authenticatable
         'last_login_ip',
         'telegram_id',
         'telegram_username',
-        'auth_token'
+        'auth_token',
     ];
 
     /**
