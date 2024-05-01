@@ -3,7 +3,18 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
+<div class="row">
+    <div class="col-12 col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h3>
+                    Expenses Tracker
+                </h3>
+                <div class="barChartExpenses" id="barChartExpenses"></div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
         <div class="card">
@@ -181,36 +192,74 @@
         </div>
     </div>
 </div>
-
-
-<div class="row ">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Data Tagihan</h4>
-                <div class="table-responsive">
-                    <table id="tb_tagihan" class="table table-hover scroll-horizontal-vertical w-100">
-                        <thead>
-                            <tr>
-                                <th> No </th>
-                                <th> Nama Tagihan </th>
-                                <th> Harga Tagihan </th>
-                                <th> Jatuh Tempo </th>
-                                <th> Siklus </th>
-                                <th> Tipe Pembayaran </th>
-                                <th> Aksi & Status </th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('after-scripts')
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        let monthlyExpenses = {!! json_encode($laporanBulananTahunIni) !!};
+        console.log(monthlyExpenses);
+        
+        // Inisialisasi array dengan 12 nol untuk setiap bulan di tahun ini
+        let expenseData = Array(12).fill(0);
+        
+        // Isi data dengan total pengeluaran dari database
+        monthlyExpenses.forEach(expense => {
+        // Indeks array 0 adalah Januari, sehingga perlu dikurangi 1 dari bulan (1-12)
+        expenseData[expense.month - 1] = expense.total;
+        });
+
+        var options = {
+            series: [{
+                data: expenseData
+            }],
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    borderRadiusApplication: 'end',
+                    horizontal: true,
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            tooltip: {
+                y: {
+                    title: {
+                        formatter: function(val) {
+                            return ''
+                        }
+                    },
+                    formatter: function(val) {
+                        return 'Rp.' + val.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    }
+                }
+            },
+            xaxis: {
+                categories: [
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ],
+                labels: {
+                    formatter: function(val) {
+                        return 'Rp.' + val.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#barChartExpenses"), options);
+        chart.render();
+    </script>
+
+
+
+
+
     <script>
         $('#tb_tagihan').dataTable({
             processing: true,

@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardAdminController extends Controller
 {
@@ -82,6 +83,13 @@ class DashboardAdminController extends Controller
 
         $portofolios = Portofolio::count();
 
+        $laporanBulananTahunIni = Finance::where('users_id', Auth::user()->id)
+        ->whereYear('purchase_date', Carbon::now()->format('Y'))
+        ->select(DB::raw('MONTH(purchase_date) as month'), DB::raw('sum(price) as total'))
+        ->groupBy(DB::raw('MONTH(purchase_date)'))
+        ->orderBy('month')
+        ->get();
+
         if (request()->ajax()) {
             $query = Bill::where('siklus_tagihan', 0);
 
@@ -125,7 +133,8 @@ class DashboardAdminController extends Controller
             'yearlyBills',
             'monthlyReport',
             'previeusYearReport',
-
+            'laporanTahunan',
+            'laporanBulananTahunIni'
         ));
     }
 }
