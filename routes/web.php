@@ -55,7 +55,7 @@ Route::prefix('/pages/admin')
         Route::post('/show/salary', [SalaryController::class, 'show']);
         Route::post('/delete/salary', [SalaryController::class, 'destroy']);
 
-        Route::post('/delete/bill', [BillController::class, 'destroy']);
+        Route::post('/delete/bill', [BillController::class, 'destroy'])->name('delete-tagihan');
 
 
         Route::resource('about', AboutController::class);

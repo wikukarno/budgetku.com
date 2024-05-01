@@ -145,7 +145,7 @@ class BillController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = Bill::findOrFail($request->id);
+        $data = Bill::find($request->id);
         $data->delete();
 
         return redirect()->route('bill.index')->with('success', 'Data berhasil dihapus');

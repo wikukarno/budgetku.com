@@ -13,8 +13,8 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    type:"POST",
-                    url: "{{ url('/pages/dashboard/delete/bill') }}",
+                    type: "POST",
+                    url: "{{ route('delete-tagihan') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id:id
@@ -42,10 +42,7 @@
     $('#tb_bill').dataTable({
         processing: true,
         serverSide: true,
-        ajax: {
-            type: 'GET',
-            url: "{{ route('bill.index') }}",
-        },
+        url: '{!! url()->current() !!}',
         columns: [
             { data: 'DT_RowIndex', name: 'id'},
             { data: 'nama_tagihan', name: 'nama_tagihan' },

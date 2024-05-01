@@ -13,13 +13,7 @@
                 <form action="{{ route('bill.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="pemilik_tagihan">Pemilik Tagihan</label>
-                                <input class="form-control" type="text" name="pemilik_tagihan" id="pemilik_tagihan" placeholder="Wiku Karno">
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-12">
                             <div class="form-group">
                                 <label for="nama_tagihan">Nama Tagihan</label>
                                 <input class="form-control" type="text" name="nama_tagihan" id="nama_tagihan" placeholder="Pajak Kendaraan">

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->string('pemilik_tagihan');
+            $table->string('users_id');
             $table->string('nama_tagihan')->unique();
             $table->string('harga_tagihan');
             $table->string('siklus_tagihan');

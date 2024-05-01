@@ -11,6 +11,7 @@ class Bill extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'users_id',
         'nama_tagihan',
         'harga_tagihan',
         'pemilik_tagihan', 
