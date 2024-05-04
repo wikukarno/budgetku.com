@@ -90,6 +90,8 @@ class DashboardAdminController extends Controller
         ->orderBy('month')
         ->get();
 
+        $kategoriBucin = Finance::where('category_finances_id', 31)->sum('price');
+
         if (request()->ajax()) {
             $query = Bill::where('siklus_tagihan', 0);
 
@@ -119,7 +121,7 @@ class DashboardAdminController extends Controller
                 ->rawColumns(['action', 'date', 'salary'])
                 ->make(true);
         }
-        
+
         return view('admin.dashboard', compact(
             'portofolios',
             'totalPendapatan',
@@ -134,7 +136,8 @@ class DashboardAdminController extends Controller
             'monthlyReport',
             'previeusYearReport',
             'laporanTahunan',
-            'laporanBulananTahunIni'
+            'laporanBulananTahunIni',
+            'kategoriBucin'
         ));
     }
 }
