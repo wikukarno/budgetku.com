@@ -83,7 +83,7 @@
                     </div> --}}
                 </div>
                 <h6 class="text-muted font-weight-normal">
-                    Total Pengeluran Bucin
+                    Total Pengeluran Selama Bucin
                 </h6>
             </div>
         </div>
