@@ -89,7 +89,7 @@ class FinanceController extends Controller
                 'purchase_by' => $request->purchase_by ?? 'Tunai',
             ]);
 
-            $user = User::where('email', 'prasetyagama2@gmail.com')->firstOrFail();
+            $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
             
             $data = [
                 'finance' => $data,
