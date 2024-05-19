@@ -57,6 +57,8 @@ Route::prefix('/pages/admin')
 
         Route::post('/delete/bill', [BillController::class, 'destroy'])->name('delete-tagihan');
 
+        Route::delete('/finance/delete', [FinanceController::class, 'destroy'])->name('delete-finance');
+
 
         Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
