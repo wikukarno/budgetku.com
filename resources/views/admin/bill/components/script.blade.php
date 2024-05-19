@@ -13,8 +13,8 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    type: "POST",
-                    url: "{{ route('delete-tagihan') }}",
+                    type: "DELETE",
+                    url: "{{ route('delete-bill') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id:id
@@ -24,12 +24,13 @@
                         $(".preloader").fadeIn();
                     },
                     success: function(res){
-                        $('#tb_bill').DataTable().ajax.reload();
+                        console.log(res);
                         Swal.fire(
                             'Terhapus!',
                             'Data berhasil dihapus.',
                             'success'
                         )
+                        $('#tb_bill').DataTable().ajax.reload();
                     },
                     complete: function(){
                         $(".preloader").fadeOut();

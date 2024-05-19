@@ -148,6 +148,6 @@ class BillController extends Controller
         $data = Bill::find($request->id);
         $data->delete();
 
-        return redirect()->route('bill.index')->with('success', 'Data berhasil dihapus');
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 }

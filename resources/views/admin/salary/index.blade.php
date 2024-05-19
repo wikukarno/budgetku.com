@@ -53,8 +53,8 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    type:"POST",
-                    url: "{{ url('/pages/dashboard/delete/salary') }}",
+                    type:"DELETE",
+                    url: "{{ route('delete-salary') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id:id

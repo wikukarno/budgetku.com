@@ -53,12 +53,11 @@ Route::prefix('/pages/admin')
         Route::post('/delete/kategori', [CategoryFinanceController::class, 'destroy']);
         Route::post('/delete/finance', [FinanceController::class, 'destroy']);
         Route::post('/show/salary', [SalaryController::class, 'show']);
-        Route::post('/delete/salary', [SalaryController::class, 'destroy']);
 
-        Route::post('/delete/bill', [BillController::class, 'destroy'])->name('delete-tagihan');
-
+        
+        Route::delete('/bill/delete', [BillController::class, 'destroy'])->name('delete-bill');
         Route::delete('/finance/delete', [FinanceController::class, 'destroy'])->name('delete-finance');
-
+        Route::delete('/salary/delete', [SalaryController::class, 'destroy'])->name('delete-salary');
 
         Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
