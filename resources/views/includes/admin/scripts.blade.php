@@ -41,6 +41,8 @@
 
 <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 <script>
     ClassicEditor
         .create( document.querySelector( '.ckeditor' ) )

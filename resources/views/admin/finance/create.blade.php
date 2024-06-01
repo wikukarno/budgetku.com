@@ -69,6 +69,13 @@
 
 @push('after-scripts')
 <script>
+
+    var selectKategori = document.getElementById('category_finances_id');
+    var choices = new Choices(selectKategori, {
+        searchEnabled: true,
+        itemSelectText: '',
+    });
+
     function formatRupiah(angka, prefix){
         var number_string = angka.replace(/[^,\d]/g, '').toString(),
             split   		= number_string.split(','),
