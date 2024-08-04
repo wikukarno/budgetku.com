@@ -9,16 +9,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.2.16",
-        "barryvdh/laravel-dompdf": "^2.0",
-        "guzzlehttp/guzzle": "^7.2",
-        "intervention/image": "^2.7",
-        "laravel/framework": "^11.0.3",
+        "guzzlehttp/guzzle": "^7.9",
+        "intervention/image": "^3.7",
+        "laravel/framework": "^10.3",
         "laravel/sanctum": "*",
-        "laravel/socialite": "^5.5",
-        "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.0",
-        "sentry/sentry-laravel": "^4.1",
-        "yajra/laravel-datatables-oracle": "^11.0"
+        "laravel/socialite": "^5.15",
+        "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.5",
+        "sentry/sentry-laravel": "*",
+        "yajra/laravel-datatables-oracle": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -70,6 +69,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
