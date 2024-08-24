@@ -26,10 +26,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return abort(403, 'Forbidden');
-});
-
-Route::get('/keuanganku', function () {
+    // return abort(403, 'Forbidden');
     return view('auth.login');
 })->name('keuangan');
 

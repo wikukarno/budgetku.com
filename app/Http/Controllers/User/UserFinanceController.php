@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FinanceRequest;
 use App\Jobs\ProcessUangKeluarEmail;
-use App\Jobs\ProcessUangMasukEmail;
-use App\Mail\UangKeluar;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Symfony\Component\Process\Process;
 
-class FinanceController extends Controller
+class UserFinanceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -51,7 +46,7 @@ class FinanceController extends Controller
         }
 
         $categories = CategoryFinance::all();
-        return view('admin.finance.index', [
+        return view('user.finance.index', [
             'categories' => $categories
         ]);
     }
@@ -64,7 +59,7 @@ class FinanceController extends Controller
     public function create()
     {
         $categories = CategoryFinance::all();
-        return view('admin.finance.create', compact('categories'));
+        return view('user.finance.create', compact('categories'));
     }
 
     /**
@@ -90,8 +85,8 @@ class FinanceController extends Controller
                 'bukti_pembayaran' => $request->file('bukti_pembayaran')->store('assets/bukti-pembayaran', 'public'),
             ]);
 
-            $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
-            
+            $user = User::where('email', Auth::user()->email)->firstOrFail();
+
             $data = [
                 'finance' => $data,
                 'user' => $user
@@ -133,7 +128,7 @@ class FinanceController extends Controller
     {
         $data = Finance::findOrFail($id);
         $categories = CategoryFinance::all();
-        return view('admin.finance.edit', compact('data', 'categories'));
+        return view('user.finance.edit', compact('data', 'categories'));
     }
 
     /**
