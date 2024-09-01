@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SalaryController extends Controller
 {
@@ -87,11 +88,7 @@ class SalaryController extends Controller
             $data
         );
 
-        if ($data) {
-            return redirect()->route('salary.index');
-        } else {
-            return redirect()->route('salary.index');
-        }
+        return redirect()->route('salary.index');
     }
 
     /**
