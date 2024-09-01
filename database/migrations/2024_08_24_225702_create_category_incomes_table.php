@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('category_incomes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('users_id');
+            $table->string('name_category_incomes');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
