@@ -17,6 +17,7 @@ class Finance extends Model
         'price',
         'purchase_date',
         'purchase_by',
+        'bukti_pembayaran',
     ];
 
     public function user()
