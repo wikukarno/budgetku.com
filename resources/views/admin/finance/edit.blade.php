@@ -60,6 +60,27 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if ($data->bukti_pembayaran)
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <div class="form-group">
+                                    <img src="{{ Storage::url($data->bukti_pembayaran) }}" class="w-100 h-100 img-fluid thumbnail-img" alt="Bukti Pembayaran">
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="bukti_pembayaran">
+                                        File Bukti Pembayaran (opsional)
+                                    </label>
+                                    <input type="file" class="form-control form-control-lg" name="bukti_pembayaran" id="bukti_pembayaran">
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group text-end mt-5">
                             <a href="{{ route('finance.index') }}" class="btn btn-secondary">Batal</a>
                             <button type="submit" id="btnSaveKeuangan" class="btn btn-primary">Simpan</button>

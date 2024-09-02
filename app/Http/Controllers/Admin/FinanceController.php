@@ -13,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Process\Process;
 
@@ -76,6 +77,18 @@ class FinanceController extends Controller
     public function store(Request $request)
     {
         try {
+
+            if($request->hasFile('bukti_pembayaran')) {
+                $request->validate([
+                    'bukti_pembayaran' => 'image|mimes:jpeg,png,jpg|max:2048',
+                ]);
+
+                $bukti_pembayaran = $request->file('bukti_pembayaran')->store('assets/bukti-pembayaran', 'public');
+
+            }else{
+                $bukti_pembayaran = null;
+            }
+
             $data = Finance::create([
                 'users_id' => Auth::user()->id,
                 'category_finances_id' => $request->category_finances_id,
@@ -87,7 +100,7 @@ class FinanceController extends Controller
                 ),
                 'purchase_date' => $request->purchase_date ?? Carbon::now(),
                 'purchase_by' => $request->purchase_by ?? 'Tunai',
-                'bukti_pembayaran' => $request->file('bukti_pembayaran')->store('assets/bukti-pembayaran', 'public'),
+                'bukti_pembayaran' => $bukti_pembayaran
             ]);
 
             $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();

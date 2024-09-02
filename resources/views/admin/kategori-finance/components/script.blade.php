@@ -13,6 +13,7 @@
     }
 
     function updateKategoriFinance(id){
+        console.log(id);
         $('#form-tambah-kategori-finance').trigger('reset');
         $('#categoryFinanceModal').modal('show');
         $('#categoryFinanceModalLabel').html('Update Kategori Keuangan');
@@ -22,7 +23,7 @@
         
         $.ajax({
             type:"POST",
-            url: "{{ url('/pages/dashboard/show/kategori') }}",
+            url: "{{ url('/pages/admin/kategori/finance/show') }}",
             data: {
                 "_token": "{{ csrf_token() }}",
                 id:id
@@ -54,8 +55,8 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    type:"POST",
-                    url: "{{ url('/pages/dashboard/delete/kategori') }}",
+                    type:"DELETE",
+                    url: "{{ url('/pages/admin/kategori/finance/delete') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id:id

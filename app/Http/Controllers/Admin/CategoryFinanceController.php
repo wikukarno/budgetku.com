@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryFinanceRequest;
 use App\Models\CategoryFinance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CategoryFinanceController extends Controller
 {
@@ -17,7 +19,7 @@ class CategoryFinanceController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryFinance::query();
+            $query = CategoryFinance::where('users_id', Auth::id())->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -62,11 +64,13 @@ class CategoryFinanceController extends Controller
      */
     public function store(CategoryFinanceRequest $request)
     {
+
         $data = CategoryFinance::updateOrCreate(
             [
                 'id' => $request->id_category_finance
             ],
             [
+                'users_id' => Auth::id(),
                 'name_category_finances' => $request->name_category_finances,
             ]
         );
@@ -87,6 +91,7 @@ class CategoryFinanceController extends Controller
     public function show(Request $request)
     {
         $data = CategoryFinance::find($request->id);
+        Log::info($data);
         return response()->json($data);
     }
 

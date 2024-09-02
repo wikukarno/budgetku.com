@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('finance.store') }}" method="POST">
+                <form action="{{ route('finance.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="container">
                         <div class="row">
@@ -50,6 +50,16 @@
                                     <label for="name">Metode Pembayaran</label>
                                     <input type="text" name="purchase_by" id="purchase_by" class="form-control"
                                         placeholder="Tunai, gopay, transfer, dll">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="bukti_pembayaran">
+                                        File Bukti Pembayaran (opsional)
+                                    </label>
+                                    <input type="file" class="form-control form-control-lg" name="bukti_pembayaran" id="bukti_pembayaran">
                                 </div>
                             </div>
                         </div>
