@@ -57,7 +57,8 @@ class AboutController extends Controller
     {
         $data = $request->all();
         About::create($data);
-        return redirect()->route('about.index');
+        // return redirect()->route('about.index');
+        return to_route('about.index');
     }
 
     /**
@@ -95,7 +96,8 @@ class AboutController extends Controller
         $data = $request->all();
         $item = About::findOrFail($id);
         $item->update($data);
-        return redirect()->route('about.index');
+        // return redirect()->route('about.index');
+        return to_route('about.index');
     }
 
     /**

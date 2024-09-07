@@ -91,7 +91,6 @@ class CategoryFinanceController extends Controller
     public function show(Request $request)
     {
         $data = CategoryFinance::find($request->id);
-        Log::info($data);
         return response()->json($data);
     }
 

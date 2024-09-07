@@ -88,7 +88,9 @@ class SalaryController extends Controller
             $data
         );
 
-        return redirect()->route('salary.index');
+        // return redirect()->route('salary.index');
+
+        return to_route('salary.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -140,9 +142,11 @@ class SalaryController extends Controller
             $data->description = $request->description;
             $data->save();
 
-            return redirect()->route('salary.index');
+            // return redirect()->route('salary.index');
+            return to_route('salary.index')->with('success', 'Data berhasil diubah');
         } catch (\Throwable $th) {
-            return redirect()->route('salary.index');
+            // return redirect()->route('salary.index');
+            return to_route('salary.index')->with('error', 'Data gagal diubah');
         }
     }
 

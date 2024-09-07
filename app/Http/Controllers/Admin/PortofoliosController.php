@@ -52,10 +52,12 @@ class PortofoliosController extends Controller
 
         if ($data) {
             //redirect dengan pesan sukses
-            return redirect()->route('portofolio.index')->with(['success' => 'Data Berhasil Disimpan!']);
+            // return redirect()->route('portofolio.index')->with(['success' => 'Data Berhasil Disimpan!']);
+            return to_route('portofolio.index')->with(['success' => 'Data Berhasil Disimpan!']);
         } else {
             //redirect dengan pesan error
-            return redirect()->route('portofolio.index')->with(['error' => 'Data Gagal Disimpan!']);
+            // return redirect()->route('portofolio.index')->with(['error' => 'Data Gagal Disimpan!']);
+            return to_route('portofolio.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
 
         // return redirect()->route('portofolio.index');
@@ -109,7 +111,8 @@ class PortofoliosController extends Controller
                 $data->thumbnail = $request->file('thumbnail')->store('assets/portofolio', 'public');
             }
             $data->save();
-            return redirect()->route('portofolio.index');
+            // return redirect()->route('portofolio.index');
+            return to_route('portofolio.index');
         }
     }
 
@@ -124,6 +127,7 @@ class PortofoliosController extends Controller
         $portofolio = Portofolio::findOrFail($id);
         Storage::delete($portofolio->thumbnail);
         $portofolio->delete();
-        return redirect()->route('portofolio.index');
+        // return redirect()->route('portofolio.index');
+        return to_route('portofolio.index');
     }
 }

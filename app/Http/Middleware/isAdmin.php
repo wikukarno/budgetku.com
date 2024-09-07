@@ -20,6 +20,6 @@ class isAdmin
         if (Auth::user() && Auth::user()->roles == 'Owner') {
             return $next($request);
         }
-        return redirect('/');
+        return to_route('/');
     }
 }

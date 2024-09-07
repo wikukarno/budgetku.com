@@ -115,12 +115,15 @@ class FinanceController extends Controller
             );
 
             if ($data) {
-                return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
+                // return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
+                return to_route('finance.index')->with('success', 'Data berhasil ditambahkan');
             } else {
-                return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+                // return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+                return to_route('finance.index')->with('error', 'Data gagal ditambahkan');
             }
         } catch (\Throwable $th) {
-            return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+            // return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+            return to_route('finance.index')->with('error', 'Data gagal ditambahkan');
         }
     }
 
@@ -176,12 +179,15 @@ class FinanceController extends Controller
 
 
             if ($item) {
-                return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
+                // return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
+                return to_route('finance.index')->with('success', 'Data berhasil diubah');
             } else {
-                return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+                // return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+                return to_route('finance.index')->with('error', 'Data gagal diubah');
             }
         } catch (\Throwable $th) {
-            return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+            // return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+            return to_route('finance.index')->with('error', 'Data gagal diubah');
         }
     }
 

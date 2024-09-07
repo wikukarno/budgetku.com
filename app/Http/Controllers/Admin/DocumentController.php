@@ -72,7 +72,8 @@ class DocumentController extends Controller
         ]);
         // }
 
-        return redirect()->route('document.index');
+        // return redirect()->route('document.index');
+        return to_route('document.index');
     }
 
     /**
@@ -123,7 +124,8 @@ class DocumentController extends Controller
 
 
             $data->save();
-            return redirect()->route('document.index');
+            // return redirect()->route('document.index');
+            return to_route('document.index');
         }
     }
 

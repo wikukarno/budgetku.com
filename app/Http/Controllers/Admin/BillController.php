@@ -83,7 +83,8 @@ class BillController extends Controller
             'keterangan_tagihan' => $request->keterangan_tagihan,
         ]);
 
-        return redirect()->route('bill.index')->with('success', 'Data berhasil ditambahkan');
+        // return redirect()->route('bill.index')->with('success', 'Data berhasil ditambahkan');
+        return to_route('bill.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -134,7 +135,8 @@ class BillController extends Controller
             'keterangan_tagihan' => $request->keterangan_tagihan,
         ]);
 
-        return redirect()->route('bill.index')->with('success', 'Data berhasil diubah');
+        // return redirect()->route('bill.index')->with('success', 'Data berhasil diubah');
+        return to_route('bill.index')->with('success', 'Data berhasil diubah');
     }
 
     /**

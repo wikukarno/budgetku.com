@@ -20,6 +20,7 @@ class isUser
         if (Auth::user() && Auth::user()->roles == 'User') {
             return $next($request);
         }
-        return redirect('/');
+        // return redirect('/');
+        return to_route('/');
     }
 }
