@@ -53,7 +53,6 @@ class LoginController extends Controller
             $newUser = User::create([
                 'name' => $user->name,
                 'email' => $user->email,
-                'password' => bcrypt('password'),
                 'roles' => 'Customer',
             ]);
             Auth::login($newUser);
