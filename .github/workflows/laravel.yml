@@ -38,8 +38,6 @@ jobs:
             sudo chown -R www-data:www-data /var/www/api.wikukarno.com/storage
             sudo chown -R www-data:www-data /var/www/api.wikukarno.com/bootstrap/cache
             git pull
-            php artisan migrate --force
             php artisan config:cache
-            php artisan route:cache
             php artisan view:cache
-            php artisan optimize
+
