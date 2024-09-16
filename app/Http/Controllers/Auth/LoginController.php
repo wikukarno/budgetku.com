@@ -65,7 +65,7 @@ class LoginController extends Controller
     {
         if($user->roles == 'Owner') {
             return to_route('dashboard');
-        } else {
+        } elseif($user->roles == 'Customer') {
             return to_route('customer.dashboard');
         }
     }
