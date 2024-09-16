@@ -39,6 +39,19 @@
                                 <a href="{{ url('/auth/redirect') }}" class="btn btn-google btn-lg col">
                                     <i class="mdi mdi-google-plus"></i> Masuk / Daftar dengan Google </a>
                             </div>
+                            @auth
+                                <div class="d-grid mb-3">
+                                    @if (Auth::user()->roles == 'Owner')
+                                        <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg col">
+                                            <i class="mdi mdi-home"></i> Dashboard
+                                        </a>
+                                    @elseif (Auth::user()->roles == 'Customer')
+                                        <a href="{{ route('customer.dashboard') }}" class="btn btn-primary btn-lg col">
+                                            <i class="mdi mdi-home"></i> Dashboard
+                                        </a>
+                                    @endif
+                                </div>
+                            @endauth
                         </form>
                     </div>
                 </div>
