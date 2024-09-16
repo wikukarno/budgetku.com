@@ -9,7 +9,7 @@
                     <div class="card-body px-5 py-5">
                         <h3 class="card-title text-center mb-3">Login</h3>
                         <h4 class="text-center mb-5">
-                            Aplikasi Keuangan Wiku Karno
+                            Aplikasi KeuanganKu
                         </h4>
                         @if ($errors->any())
                             <div class="alert alert-danger">
