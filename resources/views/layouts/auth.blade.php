@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('pavicon.ico') }}" />
     <link rel="icon" type="image/png" href="{{ asset('pavicon.ico') }}" />
     <title>
-        Administrator Of Wiku Karno
+        @yield('title')
     </title>
     @include('includes.admin.styles')
 </head>
