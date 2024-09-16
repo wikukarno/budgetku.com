@@ -15,7 +15,7 @@ jobs:
       # Step 1.1: Setup PHP Environment
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.1"
+          php-version: "8.2"
           extensions: mbstring, xml, ctype, json, tokenizer, fileinfo
 
       # Step 1.2: Checkout the Repository
