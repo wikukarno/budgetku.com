@@ -12,6 +12,7 @@ class Salary extends Model
 
     protected $fillable = [
         'users_id',
+        'tipe',
         'salary',
         'date',
         'description',

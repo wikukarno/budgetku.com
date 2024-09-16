@@ -5,10 +5,22 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryFinanceRequest;
 use App\Models\CategoryFinance;
+use App\Models\User;
+use App\Services\CategoryFinanceService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserCategoryFinancesController extends Controller
 {
+
+    protected $categoryFinanceService;
+
+    public function __construct(CategoryFinanceService $categoryFinanceService)
+    {
+        $this->categoryFinanceService = $categoryFinanceService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +29,7 @@ class UserCategoryFinancesController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryFinance::query();
+            $query = CategoryFinance::where('users_id', Auth::id());
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -29,12 +41,12 @@ class UserCategoryFinancesController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" onclick="updateKategoriFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-warning">Edit</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary" onclick="updateKategoriFinance(' . $item->id . ')">
+                            Edit
                         </a>
                         
-                        <a href="javascript:void(0)" onclick="deleteKategoriFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteKategoriFinance(' . $item->id . ')">
+                            Hapus
                         </a>
                     ';
                 })
@@ -54,28 +66,16 @@ class UserCategoryFinancesController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(CategoryFinanceRequest $request)
     {
-        $data = CategoryFinance::updateOrCreate(
-            [
-                'id' => $request->id_category_finance
-            ],
-            [
-                'name_category_finances' => $request->name_category_finances,
-            ]
-        );
+        $categoryFinance = CategoryFinance::find($request->id);
 
-        if ($data) {
-            return redirect()->route('category.index')->with('success', 'Data berhasil disimpan');
-        } else {
-            return redirect()->route('category.index')->with('error', 'Data gagal disimpan');
+        if ($categoryFinance) {
+            $this->authorize('updateOrCreate', $categoryFinance);
         }
+        $validated = $request->validated();
+        $data = $this->categoryFinanceService->updateOrCreateCategoryFinance($validated);
+        return response()->json($data);
     }
 
     /**
@@ -87,6 +87,11 @@ class UserCategoryFinancesController extends Controller
     public function show(Request $request)
     {
         $data = CategoryFinance::find($request->id);
+        if (!$data) {
+            // Memberikan response jika data tidak ditemukan
+            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
+        }
+        $this->authorize('view', $data, CategoryFinance::class);
         return response()->json($data);
     }
 
@@ -122,6 +127,12 @@ class UserCategoryFinancesController extends Controller
     public function destroy(Request $request)
     {
         $data = CategoryFinance::find($request->id);
+        if (!$data) {
+            // Memberikan response jika data tidak ditemukan
+            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $this->authorize('delete', $data, CategoryFinance::class);
         $data->delete();
         return response()->json($data);
     }

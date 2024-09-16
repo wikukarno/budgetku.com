@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('salary.update', $data->id) }}" method="POST">
+                <form action="{{ route('income.update', $data->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="container">
@@ -23,6 +23,22 @@
                                 <div class="form-group">
                                     <label for="date">Tanggal</label>
                                     <input type="text" name="date" id="date" value="{{ $data->date }}" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="salary">Tipe</label>
+                        
+                                    <select name="tipe" id="tipe" class="form-select">
+                                        <option value="">Pilih Tipe</option>
+                                        @forelse ($categoryIncome as $item)
+                                        <option value="{{ $item->id }}" {{ $data->tipe == $item->id ? 'selected' : '' }}>{{ $item->name_category_incomes }}</option>
+                                        @empty
+                                        <option value="">Tidak ada data</option>
+                                        @endforelse
+                                    </select>
                                 </div>
                             </div>
                         </div>

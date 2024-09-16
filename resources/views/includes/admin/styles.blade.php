@@ -29,6 +29,10 @@
         font-family: 'Poppins', sans-serif;
     }
 
+    .nav-item .active {
+        color: #b66dff !important;
+    }
+
     .navbar-brand img {
         max-height: 50px !important;
         object-fit: contain;

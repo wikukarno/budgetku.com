@@ -5,10 +5,22 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Models\CategoryFinance;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryFinanceRequest;
+use App\Http\Requests\CategoryIncomeRequest;
+use App\Services\CategoryIncomeService;
+use App\Models\CategoryIncome;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserCategoryIncomeController extends Controller
 {
+
+    protected $categoryIncomeService;
+
+    public function __construct(CategoryIncomeService $categoryIncomeService)
+    {
+        $this->categoryIncomeService = $categoryIncomeService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +29,7 @@ class UserCategoryIncomeController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryFinance::query();
+            $query = CategoryIncome::where('users_id', Auth::id());
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -29,19 +41,19 @@ class UserCategoryIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" onclick="updateKategoriFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-warning">Edit</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning" onclick="updateKategoriIncome(' . $item->id . ')">
+                            Edit
                         </a>
                         
-                        <a href="javascript:void(0)" onclick="deleteKategoriFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteKategoriIncome(' . $item->id . ')">
+                            Delete
                         </a>
                     ';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('user.kategori-finance.index');
+        return view('user.kategori-income.index');
     }
 
     /**
@@ -60,22 +72,17 @@ class UserCategoryIncomeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CategoryFinanceRequest $request)
+    public function store(CategoryIncomeRequest $request)
     {
-        $data = CategoryFinance::updateOrCreate(
-            [
-                'id' => $request->id_category_finance
-            ],
-            [
-                'name_category_finances' => $request->name_category_finances,
-            ]
-        );
+        $categoryIncome = CategoryIncome::find($request->id);
 
-        if ($data) {
-            return redirect()->route('category.index')->with('success', 'Data berhasil disimpan');
-        } else {
-            return redirect()->route('category.index')->with('error', 'Data gagal disimpan');
+        if($categoryIncome){
+            $this->authorize('updateOrCreate', $categoryIncome);
         }
+
+        $validated = $request->validated();
+        $data = $this->categoryIncomeService->updateOrCreateCategoryIncome($validated);
+        return response()->json($data);
     }
 
     /**
@@ -86,7 +93,7 @@ class UserCategoryIncomeController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryFinance::find($request->id);
+        $data = CategoryIncome::findOrFail($request->id);
         return response()->json($data);
     }
 
@@ -121,7 +128,8 @@ class UserCategoryIncomeController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryFinance::find($request->id);
+        $data = CategoryIncome::find($request->id);
+        $this->authorize('delete', $data);
         $data->delete();
         return response()->json($data);
     }

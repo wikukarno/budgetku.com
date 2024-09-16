@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Kategori Keuangan')
+@section('title', 'Kategori Uang Masuk')
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header d-lg-flex d-md-flex align-items-center justify-content-between">
-                <h4>Kategori Keuangan</h4>
+                <h4>Kategori Uang Masuk</h4>
                 <div class="form-group">
-                    <a href="javascript:void(0)" class="btn btn-primary mt-3" onclick="addCategoryFinance();"><i
+                    <a href="javascript:void(0)" class="btn btn-primary mt-3" onclick="addCategoryIncome();"><i
                             class="fa-solid fa-circle-plus"></i>
                         &nbsp;
                         Tambah Kategori</a>
@@ -17,7 +17,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="tb_category_finance" class="table table-hover scroll-horizontal-vertical w-100">
+                    <table id="tb_kategori_uang_masuk" class="table table-hover scroll-horizontal-vertical w-100">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -35,14 +35,14 @@
         </div>
     </div>
 </div>
-@include('user.kategori-finance.components.modal-kategori-finance')
+@include('user.kategori-income.components.modal-kategori-income')
 @endsection
 
 
 @push('after-scripts')
-@include('user.kategori-finance.components.script')
+@include('user.kategori-income.components.script')
 @endpush
 
 @push('after-styles')
-@include('user.kategori-finance.components.style')
+@include('user.kategori-income.components.style')
 @endpush

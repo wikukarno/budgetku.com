@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessUangMasukEmail;
+use App\Models\CategoryIncome;
 use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
@@ -20,7 +21,7 @@ class UserIncomeController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Salary::query();
+            $query = Salary::where('users_id', Auth::id());
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -32,11 +33,11 @@ class UserIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('salary.edit', $item->id) . '" class="btn btn-warning">
+                        <a href="' . route('income.edit', $item->id) . '" class="btn btn-sm btn-warning">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" onclick="deleteSalary(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteSalary(' . $item->id . ')">
+                            Delete
                         </a>
                     ';
                 })
@@ -44,6 +45,7 @@ class UserIncomeController extends Controller
                 ->make(true);
         }
 
+        
         return view('user.salary.index');
     }
 
@@ -54,7 +56,8 @@ class UserIncomeController extends Controller
      */
     public function create()
     {
-        return view('user.salary.create');
+        $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        return view('user.salary.create', compact('categoryIncome'));
     }
 
     /**
@@ -66,7 +69,7 @@ class UserIncomeController extends Controller
     public function store(Request $request)
     {
         $data = Salary::create([
-            'users_id' => Auth::user()->id,
+            'users_id' => Auth::id(),
             'salary' => str_replace(
                 ['Rp. ', '.'],
                 ['', ''],
@@ -77,21 +80,8 @@ class UserIncomeController extends Controller
             'description' => $request->description,
         ]);
 
-        $user = User::where('email', Auth::user()->email)->firstOrFail();
 
-        $data = [
-            'salary' => $data,
-            'user' => $user
-        ];
-        ProcessUangMasukEmail::dispatch(
-            $data
-        );
-
-        if ($data) {
-            return redirect()->route('salary.index');
-        } else {
-            return redirect()->route('salary.index');
-        }
+        return to_route('income.index');
     }
 
     /**
@@ -114,10 +104,10 @@ class UserIncomeController extends Controller
      */
     public function edit($id)
     {
-        $data = Salary::find($id);
-        return view('user.salary.edit', [
-            'data' => $data
-        ]);
+        $data = Salary::where('users_id', Auth::id())->findOrFail($id);
+        $categoryIncome = CategoryIncome::where('users_id', Auth::id())
+            ->get();
+        return view('user.salary.edit', compact('data', 'categoryIncome'));
     }
 
     /**
@@ -143,9 +133,9 @@ class UserIncomeController extends Controller
             $data->description = $request->description;
             $data->save();
 
-            return redirect()->route('salary.index');
+            return redirect()->route('income.index');
         } catch (\Throwable $th) {
-            return redirect()->route('salary.index');
+            return redirect()->route('income.index');
         }
     }
 

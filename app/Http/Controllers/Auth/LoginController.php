@@ -34,7 +34,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/pages/admin/dashboard';
+    protected $redirectTo = '/';
 
     public function redirectToProvider()
     {
@@ -45,45 +45,34 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('google')->user();
         $findUser = User::where('email', $user->email)->first();
-        // $text = "
-        //     Dear " . $findUser->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-        //     " dengan IP Address " . Request::ip() .
-        //     "\n\n Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
-        // ";
+
         if ($findUser) {
-            // $findUser->update([
-            //     'last_login_at' => Carbon::now()->toDateTimeString(),
-            //     'last_login_ip' => Request::ip(),
-            // ]);
             Auth::login($findUser);
-            // sendText($findUser->telegram_id, $text);
-            // Mail::to(
-            //     $findUser->email
-            // )->send(new Login($findUser));
-            return redirect()->intended('pages/admin/dashboard');
+            return to_route('dashboard');
         } else {
-            return redirect()->route('login');
+            $newUser = User::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => null,
+                'roles' => 'Customer',
+            ]);
+            Auth::login($newUser);
+            return to_route('customer.dashboard');
         }
     }
 
     // send email login
     protected function authenticated($request, $user)
     {
-        // $text = "
-        //     Dear " . $user->name . " Terdeteksi Login pada tanggal " . Carbon::now()->isoFormat('D MMMM Y') . " pukul " . Carbon::now()->format('H:i:s') .
-        //     " dengan IP Address " . Request::ip() .
-        //     " Jika bukan anda yang melakukan login, segera amankan akun dengan keyword /amankan.
-        // ";
-        // $user->update([
-        //     'last_login_at' => Carbon::now()->toDateTimeString(),
-        //     'last_login_ip' => Request::ip(),
-        // ]);
-        // sendText($user->telegram_id, $text);
-        // Mail::to($request->user())->send(new Login($user));
+        if($user->roles == 'Owner') {
+            return to_route('dashboard');
+        } else {
+            return to_route('customer.dashboard');
+        }
     }
 
-    protected $maxAttempts = 1;
-    protected $decayMinutes = 120;
+    // protected $maxAttempts = 1;
+    // protected $decayMinutes = 120;
 
     /**
      * Create a new controller instance.

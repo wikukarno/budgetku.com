@@ -35,7 +35,7 @@
                             </div>
                             <div class="d-grid mb-3">
                                 <a href="{{ url('/auth/redirect') }}" class="btn btn-google btn-lg col">
-                                    <i class="mdi mdi-google-plus"></i> Google </a>
+                                    <i class="mdi mdi-google-plus"></i> Masuk / Daftar dengan Google </a>
                             </div>
                         </form>
                     </div>

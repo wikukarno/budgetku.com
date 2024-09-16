@@ -59,12 +59,12 @@
                                     <label for="bukti_pembayaran">
                                         File Bukti Pembayaran (opsional)
                                     </label>
-                                    <input type="file" class="form-control form-control-lg" name="bukti_pembayaran" id="bukti_pembayaran">
+                                    <input type="file" class="form-control" name="bukti_pembayaran" id="bukti_pembayaran">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group text-end mt-5">
-                            <a href="{{ route('finance.index') }}" class="btn btn-secondary" data-bs-dismiss="modal">Batal</a>
+                            <a href="{{ route('finance.index') }}" class="btn btn-secondary">Batal</a>
                             <button type="submit" id="btnSaveKeuangan" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>

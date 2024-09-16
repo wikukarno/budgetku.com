@@ -17,10 +17,10 @@ class isUser
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user() && Auth::user()->roles == 'User') {
+        if (Auth::user() && Auth::user()->roles == 'Customer') {
             return $next($request);
         }
         // return redirect('/');
-        return to_route('/');
+        return to_route('customer.dashboard');
     }
 }

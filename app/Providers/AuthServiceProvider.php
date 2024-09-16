@@ -4,8 +4,10 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\CategoryFinance;
 use App\Models\Finance;
 use App\Models\Salary;
+use App\Policies\CategoryFinancePolicy;
 use App\Policies\FinancePolicy;
 use App\Policies\SalaryPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // Finance::class => FinancePolicy::class,
         Salary::class => SalaryPolicy::class,
+        CategoryFinance::class => CategoryFinancePolicy::class,
     ];
 
     /**
@@ -31,6 +34,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
     }
 }

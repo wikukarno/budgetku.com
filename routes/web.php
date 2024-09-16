@@ -11,6 +11,11 @@ use App\Http\Controllers\Admin\PortofoliosController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TelegramBotWebHook;
+use App\Http\Controllers\User\DashboardCustomerController;
+use App\Http\Controllers\User\UserCategoryFinancesController;
+use App\Http\Controllers\User\UserCategoryIncomeController;
+use App\Http\Controllers\User\UserFinanceController;
+use App\Http\Controllers\User\UserIncomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,12 +38,6 @@ Route::get('/', function () {
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
-// route telegram
-// Route::post('/telegram-bot', [TelegramBotWebHook::class, 'index']);
-// Route::post('/telegram-bot/webhook', [TelegramBotWebHook::class, 'webhook']);
-
-// fitur amankan akun
-// Route::post('/amankan', [DashboardAdminController::class, 'amankan'])->name('amankan');
 
 Route::prefix('/pages/admin')
     ->middleware(['auth', 'owner'])
@@ -67,6 +66,63 @@ Route::prefix('/pages/admin')
         Route::resource('finance', FinanceController::class);
         Route::resource('category', CategoryFinanceController::class);
         Route::resource('account', AccountController::class);
+    });
+
+Route::prefix('/pages/customer')
+    ->middleware(['auth', 'user'])
+    ->group(function () {
+        Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
+
+        // Route custom category finance
+        Route::get('/category-finance/show', [UserCategoryFinancesController::class, 'show'])->name('category-finance.show');
+        Route::delete('/category-finance/delete', [UserCategoryFinancesController::class, 'destroy'])->name('category-finance.destroy');
+        // End Route custom category finance
+
+        // Route custom category income
+        Route::get('/category-income/show', [UserCategoryIncomeController::class, 'show'])->name('category-income.show');
+        Route::delete('/category-income/delete', [UserCategoryIncomeController::class, 'destroy'])->name('category-income.destroy');
+        // End Route custom category income
+
+        // Route custom income
+        Route::get('/income/show', [UserIncomeController::class, 'show'])->name('income.show');
+        Route::delete('/income/delete', [UserIncomeController::class, 'destroy'])->name('income.destroy');
+        // End Route custom income
+
+        // Route custom finance
+        Route::get('/finance/show', [UserFinanceController::class, 'show'])->name('finance.show');
+        Route::delete('/finance/delete', [UserFinanceController::class, 'destroy'])->name('finance.destroy');
+        // End Route custom finance
+
+        // Route resource category finance
+        Route::resource('category-finance', UserCategoryFinancesController::class)->except(['show', 'destroy']);
+        // End Route resource category finance
+
+        // Route resource category income
+        Route::resource('category-income', UserCategoryIncomeController::class)->except(['show', 'destroy']);
+        // End Route resource category income
+
+
+        // Route custom income
+        Route::get('/income/show', [UserIncomeController::class, 'show'])->name('income.show');
+        Route::delete('/income/delete', [UserIncomeController::class, 'destroy'])->name('income.destroy');
+        // End Route custom income
+
+        // Route resource income
+        Route::resource('income', UserIncomeController::class)->except(['show', 'destroy']);
+        // End Route resource income
+
+        // Route custom expense
+        Route::get('/expense/show', [UserFinanceController::class, 'show'])->name('expense.show');
+        Route::delete('/expense/delete', [UserFinanceController::class, 'destroy'])->name('expense.destroy');
+        // End Route custom expense
+
+        // Route resource finance
+        Route::resource('expense', UserFinanceController::class)->except(['show', 'destroy']);
+        // End Route resource finance
+
+        Route::resource('akun', AccountController::class);
+
+        
     });
 
 

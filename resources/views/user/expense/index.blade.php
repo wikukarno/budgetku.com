@@ -7,9 +7,9 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header d-lg-flex d-md-flex align-items-center justify-content-between">
-                <h4>Keuangan</h4>
+                <h4>Daftar Uang Keluar</h4>
                 <div class="form-group">
-                    <a href="{{ route('finance.create') }}" class="btn btn-primary mt-3" onclick="addFinance();"><i
+                    <a href="{{ route('expense.create') }}" class="btn btn-primary mt-3" onclick="addexpense();"><i
                             class="fa-solid fa-circle-plus"></i>
                         &nbsp;
                         Tambah Data</a>
@@ -17,7 +17,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="tb_finance" class="table table-hover scroll-horizontal-vertical w-100">
+                    <table id="tb_expense" class="table table-hover scroll-horizontal-vertical w-100">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -36,14 +36,14 @@
         </div>
     </div>
 </div>
-@include('admin.finance.components.modal-finance')
+@include('user.expense.components.modal-expense')
 @endsection
 
 
 
 @push('after-scripts')
 <script>
-    function deleteFinance(id){
+    function deleteExpense(id){
         Swal.fire({
             title: 'Apakah anda yakin?',
             text: "Data yang dihapus tidak dapat dikembalikan!",
@@ -56,7 +56,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     type:"DELETE",
-                    url: "{{ route('delete-finance') }}",
+                    url: "{{ route('expense.destroy') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id:id
@@ -66,7 +66,7 @@
                         $(".preloader").fadeIn();
                     },
                     success: function(res){
-                        $('#tb_finance').DataTable().ajax.reload();
+                        $('#tb_expense').DataTable().ajax.reload();
                         if(res.code == 200){
                             Swal.fire({
                                 title: 'Berhasil!',
@@ -91,7 +91,7 @@
         })
     }
 
-    $('#tb_finance').dataTable({
+    $('#tb_expense').dataTable({
         processing: true,
         serverSide: true,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -102,11 +102,11 @@
         order : [[5, 'desc']],
         ajax: {
             type: 'GET',
-            url: "{{ route('finance.index') }}",
+            url: "{{ route('expense.index') }}",
         },
         columns: [
             { data: 'DT_RowIndex', name: 'id'},
-            { data: 'category_finance.name_category_finances', name: 'category_finance.name_category_finances' },
+            { data: 'category_finances_id', name: 'category_finances_id' },
             { data: 'name_item', name: 'name_item' },
             { data: 'price', name: 'price' },
             { data: 'purchase_date', name: 'purchase_date' },
@@ -121,5 +121,5 @@
 @endpush
 
 @push('after-styles')
-@include('admin.finance.components.style')
+@include('user.expense.components.style')
 @endpush

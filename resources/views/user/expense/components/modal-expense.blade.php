@@ -1,14 +1,14 @@
-<div class="modal fade" id="financeModal" tabindex="-1" aria-labelledby="financeModalLabel" aria-hidden="true">
+<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="financeModalLabel"></h1>
+                <h1 class="modal-title fs-5" id="expenseModalLabel"></h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="form-finance" method="POST">
                     @csrf
-                    <input type="hidden" name="id_finance" id="id_finance">
+                    <input type="hidden" name="id_expense" id="id_expense">
                     <div class="container">
                         <div class="row">
                             <div class="col-12 col-lg-6">

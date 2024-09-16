@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('finance.update', $data->id) }}" method="POST">
+                <form action="{{ route('expense.update', $data->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="container">
@@ -60,8 +60,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="bukti_pembayaran">Bukti pembayaran</label>
+                                    <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" class="form-control">
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group text-end mt-5">
-                            <a href="{{ route('finance.index') }}" class="btn btn-secondary">Batal</a>
+                            <a href="{{ route('expense.index') }}" class="btn btn-secondary">Batal</a>
                             <button type="submit" id="btnSaveKeuangan" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>

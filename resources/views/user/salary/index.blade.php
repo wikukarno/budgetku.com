@@ -9,7 +9,7 @@
             <div class="card-header d-lg-flex d-md-flex align-items-center justify-content-between">
                 <h4>Daftar Uang Masuk</h4>
                 <div class="form-group">
-                    <a href="{{ route('salary.create') }}" class="btn btn-primary mt-3" onclick="addSalary();"><i
+                    <a href="{{ route('income.create') }}" class="btn btn-primary mt-3" onclick="addSalary();"><i
                             class="fa-solid fa-circle-plus"></i>
                         &nbsp;
                         Tambah Data</a>
@@ -54,7 +54,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     type:"DELETE",
-                    url: "{{ route('delete-salary') }}",
+                    url: "{{ route('income.destroy') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id:id
@@ -99,7 +99,7 @@
         serverSide: true,
         ajax: {
             type: 'GET',
-            url: "{{ route('salary.index') }}",
+            url: "{!! url()->current() !!}"
         },
         columns: [
             { data: 'DT_RowIndex', name: 'id'},

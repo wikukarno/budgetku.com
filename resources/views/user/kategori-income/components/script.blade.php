@@ -3,37 +3,37 @@
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    function addCategoryFinance() {
-        $('#categoryFinanceModal').modal('show');
-        $('#categoryFinanceModalLabel').html('Tambah Kategori Keuangan');
-        $('#id_category_finance').val('');
-        $('#form-tambah-kategori-finance').trigger('reset');
+    function addCategoryIncome() {
+        $('#categoryIncomeModal').modal('show');
+        $('#categoryIncomeModalLabel').html('Tambah Kategori Uang Masuk');
+        $('#id_category_income').val('');
+        $('#form-tambah-kategori-income').trigger('reset');
         $('#btnSaveKategoriKeuangan').html('Simpan');
         $('#btnSaveKategoriKeuangan').attr('disabled', false);
     }
 
-    function updateKategoriFinance(id){
-        $('#form-tambah-kategori-finance').trigger('reset');
-        $('#categoryFinanceModal').modal('show');
-        $('#categoryFinanceModalLabel').html('Update Kategori Keuangan');
-        $('#id_category_finance').val(id);
+    function updateKategoriIncome(id){
+        $('#form-tambah-kategori-income').trigger('reset');
+        $('#categoryIncomeModal').modal('show');
+        $('#categoryIncomeModalLabel').html('Update Kategori Uang Masuk');
+        $('#id_category_income').val(id);
         $('#btnSaveKategoriKeuangan').html('Simpan Perubahan');
         $('#btnSaveKategoriKeuangan').attr('disabled', false);
         
         $.ajax({
             type:"GET",
-            url: "{{ route('category-finance.show') }}",
+            url: "{{ route('category-income.show') }}",
             data: {
                 "_token": "{{ csrf_token() }}",
-                "id": id
+                id:id
             },
             dataType: 'json',
             beforeSend: function() {
                 $(".preloader").fadeIn();
             },
             success: function(res){
-                $('#id_kategori_finance').val(res.id);
-                $('#name_category_finances').val(res.name_category_finances);
+                $('#id_kategori_income').val(res.id);
+                $('#name_category_incomes').val(res.name_category_incomes);
             },
             complete: function(){
                 $(".preloader").fadeOut();
@@ -41,7 +41,7 @@
         });
     }
 
-    function deleteKategoriFinance(id){
+    function deleteKategoriIncome(id){
         Swal.fire({
             title: 'Apakah anda yakin?',
             text: "Data yang dihapus tidak dapat dikembalikan!",
@@ -55,17 +55,17 @@
             if (result.isConfirmed) {
                 $.ajax({
                     type:"DELETE",
-                    url: "{{ route('category-finance.destroy') }}",
+                    url: "{{ route('category-income.destroy') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        "id": id
+                        id:id
                     },
                     dataType: 'json',
                     beforeSend: function() {
                         $(".preloader").fadeIn();
                     },
                     success: function(res){
-                        $('#tb_category_finance').DataTable().ajax.reload();
+                        $('#tb_kategori_uang_masuk').DataTable().ajax.reload();
                         Swal.fire(
                             'Terhapus!',
                             'Data berhasil dihapus.',
@@ -80,13 +80,13 @@
         })
     }
     
-    $('#form-tambah-kategori-finance').submit(function (e){
+    $('#form-tambah-kategori-income').submit(function (e){
         e.preventDefault();
         var formData = new FormData(this);
         
         $.ajax({
             type: 'POST',
-            url: "{{ route('category-finance.store') }}",
+            url: "{{ route('category-income.store') }}",
             data: formData,
             cache: false,
             contentType: false,
@@ -96,18 +96,18 @@
                 $('#btnSaveKategoriKeuangan').attr('disabled', true);
             },
             success: (data) => {
-                $('#categoryFinanceModal').modal('hide');
-                $('#tb_category_finance').DataTable().ajax.reload();
+                $('#categoryIncomeModal').modal('hide');
+                $('#tb_kategori_uang_masuk').DataTable().ajax.reload();
             },
             complete: () => {
-                $('#categoryFinanceModal').modal('hide');
+                $('#categoryIncomeModal').modal('hide');
             },
             error: function(data){
                 
             }
         });
     })
-    $('#tb_category_finance').dataTable({
+    $('#tb_kategori_uang_masuk').dataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -116,7 +116,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'id'},
-                { data: 'name_category_finances', name: 'name_category_finances'},
+                { data: 'name_category_incomes', name: 'name_category_incomes'},
                 { data: 'created_at', name: 'created_at'},
                 { data: 'updated_at', name: 'updated_at'},
                 {

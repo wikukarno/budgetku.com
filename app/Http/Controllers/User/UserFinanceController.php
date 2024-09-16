@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserFinanceController extends Controller
 {
@@ -21,10 +22,15 @@ class UserFinanceController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Finance::with(['category_finance'])->orderBy('created_at', 'DESC');
+            $query = Finance::with(['category_finance'])
+                ->where('users_id', Auth::id())
+                ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->editColumn('category_finance', function ($item) {
+                    return $item->category_finance->name;
+                })
                 ->editColumn('purchase_date', function ($item) {
                     return Carbon::parse($item->purchase_date)->isoFormat('D MMMM Y');
                 })
@@ -33,11 +39,11 @@ class UserFinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('finance.edit', $item->id) . '" class="btn btn-warning">
+                        <a href="' . route('expense.edit', $item->id) . '" class="btn btn-sm btn-warning">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" onclick="deleteFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteExpense(' . $item->id . ')">
+                            Delete
                         </a>
                     ';
                 })
@@ -45,8 +51,8 @@ class UserFinanceController extends Controller
                 ->make(true);
         }
 
-        $categories = CategoryFinance::all();
-        return view('user.finance.index', [
+        $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        return view('user.expense.index', [
             'categories' => $categories
         ]);
     }
@@ -58,8 +64,8 @@ class UserFinanceController extends Controller
      */
     public function create()
     {
-        $categories = CategoryFinance::all();
-        return view('user.finance.create', compact('categories'));
+        $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        return view('user.expense.create', compact('categories'));
     }
 
     /**
@@ -71,8 +77,15 @@ class UserFinanceController extends Controller
     public function store(Request $request)
     {
         try {
+
+            if($request->hasFile('bukti_pembayaran')) {
+                $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
+            }else{
+                $file = null;
+            }
+
             $data = Finance::create([
-                'users_id' => Auth::user()->id,
+                'users_id' => Auth::id(),
                 'category_finances_id' => $request->category_finances_id,
                 'name_item' => $request->name_item,
                 'price' => str_replace(
@@ -82,27 +95,17 @@ class UserFinanceController extends Controller
                 ),
                 'purchase_date' => $request->purchase_date ?? Carbon::now(),
                 'purchase_by' => $request->purchase_by ?? 'Tunai',
-                'bukti_pembayaran' => $request->file('bukti_pembayaran')->store('assets/bukti-pembayaran', 'public'),
+                'bukti_pembayaran' => $file
             ]);
 
-            $user = User::where('email', Auth::user()->email)->firstOrFail();
-
-            $data = [
-                'finance' => $data,
-                'user' => $user
-            ];
-
-            ProcessUangKeluarEmail::dispatch(
-                $data
-            );
-
             if ($data) {
-                return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
+                return to_route('expense.index');
             } else {
-                return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+                return to_route('expense.index');
             }
         } catch (\Throwable $th) {
-            return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+            Log::error($th->getMessage());
+            return to_route('expense.index');
         }
     }
 
@@ -127,8 +130,9 @@ class UserFinanceController extends Controller
     public function edit($id)
     {
         $data = Finance::findOrFail($id);
-        $categories = CategoryFinance::all();
-        return view('user.finance.edit', compact('data', 'categories'));
+        $categories = CategoryFinance::where('users_id', Auth::id())
+            ->get();
+        return view('user.expense.edit', compact('data', 'categories'));
     }
 
     /**
@@ -158,12 +162,12 @@ class UserFinanceController extends Controller
 
 
             if ($item) {
-                return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
+                return to_route('expense.index');
             } else {
-                return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+                return to_route('expense.index');
             }
         } catch (\Throwable $th) {
-            return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+            return to_route('expense.index');
         }
     }
 
@@ -176,7 +180,7 @@ class UserFinanceController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $item = Finance::find($request->id);
+            $item = Finance::findOrFail($request->id);
             $this->authorize('delete', $item);
             $item->delete();
 
