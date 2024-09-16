@@ -34,8 +34,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /var/www/api.wikukarno.com
-            git pull --ff-only
+            git pull
             composer install
             php artisan config:cache
             php artisan view:cache
+            
 
