@@ -48,7 +48,12 @@ class LoginController extends Controller
 
         if ($findUser) {
             Auth::login($findUser);
-            return to_route('dashboard');
+
+            if ($findUser->roles == 'Owner') {
+                return to_route('dashboard');
+            } else {
+                return to_route('customer.dashboard');
+            }
         } else {
             $newUser = User::create([
                 'name' => $user->name,
