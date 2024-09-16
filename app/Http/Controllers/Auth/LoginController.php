@@ -75,8 +75,8 @@ class LoginController extends Controller
         }
     }
 
-    // protected $maxAttempts = 1;
-    // protected $decayMinutes = 120;
+    protected $maxAttempts = 1;
+    protected $decayMinutes = 120;
 
     /**
      * Create a new controller instance.
