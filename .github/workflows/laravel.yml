@@ -34,7 +34,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /var/www/api.wikukarno.com
-            git pull origin master
+            git pull
             php artisan config:cache
             php artisan view:cache
 
