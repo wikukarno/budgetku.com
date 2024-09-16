@@ -83,6 +83,7 @@
             <span class="nav-link d-grid">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
+                    
                     <button type="submit" class="btn btn-block col btn-lg btn-gradient-primary mt-4">
                         Keluar
                     </button>

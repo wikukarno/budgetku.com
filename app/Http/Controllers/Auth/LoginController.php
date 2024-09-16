@@ -87,14 +87,4 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-
-    public function logout(HttpRequest $request)
-    {
-        return redirect()->route('keuangan');
-    }
-
-    public function showLoginForm()
-    {
-        return abort(404, 'Not Found');
-    }
 }
