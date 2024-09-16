@@ -35,6 +35,7 @@ jobs:
           script: |
             cd /var/www/api.wikukarno.com
             git pull
+            composer install
             php artisan config:cache
             php artisan view:cache
 
