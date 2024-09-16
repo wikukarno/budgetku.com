@@ -35,8 +35,10 @@ jobs:
           script: |
             cd /var/www/api.wikukarno.com
             sudo su
+            sudo chown -R www-data:www-data /var/www/api.wikukarno.com/storage
+            sudo chown -R www-data:www-data /var/www/api.wikukarno.com/bootstrap/cache
             git pull
-            composer install
+            composer install --no-dev
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
