@@ -21,6 +21,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Tipe</th>
                                 <th>Uang Masuk</th>
                                 <th>Tanggal</th>
                                 <th>Keterangan</th>
@@ -103,6 +104,7 @@
         },
         columns: [
             { data: 'DT_RowIndex', name: 'id'},
+            { data: 'tipe', name: 'tipe' },
             { data: 'salary', name: 'salary' },
             { data: 'date', name: 'date' },
             { data: 'description', name: 'description' },

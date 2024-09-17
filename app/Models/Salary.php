@@ -22,4 +22,9 @@ class Salary extends Model
     {
         return $this->belongsTo(User::class, 'users_id', 'id');
     }
+
+    public function category_income()
+    {
+        return $this->belongsTo(CategoryIncome::class, 'tipe', 'id');
+    }
 }

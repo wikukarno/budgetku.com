@@ -21,10 +21,14 @@ class UserIncomeController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Salary::where('users_id', Auth::id());
+            $query = Salary::with('category_income')->where('users_id', Auth::id())
+                ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->editColumn('tipe', function ($item) {
+                    return $item->category_income->name_category_incomes;
+                })
                 ->editColumn('salary', function ($item) {
                     return 'Rp.' . number_format($item->salary, 0, ',', '.');
                 })
@@ -41,7 +45,7 @@ class UserIncomeController extends Controller
                         </a>
                     ';
                 })
-                ->rawColumns(['action', 'date', 'salary'])
+                ->rawColumns(['action', 'date', 'salary', 'tipe'])
                 ->make(true);
         }
 
