@@ -28,8 +28,8 @@ class UserFinanceController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('category_finance', function ($item) {
-                    return $item->category_finance->name;
+                ->editColumn('category_finances_id', function ($item) {
+                    return $item->category_finance->name_category_finances;
                 })
                 ->editColumn('purchase_date', function ($item) {
                     return Carbon::parse($item->purchase_date)->isoFormat('D MMMM Y');
