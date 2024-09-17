@@ -70,7 +70,7 @@ class DashboardCustomerController extends Controller
             ->whereYear('purchase_date', Carbon::now()->format('Y'))
             ->sum('price');
 
-        $anualReport = Finance::whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
+        $anualReport = Finance::where('users_id', AUth::id())->whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
         $keterangan = $totalPendapatan <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
 
