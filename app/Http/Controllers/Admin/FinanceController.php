@@ -64,7 +64,7 @@ class FinanceController extends Controller
      */
     public function create()
     {
-        $categories = CategoryFinance::all();
+        $categories = CategoryFinance::where('users_id', Auth::id())->get();
         return view('admin.finance.create', compact('categories'));
     }
 
@@ -148,7 +148,7 @@ class FinanceController extends Controller
     public function edit($id)
     {
         $data = Finance::findOrFail($id);
-        $categories = CategoryFinance::all();
+        $categories = CategoryFinance::where('users_id', Auth::id())->get();
         return view('admin.finance.edit', compact('data', 'categories'));
     }
 
