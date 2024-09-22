@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use App\Mail\Login;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Models\Finance;
+use App\Models\Salary;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Providers\RouteServiceProvider;
@@ -48,6 +50,42 @@ class LoginController extends Controller
 
         if ($findUser) {
             Auth::login($findUser);
+            
+            $userId = Auth::user()->id;
+            $lastMonth = Carbon::now()->subMonth();
+
+            $pengeluaran = 0;
+
+            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->pluck('date')->toArray();
+
+            $salary = Salary::where('users_id', $userId)
+            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->sum('salary');
+
+
+            if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
+                $pengeluaran = Finance::where('users_id', $userId)
+                ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
+                    ->sum('price');
+            } else {
+                $pengeluaran = 0;
+            }
+
+
+            $sisa = $salary - $pengeluaran;
+
+            // kalau saat pertama kali saldo user == 0 dan dia sudah ada pengeluaran maka saldo nya adalah variable sisa
+            if ($findUser->saldo == 0 && $pengeluaran > 0) {
+                $findUser->saldo = $sisa;
+                $findUser->save();
+            }else{
+                $findUser->saldo = $findUser->saldo;
+                $findUser->save();
+            }
+
+            
 
             if ($findUser->roles == 'Owner') {
                 return to_route('dashboard');

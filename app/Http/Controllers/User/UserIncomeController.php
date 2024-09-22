@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserIncomeController extends Controller
 {
@@ -84,6 +85,12 @@ class UserIncomeController extends Controller
             'description' => $request->description,
         ]);
 
+        DB::transaction(function () use ($data) {
+            $user = User::find(Auth::id());
+            $user->saldo += $data->salary;
+            $user->save();
+        });
+
 
         return to_route('income.index');
     }
@@ -136,6 +143,16 @@ class UserIncomeController extends Controller
             $data->tipe = $request->tipe;
             $data->description = $request->description;
             $data->save();
+
+            DB::transaction(function () use ($data) {
+                if ($data->isDirty('salary')) {
+                    $user = User::findOrFail(Auth::id());
+                    $oldSalary = $data->getOriginal('salary');
+                    $changeInSalary = $data->salary - $oldSalary;
+                    $user->saldo += $changeInSalary;
+                    $user->save();
+                }
+            });
 
             return redirect()->route('income.index');
         } catch (\Throwable $th) {

@@ -13,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Process\Process;
@@ -103,6 +104,12 @@ class FinanceController extends Controller
                 'bukti_pembayaran' => $bukti_pembayaran
             ]);
 
+            DB::transaction(function () use ($data) {
+                $user = User::findOrFail(Auth::id());
+                $user->saldo -= $data->price;
+                $user->save();
+            });
+
             $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
             
             $data = [
@@ -176,6 +183,12 @@ class FinanceController extends Controller
                 'purchase_date' => $request->purchase_date,
                 'purchase_by' => $request->purchase_by,
             ]);
+
+            DB::transaction(function () use ($data) {
+                $user = User::findOrFail(Auth::id());
+                $user->saldo += $data->price;
+                $user->save();
+            });
 
 
             if ($item) {

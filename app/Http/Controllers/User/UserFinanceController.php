@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserFinanceController extends Controller
@@ -98,6 +99,12 @@ class UserFinanceController extends Controller
                 'bukti_pembayaran' => $file
             ]);
 
+            DB::transaction(function () use ($data) {
+                $user = User::findOrFail(Auth::id());
+                $user->saldo -= $data->price;
+                $user->save();
+            });
+
             if ($data) {
                 return to_route('expense.index');
             } else {
@@ -159,6 +166,15 @@ class UserFinanceController extends Controller
                 'purchase_date' => $request->purchase_date,
                 'purchase_by' => $request->purchase_by,
             ]);
+
+            DB::transaction(function () use ($data) {
+                if ($data->isDirty('price')) {
+                    $user = User::findOrFail(Auth::id());
+                    $user->saldo += $data->getOriginal('price');
+                    $user->saldo -= $data->price;
+                    $user->save();
+                }
+            });
 
 
             if ($item) {
