@@ -105,6 +105,14 @@ class UserFinanceController extends Controller
                 $user->save();
             });
 
+            $user = User::where('email', Auth::user()->email)->first();
+            $sendEmail = [
+                'finance' => $data,
+                'user' => $user
+            ];
+
+            ProcessUangKeluarEmail::dispatch($sendEmail);
+
             if ($data) {
                 return to_route('expense.index');
             } else {
@@ -175,6 +183,14 @@ class UserFinanceController extends Controller
                     $user->save();
                 }
             });
+
+            $user = User::where('email', Auth::user()->email)->first();
+            $sendEmail = [
+                'finance' => $item,
+                'user' => $user
+            ];
+
+            ProcessUangKeluarEmail::dispatch($sendEmail);
 
 
             if ($item) {
