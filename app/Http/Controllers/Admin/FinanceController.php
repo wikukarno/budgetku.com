@@ -28,7 +28,9 @@ class FinanceController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Finance::with(['category_finance'])->orderBy('created_at', 'DESC');
+            $query = Finance::with(['category_finance'])
+            ->where('users_id', Auth::id())
+            ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()

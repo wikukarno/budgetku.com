@@ -23,7 +23,8 @@ class SalaryController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Salary::query();
+            $query = Salary::where('users_id', Auth::id())
+                ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()

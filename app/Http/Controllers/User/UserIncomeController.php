@@ -22,7 +22,8 @@ class UserIncomeController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Salary::with('category_income')->where('users_id', Auth::id())
+            $query = Salary::with('category_income')
+                ->where('users_id', Auth::id())
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
