@@ -1,4 +1,8 @@
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<!-- Link Of JS File -->
+<script src="{{ asset('auth/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('auth/js/custom/custom.js') }}"></script>
+
+{{-- <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
@@ -22,4 +26,4 @@
 <!-- endinject -->
 <!-- Custom js for this page -->
 <script src="{{ asset('assets/js/dashboard.js') }}"></script>
-<!-- End custom js for this page -->
+<!-- End custom js for this page --> --}}
