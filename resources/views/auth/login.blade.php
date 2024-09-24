@@ -6,12 +6,12 @@
 
 <div class="row align-items-center">
     <div class="col-lg-6 d-none d-lg-block">
-        <img src="banner.webp" class="rounded-3" alt="login">
+        <img src="{{ asset('banner.webp') }}" class="rounded-3" alt="login">
     </div>
     <div class="col-lg-6">
         <div class="mw-480 ms-lg-auto">
             <div class="d-inline-block mb-4">
-                <img src="logo.svg" class="rounded-3 for-light-logo" alt="login">
+                <img src="{{ asset('logo.svg') }}" class="rounded-3 for-light-logo" alt="login">
                 <img src="auth/images/white-logo.svg" class="rounded-3 for-dark-logo" alt="login">
             </div>
             <h3 class="fs-28 mb-2">Welcome back to BudgetKu!</h3>

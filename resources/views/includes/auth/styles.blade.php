@@ -1,4 +1,15 @@
 <!-- Links Of CSS File -->
+<link rel="stylesheet" href="{{ asset('auth/css/sidebar-menu.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/simplebar.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/apexcharts.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/prism.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/rangeslider.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/sweetalert.min.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/quill.snow.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/google-icon.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/remixicon.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/swiper-bundle.min.css') }}">
+<link rel="stylesheet" href="{{ asset('auth/css/fullcalendar.main.css') }}">
 <link rel="stylesheet" href="{{ asset('auth/css/style.css') }}">
 
 <!-- Favicon -->
