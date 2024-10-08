@@ -3,10 +3,10 @@
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
                 <div class="nav-profile-image">
-                    @if (Auth::user()->foto_profile == null)
+                    @if (Auth::user()->avatar == null)
                     <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="image" />
                     @else
-                    <img src="{{ Storage::url(Auth::user()->foto_profile) }}" alt="image" />
+                    <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="image" />
                     <span class="login-status online"></span>
                     @endif
                 </div>
