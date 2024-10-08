@@ -42,7 +42,19 @@ class ProcessUangKeluarEmail implements ShouldQueue
 
         // if finance data exist then send email
         if ($finance) {
+            // Kirim email ke user utama
             Mail::to($user->email)->send(new UangKeluar($finance));
+
+            // Cek apakah ada email_parrent
+            if ($user->email_parrent) {
+                // Memisahkan email_parrent berdasarkan koma
+                $emailParents = explode(',', $user->email_parrent);
+
+                // Mengirim email ke setiap email orang tua
+                foreach ($emailParents as $parentEmail) {
+                    Mail::to(trim($parentEmail))->send(new UangKeluar($finance));
+                }
+            }
         } else {
             return false;
         }

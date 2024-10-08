@@ -75,6 +75,7 @@ class UserAccountController extends Controller
         if (Auth::user()->id) {
             $user = User::where('id', Auth::user()->id)->first();
             $user->name = $request->name;
+            $user->email_parrent = $request->email_parrent;
             $user->save();
             return back();
         }
@@ -94,7 +95,7 @@ class UserAccountController extends Controller
     public function ubahProfile(Request $request)
     {
         $user = User::findOrfail(Auth::user()->id);
-        $user->avatar = $request->file('avatar')->storePubliclyAs('assets/avatar', $request->file('avatar')->getClientOriginalName(), 'public');
+        $user->avatar = $request->file('avatar')->store('assets/avatar', 'public');
         $user->save();
         return back();
     }

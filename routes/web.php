@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\AdminDebtController;
 use App\Http\Controllers\Admin\BillController;
 use App\Http\Controllers\Admin\CategoryFinanceController;
 use App\Http\Controllers\Admin\DashboardAdminController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TelegramBotWebHook;
 use App\Http\Controllers\User\DashboardCustomerController;
+use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserCategoryFinancesController;
 use App\Http\Controllers\User\UserCategoryIncomeController;
 use App\Http\Controllers\User\UserFinanceController;
@@ -58,12 +60,19 @@ Route::prefix('/pages/admin')
         Route::delete('/finance/delete', [FinanceController::class, 'destroy'])->name('delete-finance');
         Route::delete('/salary/delete', [SalaryController::class, 'destroy'])->name('delete-salary');
 
+        // Route custom debt
+        Route::get('/debt/show', [AdminDebtController::class, 'show'])->name('debt.show');
+        Route::delete('/debt/delete', [AdminDebtController::class, 'destroy'])->name('debt.destroy');
+        // End Route custom debt
+
+
         Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
         Route::resource('document', DocumentController::class);
         Route::resource('bill', BillController::class);
         Route::resource('salary', SalaryController::class);
         Route::resource('finance', FinanceController::class);
+        Route::resource('debt', AdminDebtController::class)->except(['show', 'destroy']);
         Route::resource('category', CategoryFinanceController::class);
         Route::resource('account', AccountController::class);
     });
@@ -120,7 +129,9 @@ Route::prefix('/pages/customer')
         Route::resource('expense', UserFinanceController::class)->except(['show', 'destroy']);
         // End Route resource finance
 
-        Route::resource('akun', AccountController::class);
+        Route::post('/ubah-profile', [UserAccountController::class, 'ubahProfile'])->name('user.ubah.profile');
+
+        Route::resource('akun', UserAccountController::class);
 
         
     });
