@@ -23,7 +23,7 @@ class FinanceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index()
     {
@@ -55,9 +55,7 @@ class FinanceController extends Controller
         }
 
         $categories = CategoryFinance::all();
-        return view('admin.finance.index', [
-            'categories' => $categories
-        ]);
+        return view('admin.finance.index', compact('categories'));
     }
 
     /**
@@ -112,7 +110,7 @@ class FinanceController extends Controller
                 $user->save();
             });
 
-            $user = User::where('email', 'prasetyagama2@gmail.com')->firstOrFail();
+            $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
 
             $data = [
                 'finance' => $data,
