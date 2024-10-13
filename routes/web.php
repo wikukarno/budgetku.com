@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AdminDebtController;
 use App\Http\Controllers\Admin\BillController;
 use App\Http\Controllers\Admin\CategoryFinanceController;
+use App\Http\Controllers\Admin\CategoryIncomeController;
 use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\FinanceController;
@@ -55,14 +56,17 @@ Route::prefix('/pages/admin')
         Route::post('/kategori/finance/show', [CategoryFinanceController::class, 'show']);
         Route::delete('/kategori/finance/delete', [CategoryFinanceController::class, 'destroy']);
 
-        
+        Route::post('/kategori/income/show', [CategoryIncomeController::class, 'show']);
+        Route::delete('/kategori/income/delete', [CategoryIncomeController::class, 'destroy']);
+
+
         Route::delete('/bill/delete', [BillController::class, 'destroy'])->name('delete-bill');
         Route::delete('/finance/delete', [FinanceController::class, 'destroy'])->name('delete-finance');
         Route::delete('/salary/delete', [SalaryController::class, 'destroy'])->name('delete-salary');
 
         // Route custom debt
         Route::get('/debt/show', [AdminDebtController::class, 'show'])->name('debt.show');
-        Route::delete('/debt/delete', [AdminDebtController::class, 'destroy'])->name('debt.destroy');
+        Route::delete('/debt/delete', [AdminDebtController::class, 'destroy'])->name('debt.delete');
         // End Route custom debt
 
 
@@ -74,6 +78,7 @@ Route::prefix('/pages/admin')
         Route::resource('finance', FinanceController::class);
         Route::resource('debt', AdminDebtController::class)->except(['show', 'destroy']);
         Route::resource('category', CategoryFinanceController::class);
+        Route::resource('admin-category-income', CategoryIncomeController::class);
         Route::resource('account', AccountController::class);
     });
 
@@ -133,7 +138,7 @@ Route::prefix('/pages/customer')
 
         Route::resource('akun', UserAccountController::class);
 
-        
+
     });
 
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CategoryIncome extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
         'users_id',
@@ -19,5 +19,5 @@ class CategoryIncome extends Model
     {
         return $this->belongsTo(User::class, 'users_id', 'id');
     }
-    
+
 }

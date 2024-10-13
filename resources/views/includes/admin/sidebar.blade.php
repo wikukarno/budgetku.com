@@ -29,12 +29,26 @@
                 <i class="mdi mdi-home menu-icon"></i>
             </a>
         </li>
+        <li class="nav-item {{ (request()->is('pages/admin/admin-category-income') ? 'active' : '') }}">
+            <a class="nav-link" href="{{ route('admin-category-income.index') }}">
+            <span class="menu-title">
+                Category Income
+            </span>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+            </a>
+        </li>
         <li class="nav-item {{ (request()->is('pages/admin/category') ? 'active' : '') }}">
             <a class="nav-link" href="{{ route('category.index') }}">
                 <span class="menu-title">
                     Category Finance
                 </span>
                 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item {{ (request()->is('pages/admin/debt') ? 'active' : '') }}">
+            <a class="nav-link" href="{{ route('debt.index') }}">
+                <span class="menu-title">Debt</span>
+                <i class="mdi mdi-cash-multiple menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/bill') ? 'active' : '') }}">
@@ -83,7 +97,7 @@
             <span class="nav-link d-grid">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    
+
                     <button type="submit" class="btn btn-block col btn-lg btn-gradient-primary mt-4">
                         Keluar
                     </button>
