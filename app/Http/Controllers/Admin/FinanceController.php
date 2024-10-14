@@ -134,6 +134,11 @@ class FinanceController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        if($request->hasFile('bukti_pembayaran')) {
+            $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
+        }
+
         try {
             $data = Finance::findOrFail($id);
             $this->authorize('update', $data);
@@ -148,6 +153,7 @@ class FinanceController extends Controller
                 ),
                 'purchase_date' => $request->purchase_date,
                 'purchase_by' => $request->purchase_by,
+                'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
             DB::transaction(function () use ($data) {

@@ -60,6 +60,15 @@
                                 </div>
                             </div>
                         </div>
+                        @if ($data->bukti_pembayaran)
+                            <div class="row">
+                                <div class="col-12 col-lg-12">
+                                    <div class="form-group">
+                                        <img src="{{ Storage::url($data->bukti_pembayaran) }}" class="w-100 h-100 img-fluid thumbnail-img" alt="Bukti Pembayaran">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="row">
                             <div class="col-12 col-lg-12">
                                 <div class="form-group">
@@ -90,18 +99,18 @@
             sisa     		= split[0].length % 3,
             rupiah     		= split[0].substr(0, sisa),
             ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
-        
+
         if(ribuan){
             separator = sisa ? '.' : '';
             rupiah += separator + ribuan.join('.');
         }
 
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix === undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
     }
 
     var rupiah = document.getElementById('price');
-    rupiah.addEventListener('keyup', function(e){
+    rupiah.addEventListener('keyup', function(){
         rupiah.value = formatRupiah(this.value, 'Rp. ');
     });
 </script>
