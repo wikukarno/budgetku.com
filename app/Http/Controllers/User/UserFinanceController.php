@@ -12,13 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\Exceptions\Exception;
 
 class UserFinanceController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @throws Exception
+     * @throws \Exception
      */
     public function index()
     {
@@ -58,23 +58,12 @@ class UserFinanceController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $categories = CategoryFinance::where('users_id', Auth::id())->get();
         return view('user.expense.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         try {
@@ -124,24 +113,12 @@ class UserFinanceController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Request $request)
     {
         $data = Finance::findOrFail($request->id);
         return response()->json($data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $data = Finance::findOrFail($id);
@@ -150,15 +127,12 @@ class UserFinanceController extends Controller
         return view('user.expense.edit', compact('data', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
+        if($request->hasFile('bukti_pembayaran')) {
+            $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
+        }
+
         try {
             $data = Finance::findOrFail($id);
             $this->authorize('update', $data);
@@ -173,6 +147,7 @@ class UserFinanceController extends Controller
                 ),
                 'purchase_date' => $request->purchase_date,
                 'purchase_by' => $request->purchase_by,
+                'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
             DB::transaction(function () use ($data) {
@@ -203,17 +178,12 @@ class UserFinanceController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         try {
             $item = Finance::findOrFail($request->id);
             $this->authorize('delete', $item);
+
             $item->delete();
 
             return response()->json([

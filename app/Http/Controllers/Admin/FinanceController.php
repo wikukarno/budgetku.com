@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
 
 class FinanceController extends Controller
@@ -181,6 +182,7 @@ class FinanceController extends Controller
         try {
             $item = Finance::find($request->id);
             $this->authorize('delete', $item);
+
             $item->delete();
 
             return response()->json([
