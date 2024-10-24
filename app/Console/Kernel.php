@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
                 // Jika user tidak memiliki transaksi, kirim email
                 if ($count == 0) {
                     Log::info('Sending email to ' . $user->email);
-                    Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
+                    Mail::to('prasetyagama2@gmail.com')->send(new ExpenseNotificationEmptyMail($user));
                 }else{
                     Log::info('User ' . $user->name . ' memiliki ' . $count . ' transaksi hari ini');
                 }
