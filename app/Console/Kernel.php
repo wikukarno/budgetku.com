@@ -20,9 +20,9 @@ class Kernel extends ConsoleKernel
     {
 
         $schedule->call(function () {
-            $users = User::whereIn('id', [1, 8])->get();
+            $users = User::where('id', 1)->get();
 
-            $financeCounts = Finance::whereIn('users_id', [1, 8])
+            $financeCounts = Finance::where('users_id', 1)
                 ->whereDate('created_at', Carbon::today())
                 ->get()
                 ->groupBy('users_id')
@@ -35,7 +35,8 @@ class Kernel extends ConsoleKernel
                     Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
                 }
             }
-        })->dailyAt('18:00')->timezone('Asia/Jakarta');
+        })->everyMinute();
+        // ->dailyAt('18:00')->timezone('Asia/Jakarta');
     }
 
     protected function commands()
