@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
 
             // Ambil semua transaksi finance yang dibuat hari ini oleh user id 1 dan 8
             $financeCounts = Finance::whereIn('users_id', [1]) // hanya untuk user id 1 dan 8
-            ->whereDate('created_at', Carbon::today())
+            ->whereDate('purchase_date', Carbon::today())
             ->get()
             ->groupBy('users_id')
             ->map(fn($finance) => $finance->count());
