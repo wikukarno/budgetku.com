@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
                 $count = $financeCounts->get($user->id, 0);
 
                 // Jika user tidak memiliki transaksi, kirim email
-                if ($count === 0) {
+                if ($count == 0) {
                     Log::info('Sending email to ' . $user->email);
                     Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
                 }else{
