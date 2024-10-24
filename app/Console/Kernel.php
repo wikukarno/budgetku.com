@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Mail\BillMail;
+use App\Mail\ExampleNotificationMail;
 use App\Mail\ExpenseNotificationEmptyMail;
 use App\Models\Bill;
 use App\Models\Finance;
@@ -20,29 +21,36 @@ class Kernel extends ConsoleKernel
     {
 
         $schedule->call(function () {
-            // Ambil user dengan id 1 dan 8
-            $users = User::whereIn('id', [1])->get();
+            // Ambil user yang ingin dikirim notifikasi
+            $user = User::find(1); // Misalnya, user dengan ID 1
 
-            // Ambil semua transaksi finance yang dibuat hari ini oleh user id 1 dan 8
-            $financeCounts = Finance::whereIn('users_id', [1]) // hanya untuk user id 1 dan 8
-            ->whereDate('purchase_date', Carbon::today())
-            ->get()
-            ->groupBy('users_id')
-            ->map(fn($finance) => $finance->count());
-
-            // Loop untuk mengirim email jika user tidak memiliki transaksi hari ini
-            foreach ($users as $user) {
-                // Ambil jumlah transaksi user, default ke 0 jika tidak ada
-                $count = $financeCounts->get($user->id, 0);
-
-                // Jika user tidak memiliki transaksi, kirim email
-                if ($count == 0) {
-                    Log::info('Sending email to ' . $user->email);
-                    Mail::to('prasetyagama2@gmail.com')->send(new ExpenseNotificationEmptyMail($user));
-                }else{
-                    Log::info('User ' . $user->name . ' memiliki ' . $count . ' transaksi hari ini');
-                }
+            // Kirim email notifikasi
+            if ($user) {
+                Mail::to($user->email)->send(new ExampleNotificationMail($user));
             }
+            // Ambil user dengan id 1 dan 8
+            // $users = User::whereIn('id', [1])->get();
+
+            // // Ambil semua transaksi finance yang dibuat hari ini oleh user id 1 dan 8
+            // $financeCounts = Finance::whereIn('users_id', [1]) // hanya untuk user id 1 dan 8
+            // ->whereDate('purchase_date', Carbon::today())
+            // ->get()
+            // ->groupBy('users_id')
+            // ->map(fn($finance) => $finance->count());
+
+            // // Loop untuk mengirim email jika user tidak memiliki transaksi hari ini
+            // foreach ($users as $user) {
+            //     // Ambil jumlah transaksi user, default ke 0 jika tidak ada
+            //     $count = $financeCounts->get($user->id, 0);
+
+            //     // Jika user tidak memiliki transaksi, kirim email
+            //     if ($count == 0) {
+            //         Log::info('Sending email to ' . $user->email);
+            //         Mail::to('prasetyagama2@gmail.com')->send(new ExpenseNotificationEmptyMail($user));
+            //     }else{
+            //         Log::info('User ' . $user->name . ' memiliki ' . $count . ' transaksi hari ini');
+            //     }
+            // }
         })->everyMinute();
         // ->dailyAt('18:00')->timezone('Asia/Jakarta');
     }
