@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
 
                 if ($count === 0) {
                     Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
+                }else{
+                    Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
                 }
             }
         })->everyMinute();
