@@ -20,21 +20,26 @@ class Kernel extends ConsoleKernel
     {
 
         $schedule->call(function () {
-            $users = User::where('id', 1)->get();
+            // Ambil user dengan id 1 dan 8
+            $users = User::whereIn('id', [1])->get();
 
-            $financeCounts = Finance::where('users_id', 1)
-                ->whereDate('created_at', Carbon::today())
-                ->get()
-                ->groupBy('users_id')
-                ->map(fn($finance) => $finance->count());
+            // Ambil semua transaksi finance yang dibuat hari ini oleh user id 1 dan 8
+            $financeCounts = Finance::whereIn('users_id', [1]) // hanya untuk user id 1 dan 8
+            ->whereDate('created_at', Carbon::today())
+            ->get()
+            ->groupBy('users_id')
+            ->map(fn($finance) => $finance->count());
 
+            // Loop untuk mengirim email jika user tidak memiliki transaksi hari ini
             foreach ($users as $user) {
-                $count = $financeCounts->get($user->id, 0); // Default to 0 if not found
+                // Ambil jumlah transaksi user, default ke 0 jika tidak ada
+                $count = $financeCounts->get($user->id, 0);
 
+                // Jika user tidak memiliki transaksi, kirim email
                 if ($count === 0) {
                     Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
                 }else{
-                    Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
+                    Log::info('User ' . $user->name . ' memiliki ' . $count . ' transaksi hari ini');
                 }
             }
         })->everyMinute();
