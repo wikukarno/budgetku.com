@@ -5,12 +5,14 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessUangMasukEmail;
 use App\Models\CategoryIncome;
+use App\Models\Finance;
 use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserIncomeController extends Controller
 {
@@ -132,32 +134,60 @@ class UserIncomeController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $data = Salary::find($id);
-            $this->authorize('update', $data);
-            $data->users_id = Auth::user()->id;
-            $data->salary = str_replace(
-                ['Rp.', '.'],
-                ['', ''],
-                $request->salary
-            );
-            $data->date = $request->date;
-            $data->tipe = $request->tipe;
-            $data->description = $request->description;
-            $data->save();
+            DB::transaction(function () use ($id, $request) {
+                $data = Salary::findOrFail($id); // Gunakan findOrFail untuk memastikan data ditemukan
+                $this->authorize('update', $data);
 
-            DB::transaction(function () use ($data) {
-                if ($data->isDirty('salary')) {
-                    $user = User::findOrFail(Auth::id());
-                    $oldSalary = $data->getOriginal('salary');
-                    $changeInSalary = $data->salary - $oldSalary;
-                    $user->saldo += $changeInSalary;
-                    $user->save();
+                $userId = Auth::user()->id;
+                $lastMonth = Carbon::now()->subMonth();
+                $pengeluaran = 0;
+
+                $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->pluck('date')->toArray();
+
+                $salary = Salary::where('users_id', $userId)
+                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->sum('salary');
+
+                if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
+                    $pengeluaran = Finance::where('users_id', $userId)
+                        ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
+                        ->sum('price');
+                } else {
+                    $pengeluaran = 0;
                 }
+
+                // kalau update tanggal melebihi tanggal sekarang maka akan error
+                if ($request->date > Carbon::now()->format('Y-m-d')) {
+                    Log::error('Tanggal tidak boleh melebihi tanggal sekarang');
+                    return false;
+                }
+
+                // Update fields
+                $data->users_id = Auth::user()->id;
+                $data->salary = str_replace(
+                    ['Rp.', '.'],
+                    ['', ''],
+                    $request->salary
+                );
+                $data->date = $request->date;
+                $data->tipe = $request->tipe;
+                $data->description = $request->description;
+                $data->save();
+
+                $totalPendapatan = $salary - $pengeluaran;
+
+                // update saldo
+                $user = User::find(Auth::id());
+                $user->saldo = $totalPendapatan;
+                $user->save();
+
             });
 
             return redirect()->route('income.index');
         } catch (\Throwable $th) {
-            return redirect()->route('income.index');
+            return redirect()->route('income.index')->withErrors(['error' => $th->getMessage()]);
         }
     }
 
@@ -173,6 +203,11 @@ class UserIncomeController extends Controller
             $data = Salary::find($request->id);
             $this->authorize('delete', $data);
             $data->delete();
+
+            // Update saldo
+            $user = User::find(Auth::id());
+            $user->saldo -= $data->salary;
+            $user->save();
 
             return response()->json([
                 'code' => 200,
