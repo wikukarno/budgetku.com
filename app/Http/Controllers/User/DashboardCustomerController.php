@@ -12,34 +12,28 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DashboardCustomerController extends Controller
 {
     public function index()
     {
         $userId = Auth::user()->id;
-        $lastMonth = Carbon::now()->subMonth();
+        $lastMonthStart = Carbon::now()->subMonth(1)->startOfMonth();
+        $twoMonthsAgoStart = Carbon::now()->subMonth(2)->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
 
-        $pengeluaran = 0;
-
-        $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
-            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
-            ->pluck('date')->toArray();
-
+        // Calculate income from September and October
         $salary = Salary::where('users_id', $userId)
-            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->whereBetween('date', [$twoMonthsAgoStart, $lastMonthStart->endOfMonth()])
             ->sum('salary');
 
+        // Calculate total expenses up to the current month
+        $pengeluaran = Finance::where('users_id', $userId)
+            ->where('purchase_date', '<=', $currentMonthEnd)
+            ->sum('price');
 
-        if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
-            $pengeluaran = Finance::where('users_id', $userId)
-                ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
-                ->sum('price');
-        } else {
-            $pengeluaran = 0;
-        }
-
-
+        // Calculate balance
         $totalPendapatan = $salary - $pengeluaran;
 
         // monthly report
