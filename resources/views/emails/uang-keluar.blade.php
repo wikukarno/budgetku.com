@@ -7,7 +7,7 @@
     Waktu: {{ \Carbon\Carbon::parse($finance->created_at)->isoFormat('HH:mm') }} WIB
     Nama Barang: {{ $finance->name_item }}
 
-    *SALDO SEKARANG: Rp. {{ number_format($finance->user->saldo, 0, ',', '.') }}*
+    *SALDO SEKARANG: Rp. {{ number_format($saldo, 0, ',', '.') }}*
 
     Terima kasih atas pencatatan Anda!
 

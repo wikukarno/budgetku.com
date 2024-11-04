@@ -39,11 +39,12 @@ class ProcessUangKeluarEmail implements ShouldQueue
         // get finance data by user id
         $user = $this->data['user'];
         $finance = $this->data['finance'];
+        $saldo = $this->data['saldo'];
 
         // if finance data exist then send email
         if ($finance) {
             // Kirim email ke user utama
-            Mail::to($user->email)->send(new UangKeluar($finance));
+            Mail::to($user->email)->send(new UangKeluar($finance, $saldo));
 
             // Cek apakah ada email_parrent
             if ($user->email_parrent) {
@@ -52,7 +53,7 @@ class ProcessUangKeluarEmail implements ShouldQueue
 
                 // Mengirim email ke setiap email orang tua
                 foreach ($emailParents as $parentEmail) {
-                    Mail::to(trim($parentEmail))->send(new UangKeluar($finance));
+                    Mail::to(trim($parentEmail))->send(new UangKeluar($finance, $saldo));
                 }
             }
         } else {

@@ -19,22 +19,18 @@ class DashboardCustomerController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
-        $lastMonthStart = Carbon::now()->subMonth(1)->startOfMonth();
-        $twoMonthsAgoStart = Carbon::now()->subMonth(2)->startOfMonth();
-        $currentMonthEnd = Carbon::now()->endOfMonth();
-
-        // Calculate income from September and October
+        
         $salary = Salary::where('users_id', $userId)
-            ->whereBetween('date', [$twoMonthsAgoStart, $lastMonthStart->endOfMonth()])
             ->sum('salary');
-
-        // Calculate total expenses up to the current month
+        
         $pengeluaran = Finance::where('users_id', $userId)
-            ->where('purchase_date', '<=', $currentMonthEnd)
             ->sum('price');
 
-        // Calculate balance
-        $totalPendapatan = $salary - $pengeluaran;
+        $pengeluaran_bulan_berjalan = Finance::where('users_id', $userId)
+            ->where('purchase_date', '>', Carbon::now()->subMonth()->format('Y-m-d'))
+            ->sum('price');
+
+        $saldo = $salary - $pengeluaran;
 
         // monthly report
         $monthlyReport = Finance::where('users_id', Auth::user()->id)
@@ -66,7 +62,7 @@ class DashboardCustomerController extends Controller
 
         $anualReport = Finance::where('users_id', AUth::id())->whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
-        $keterangan = $totalPendapatan <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
+        $keterangan = $saldo <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
 
         $monthlyBills = Bill::where('siklus_tagihan', 0)->sum('harga_tagihan');
 
@@ -115,8 +111,9 @@ class DashboardCustomerController extends Controller
 
         return view('user.dashboard', compact(
             'portofolios',
-            'totalPendapatan',
+            'saldo',
             'pengeluaran',
+            'pengeluaran_bulan_berjalan',
             'categoryFinances',
             'todayExpenditure',
             'weeklyReport',

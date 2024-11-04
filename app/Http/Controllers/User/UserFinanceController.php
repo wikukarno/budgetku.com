@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessUangKeluarEmail;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
+use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,13 +14,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Exceptions\Exception;
+use PDF;
 
 class UserFinanceController extends Controller
 {
-    /**
-     * @throws Exception
-     * @throws \Exception
-     */
     public function index()
     {
         if (request()->ajax()) {
@@ -88,16 +86,22 @@ class UserFinanceController extends Controller
                 'bukti_pembayaran' => $file
             ]);
 
-            DB::transaction(function () use ($data) {
-                $user = User::findOrFail(Auth::id());
-                $user->saldo -= $data->price;
-                $user->save();
-            });
-
             $user = User::where('email', Auth::user()->email)->first();
+
+            $userId = Auth::user()->id;
+
+            $salary = Salary::where('users_id', $userId)
+            ->sum('salary');
+
+            $pengeluaran = Finance::where('users_id', $userId)
+                ->sum('price');
+
+            $saldo = $salary - $pengeluaran;
+
             $sendEmail = [
                 'finance' => $data,
-                'user' => $user
+                'user' => $user,
+                'saldo' => $saldo
             ];
 
             ProcessUangKeluarEmail::dispatch($sendEmail);
@@ -150,19 +154,22 @@ class UserFinanceController extends Controller
                 'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
-            DB::transaction(function () use ($data) {
-                if ($data->isDirty('price')) {
-                    $user = User::findOrFail(Auth::id());
-                    $user->saldo += $data->getOriginal('price');
-                    $user->saldo -= $data->price;
-                    $user->save();
-                }
-            });
-
             $user = User::where('email', Auth::user()->email)->first();
+
+            $userId = Auth::user()->id;
+
+            $salary = Salary::where('users_id', $userId)
+            ->sum('salary');
+
+            $pengeluaran = Finance::where('users_id', $userId)
+            ->sum('price');
+
+            $saldo = $salary - $pengeluaran;
+
             $sendEmail = [
                 'finance' => $item,
-                'user' => $user
+                'user' => $user,
+                'saldo' => $saldo
             ];
 
             ProcessUangKeluarEmail::dispatch($sendEmail);
