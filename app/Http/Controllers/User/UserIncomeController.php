@@ -88,12 +88,16 @@ class UserIncomeController extends Controller
             'description' => $request->description,
         ]);
 
-        DB::transaction(function () use ($data) {
-            $user = User::find(Auth::id());
-            $user->saldo += $data->salary;
-            $user->save();
-        });
+        $email = User::where('email', Auth::user()->email)->first();
 
+        $data = [
+            'salary' => $data,
+            'user' => $email
+        ];
+
+        ProcessUangMasukEmail::dispatch(
+            $data
+        );
 
         return to_route('income.index');
     }

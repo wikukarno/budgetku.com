@@ -43,12 +43,22 @@ class ProcessUangMasukEmail implements ShouldQueue
         $user = $this->data['user'];
         $salary = $this->data['salary'];
 
+        // Cek apakah ada email_parrent
+        if ($user->email_parrent) {
+            // Memisahkan email_parrent berdasarkan koma
+            $emailParents = explode(',', $user->email_parrent);
+
+            // Mengirim email ke setiap email orang tua
+            foreach ($emailParents as $parentEmail) {
+                Mail::to(trim($parentEmail))->send(new UangMasuk($salary));
+            }
+        }
 
         // if finance data exist then send email
-        if ($salary) {
-            Mail::to($user->email)->send(new UangMasuk($salary));
-        }else{
-            return false;
-        }
+        // if ($salary) {
+        //     Mail::to($user->email)->send(new UangMasuk($salary));
+        // }else{
+        //     return false;
+        // }
     }
 }
