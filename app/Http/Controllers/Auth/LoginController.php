@@ -45,7 +45,7 @@ class LoginController extends Controller
 
     public function handlerProviderCallback(Request $request)
     {
-        $user = Socialite::driver('google')->user();
+        $user = Socialite::driver('google')->stateless()->user();
         $findUser = User::where('email', $user->email)->first();
 
         if ($findUser) {
@@ -77,8 +77,8 @@ class LoginController extends Controller
         }
     }
 
-    protected $maxAttempts = 1;
-    protected $decayMinutes = 120;
+    // protected $maxAttempts = 1;
+    // protected $decayMinutes = 120;
 
     /**
      * Create a new controller instance.
