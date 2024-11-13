@@ -18,7 +18,7 @@
             <p class="fw-medium fs-16 mb-4">Sign In or Sign Up with social account or enter your details</p>
             <div class="row justify-content-start">
                 <div class="col-lg-4 col-sm-4">
-                    <a href="https://budgetku.com/auth/callback" class="btn btn-outline-secondary bg-transparent w-100 py-2 hover-bg mb-4"
+                    <a href="{{ url('auth/redirect') }}" class="btn btn-outline-secondary bg-transparent w-100 py-2 hover-bg mb-4"
                         style="border-color: #D6DAE1;">
                         <img src="auth/images/google.svg" alt="google">
                     </a>
