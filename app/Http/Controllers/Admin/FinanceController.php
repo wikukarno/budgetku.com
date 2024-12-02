@@ -9,6 +9,7 @@ use App\Jobs\ProcessUangMasukEmail;
 use App\Mail\UangKeluar;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
+use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -99,14 +100,39 @@ class FinanceController extends Controller
             $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
             // $user = User::where('email', 'prasetyagama2@gmail.com')->firstOrFail();
 
+            $userId = Auth::user()->id;
+            $lastMonth = Carbon::now()->subMonth();
+
+            $pengeluaran = 0;
+
+            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->pluck('date')->toArray();
+
+
+            $salary = Salary::where('users_id', $userId)
+            ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+            ->sum('salary');
+
+
+            if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
+                $pengeluaran = Finance::where('users_id', $userId)
+                ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->sum('price');
+            } else {
+                $pengeluaran = 0;
+            }
+
+
+            $saldo = $salary - $pengeluaran;
+
             $data = [
                 'finance' => $data,
-                'user' => $user
+                'user' => $user,
+                'saldo' => $saldo
             ];
 
-            ProcessUangKeluarEmail::dispatch(
-                $data
-            );
+            ProcessUangKeluarEmail::dispatch($data);
 
             if ($data) {
                 // return redirect()->route('finance.index')->with('success', 'Data berhasil ditambahkan');
@@ -117,6 +143,7 @@ class FinanceController extends Controller
             }
         } catch (\Throwable $th) {
             // return redirect()->route('finance.index')->with('error', 'Data gagal ditambahkan');
+            Log::error($th);
             return to_route('finance.index')->with('error', 'Data gagal ditambahkan');
         }
     }
