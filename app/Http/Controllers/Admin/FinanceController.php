@@ -164,7 +164,7 @@ class FinanceController extends Controller
     public function update(Request $request, $id)
     {
 
-        if($request->hasFile('bukti_pembayaran')) {
+        if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
         }
 
@@ -185,23 +185,34 @@ class FinanceController extends Controller
                 'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
-            DB::transaction(function () use ($data) {
-                $user = User::findOrFail(Auth::id());
-                $user->saldo += $data->price;
-                $user->save();
-            });
+            $user = User::where('email', Auth::user()->email)->first();
+
+            $userId = Auth::user()->id;
+
+            $salary = Salary::where('users_id', $userId)
+                ->sum('salary');
+
+            $pengeluaran = Finance::where('users_id', $userId)
+                ->sum('price');
+
+            $saldo = $salary - $pengeluaran;
+
+            $sendEmail = [
+                'finance' => $item,
+                'user' => $user,
+                'saldo' => $saldo
+            ];
+
+            ProcessUangKeluarEmail::dispatch($sendEmail);
 
 
             if ($item) {
-                // return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
-                return to_route('finance.index')->with('success', 'Data berhasil diubah');
+                return to_route('expense.index');
             } else {
-                // return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
-                return to_route('finance.index')->with('error', 'Data gagal diubah');
+                return to_route('expense.index');
             }
         } catch (\Throwable $th) {
-            // return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
-            return to_route('finance.index')->with('error', 'Data gagal diubah');
+            return to_route('expense.index');
         }
     }
 
