@@ -207,12 +207,12 @@ class FinanceController extends Controller
 
 
             if ($item) {
-                return to_route('expense.index');
+                return back();
             } else {
-                return to_route('expense.index');
+                return back();
             }
         } catch (\Throwable $th) {
-            return to_route('expense.index');
+            return back();
         }
     }
 
