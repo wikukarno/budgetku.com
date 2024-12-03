@@ -164,7 +164,7 @@ class FinanceController extends Controller
     public function update(Request $request, $id)
     {
 
-        if ($request->hasFile('bukti_pembayaran')) {
+        if($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
         }
 
@@ -185,34 +185,23 @@ class FinanceController extends Controller
                 'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
-            $user = User::where('email', Auth::user()->email)->first();
-
-            $userId = Auth::user()->id;
-
-            $salary = Salary::where('users_id', $userId)
-                ->sum('salary');
-
-            $pengeluaran = Finance::where('users_id', $userId)
-                ->sum('price');
-
-            $saldo = $salary - $pengeluaran;
-
-            $sendEmail = [
-                'finance' => $item,
-                'user' => $user,
-                'saldo' => $saldo
-            ];
-
-            ProcessUangKeluarEmail::dispatch($sendEmail);
+            DB::transaction(function () use ($data) {
+                $user = User::findOrFail(Auth::id());
+                $user->saldo += $data->price;
+                $user->save();
+            });
 
 
             if ($item) {
-                return back();
+                // return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
+                return to_route('finance.index')->with('success', 'Data berhasil diubah');
             } else {
-                return back();
+                // return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+                return to_route('finance.index')->with('error', 'Data gagal diubah');
             }
         } catch (\Throwable $th) {
-            return back();
+            // return redirect()->route('finance.index')->with('error', 'Data gagal diubah');
+            return to_route('finance.index')->with('error', 'Data gagal diubah');
         }
     }
 
