@@ -65,8 +65,8 @@ Route::prefix('/pages/admin')
         Route::delete('/salary/delete', [SalaryController::class, 'destroy'])->name('delete-salary');
 
         // Route custom debt
-        Route::get('/debt/show', [AdminDebtController::class, 'show'])->name('debt.show');
-        Route::delete('/debt/delete', [AdminDebtController::class, 'destroy'])->name('debt.delete');
+        // Route::get('/debt/show', [AdminDebtController::class, 'show'])->name('debt.show');
+        // Route::delete('/debt/delete', [AdminDebtController::class, 'destroy'])->name('debt.delete');
         // End Route custom debt
 
 
