@@ -45,12 +45,12 @@
                 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item {{ (request()->is('pages/admin/debt') ? 'active' : '') }}">
+        {{-- <li class="nav-item {{ (request()->is('pages/admin/debt') ? 'active' : '') }}">
             <a class="nav-link" href="{{ route('debt.index') }}">
                 <span class="menu-title">Debt</span>
                 <i class="mdi mdi-cash-multiple menu-icon"></i>
             </a>
-        </li>
+        </li> --}}
         <li class="nav-item {{ (request()->is('pages/admin/bill') ? 'active' : '') }}">
             <a class="nav-link" href="{{ route('bill.index') }}">
                 <span class="menu-title">Bill</span>
