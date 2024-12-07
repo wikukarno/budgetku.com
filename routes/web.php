@@ -70,7 +70,6 @@ Route::prefix('/pages/admin')
         // End Route custom debt
 
 
-        Route::resource('about', AboutController::class);
         Route::resource('portofolio', PortofoliosController::class);
         Route::resource('document', DocumentController::class);
         Route::resource('bill', BillController::class);
