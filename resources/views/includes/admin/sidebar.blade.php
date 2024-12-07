@@ -18,10 +18,6 @@
             </a>
         </li>
 
-
-
-
-
         @if (Auth::user()->roles == 'Owner')
         <li class="nav-item {{ (request()->is('pages/admin/dashboard') ? 'active' : '') }}">
             <a class="nav-link" href="{{ route('dashboard') }}">
@@ -67,24 +63,6 @@
             <a class="nav-link" href="{{ route('finance.index') }}">
                 <span class="menu-title">Finance</span>
                 <i class="mdi mdi-cash-100 menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/admin/about') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('about.index') }}">
-                <span class="menu-title">About</span>
-                <i class="mdi mdi-information-outline menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/admin/portofolio') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('portofolio.index') }}">
-                <span class="menu-title">Portofolio</span>
-                <i class="mdi mdi-folder-multiple-image menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/admin/document') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('document.index') }}">
-                <span class="menu-title">Document</span>
-                <i class="mdi mdi-folder-multiple-image menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {{ (request()->is('pages/admin/account') ? 'active' : '') }}">
