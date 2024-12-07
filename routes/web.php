@@ -76,7 +76,7 @@ Route::prefix('/pages/admin')
         Route::resource('bill', BillController::class);
         Route::resource('salary', SalaryController::class);
         Route::resource('finance', FinanceController::class);
-        Route::resource('debt', AdminDebtController::class)->except(['show', 'destroy']);
+        // Route::resource('debt', AdminDebtController::class)->except(['show', 'destroy']);
         Route::resource('category', CategoryFinanceController::class);
         Route::resource('admin-category-income', CategoryIncomeController::class);
         Route::resource('account', AccountController::class);
@@ -126,6 +126,7 @@ Route::prefix('/pages/customer')
         // End Route resource income
 
         // Route custom expense
+        Route::get('/expense/export', [UserFinanceController::class, 'exportExpense'])->name('expense.export');
         Route::get('/expense/show', [UserFinanceController::class, 'show'])->name('expense.show');
         Route::delete('/expense/delete', [UserFinanceController::class, 'destroy'])->name('expense.destroy');
         // End Route custom expense
