@@ -8,7 +8,7 @@
     - **Waktu:** {{ \Carbon\Carbon::parse($salary->created_at)->isoFormat('HH:mm') }} WIB
     - **Keterangan:** {{ $salary->description }}
 
-    Terima kasih atas dedikasi dan kerja keras Anda! Jangan ragu untuk menghubungi kami jika Anda memiliki pertanyaan.
+    {{-- Terima kasih atas dedikasi dan kerja keras Anda! Jangan ragu untuk menghubungi kami jika Anda memiliki pertanyaan. --}}
 
     Salam,
     Tim {{ config('app.name') }}
