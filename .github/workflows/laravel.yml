@@ -27,7 +27,7 @@ jobs:
 
       # Step 1.4: Install Dependencies
       - name: Install Dependencies
-        run: composer install --no-ansi --no-interaction --prefer-dist --optimize-autoloader
+        run: composer update --no-ansi --no-interaction --prefer-dist --optimize-autoloader
 
       # Step 1.5: Generate Application Key
       - name: Generate Application Key
