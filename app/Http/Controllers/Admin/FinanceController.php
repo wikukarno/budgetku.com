@@ -179,13 +179,6 @@ class FinanceController extends Controller
                 'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
-            DB::transaction(function () use ($data) {
-                $user = User::findOrFail(Auth::id());
-                $user->saldo += $data->price;
-                $user->save();
-            });
-
-
             if ($item) {
                 // return redirect()->route('finance.index')->with('success', 'Data berhasil diubah');
                 return to_route('finance.index')->with('success', 'Data berhasil diubah');

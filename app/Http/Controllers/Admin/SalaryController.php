@@ -144,16 +144,6 @@ class SalaryController extends Controller
             $data->description = $request->description;
             $data->save();
 
-            DB::transaction(function () use ($data) {
-                if ($data->isDirty('salary')) {
-                    $user = User::findOrFail(Auth::id());
-                    $oldSalary = $data->getOriginal('salary');
-                    $changeInSalary = $data->salary - $oldSalary;
-                    $user->saldo += $changeInSalary;
-                    $user->save();
-                }
-            });
-
             // return redirect()->route('salary.index');
             return to_route('salary.index')->with('success', 'Data berhasil diubah');
         } catch (\Throwable $th) {
