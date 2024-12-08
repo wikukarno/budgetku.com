@@ -81,7 +81,6 @@ class DashboardAdminController extends Controller
 
         $yearlyBills = Bill::where('siklus_tagihan', 1)->sum('harga_tagihan');
 
-        $portofolios = Portofolio::count();
 
         $laporanBulananTahunIni = Finance::where('users_id', Auth::user()->id)
         ->whereYear('purchase_date', Carbon::now()->format('Y'))
@@ -123,7 +122,6 @@ class DashboardAdminController extends Controller
         }
 
         return view('admin.dashboard', compact(
-            'portofolios',
             'totalPendapatan',
             'pengeluaran',
             'categoryFinances',
