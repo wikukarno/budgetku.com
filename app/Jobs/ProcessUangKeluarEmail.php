@@ -10,6 +10,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ProcessUangKeluarEmail implements ShouldQueue
@@ -41,10 +43,18 @@ class ProcessUangKeluarEmail implements ShouldQueue
         $finance = $this->data['finance'];
         $saldo = $this->data['saldo'];
 
-        // if finance data exist then send email
+        Log::info('Data user : ' . $user);
+
+        // Cek apakah notifikasi user utama aktif
+        if ($user->notifications != 1) {
+            Log::info('Notifications are disabled for the main user. No email sent.');
+            return false;
+        }
+
+        // Kirim email ke user utama
         if ($finance) {
-            // Kirim email ke user utama
             Mail::to($user->email)->send(new UangKeluar($finance, $saldo));
+            Log::info('Email sent to main user: ' . $user->email);
 
             // Cek apakah ada email_parrent
             if ($user->email_parrent) {
@@ -53,10 +63,14 @@ class ProcessUangKeluarEmail implements ShouldQueue
 
                 // Mengirim email ke setiap email orang tua
                 foreach ($emailParents as $parentEmail) {
-                    Mail::to(trim($parentEmail))->send(new UangKeluar($finance, $saldo));
+                    Mail::to($parentEmail)->send(new UangKeluar($finance, $saldo));
+                    Log::info('Email sent to parent: ' . $parentEmail);
                 }
+            } else {
+                Log::info('No parent emails found.');
             }
         } else {
+            Log::info('Finance data not found. No email sent.');
             return false;
         }
     }

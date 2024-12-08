@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('category_finances', function (Blueprint $table) {
-            $table->string('users_id')->after('id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('notifications')->default(true);
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('category_finances', function (Blueprint $table) {
-            $table->dropColumn('users_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('notifications');
         });
     }
 };

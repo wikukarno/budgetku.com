@@ -81,13 +81,7 @@ class SalaryController extends Controller
             'description' => $request->description,
         ]);
 
-        DB::transaction(function () use ($data) {
-            $user = User::findOrFail(Auth::id());
-            $user->saldo += $data->salary;
-            $user->save();
-        });
-
-        $email = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
+        $email = User::where('email', Auth::user()->email_parrent)->firstOrFail();
         $data = [
             'salary' => $data,
             'user' => $email

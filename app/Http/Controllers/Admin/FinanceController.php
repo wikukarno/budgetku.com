@@ -91,13 +91,7 @@ class FinanceController extends Controller
                 'bukti_pembayaran' => $bukti_pembayaran
             ]);
 
-            DB::transaction(function () use ($data) {
-                $user = User::findOrFail(Auth::id());
-                $user->saldo -= $data->price;
-                $user->save();
-            });
-
-            $user = User::where('email', 'riskaoktaviana83@gmail.com')->firstOrFail();
+            $user = Auth::user();
             // $user = User::where('email', 'prasetyagama2@gmail.com')->firstOrFail();
 
             $userId = Auth::user()->id;

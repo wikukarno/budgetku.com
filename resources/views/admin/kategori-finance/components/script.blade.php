@@ -111,10 +111,7 @@
     $('#tb_category_finance').dataTable({
             processing: true,
             serverSide: true,
-            ajax: {
-                type: 'get',
-                url: "{{ route('category.index') }}",
-            },
+            url: "{!! url()->current() !!}",
             columns: [
                 { data: 'DT_RowIndex', name: 'id'},
                 { data: 'name_category_finances', name: 'name_category_finances'},
