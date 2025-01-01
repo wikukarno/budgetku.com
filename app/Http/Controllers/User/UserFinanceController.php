@@ -23,6 +23,7 @@ class UserFinanceController extends Controller
         if (request()->ajax()) {
             $query = Finance::with(['category_finance'])
                 ->where('users_id', Auth::id())
+                ->whereYear('created_at', Carbon::now()->year)
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
@@ -51,8 +52,57 @@ class UserFinanceController extends Controller
         }
 
         $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
+            ->where('users_id', Auth::id())
+            ->groupBy('year')
+            ->get();
         return view('user.expense.index', [
-            'categories' => $categories
+            'categories' => $categories,
+            'filterByYear' => $filterByYear
+        ]);
+    }
+
+    public  function searching(Request $request)
+    {
+        if (request()->ajax()) {
+            $query = Finance::with(['category_finance'])
+                ->where('users_id', Auth::id())
+                ->whereYear('created_at', $request->year)
+                ->orderBy('created_at', 'DESC');
+
+            return datatables()->of($query)
+                ->addIndexColumn()
+                ->editColumn('category_finances_id', function ($item) {
+                    return $item->category_finance->name_category_finances;
+                })
+                ->editColumn('purchase_date', function ($item) {
+                    return Carbon::parse($item->purchase_date)->isoFormat('D MMMM Y');
+                })
+                ->editColumn('price', function ($item) {
+                    return 'Rp.' . number_format($item->price, 0, ',', '.');
+                })
+                ->editColumn('action', function ($item) {
+                    return '
+                        <a href="' . route('expense.edit', $item->id) . '" class="btn btn-sm btn-warning">
+                            Edit
+                        </a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteExpense(' . $item->id . ')">
+                            Delete
+                        </a>
+                    ';
+                })
+                ->rawColumns(['purchase_date', 'action'])
+                ->make(true);
+        }
+
+        $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
+            ->where('users_id', Auth::id())
+            ->groupBy('year')
+            ->get();
+        return view('user.expense.index', [
+            'categories' => $categories,
+            'filterByYear' => $filterByYear
         ]);
     }
 

@@ -123,6 +123,7 @@ Route::prefix('/pages/customer')
         // End Route resource income
 
         // Route custom expense
+        Route::get('/expense/searching', [UserFinanceController::class, 'searching'])->name('expense.searching');
         Route::get('/expense/export', [UserFinanceController::class, 'exportExpense'])->name('expense.export');
         Route::get('/expense/show', [UserFinanceController::class, 'show'])->name('expense.show');
         Route::delete('/expense/delete', [UserFinanceController::class, 'destroy'])->name('expense.destroy');

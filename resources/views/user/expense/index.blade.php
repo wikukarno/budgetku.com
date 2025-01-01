@@ -16,6 +16,19 @@
                 </div>
             </div>
             <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-lg-12">
+                    <div class="form-group">
+                        <label for="year">Pilih tahun</label>
+                        <select class="form-control" name="year" id="year">
+                            <option value="">Pilih tahun</option>
+                            @foreach($filterByYear as $item)
+                                <option value="{{ $item->year }}">{{ $item->year }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
                 <div class="table-responsive">
                     <table id="tb_expense" class="table table-hover scroll-horizontal-vertical w-100">
                         <thead>
@@ -117,6 +130,18 @@
             }
         ]
     });
+
+    var selectYear = document.getElementById('year');
+    var choices = new Choices(selectYear, {
+        searchEnabled: true,
+        itemSelectText: '',
+    });
+
+    selectYear.addEventListener('change', function(){
+        var year = selectYear.value;
+        $('#tb_expense').DataTable().ajax.url("{{ route('expense.searching') }}?year="+year).load();
+    });
+
 </script>
 @endpush
 
