@@ -19,10 +19,10 @@ class DashboardCustomerController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
-        
+
         $salary = Salary::where('users_id', $userId)
             ->sum('salary');
-        
+
         $pengeluaran = Finance::where('users_id', $userId)
             ->sum('price');
 
@@ -78,6 +78,10 @@ class DashboardCustomerController extends Controller
 
         $kategoriBucin = Finance::where('category_finances_id', 31)->sum('price');
 
+        $totalPreviousYear = Finance::where('users_id', Auth::id()) // Dapatkan data user saat ini
+        ->whereYear('purchase_date', Carbon::now()->subYear()->year) // Filter tahun sebelumnya
+        ->sum('price'); // Hitung total pengeluaran
+
         if (request()->ajax()) {
             $query = Bill::where('siklus_tagihan', 0);
 
@@ -123,7 +127,8 @@ class DashboardCustomerController extends Controller
             'previeusYearReport',
             'laporanTahunan',
             'laporanBulananTahunIni',
-            'kategoriBucin'
+            'kategoriBucin',
+            'totalPreviousYear'
         ));
     }
 }
