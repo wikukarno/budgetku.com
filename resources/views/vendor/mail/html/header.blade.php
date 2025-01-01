@@ -2,12 +2,12 @@
 <tr>
     <td class="header">
         <a href="{{ $url }}" style="display: inline-block;">
-            @if (trim($slot) === 'WIKUKARNO.COM')
-            <img src="https://api.wikukarno.com/apple-touch-icon.png" class="logo" alt="Logo">
-            @else
-            <img src="https://api.wikukarno.com/apple-touch-icon.png" class="logo" alt="logo">
+{{--            @if (trim($slot) === 'Budgetku')--}}
+{{--            <img src="https://www.budgetku.com/logo.svg" class="logo" alt="Logo">--}}
+{{--            @else--}}
+            <img src="https://www.budgetku.com/logo.svg" class="logo" alt="logo">
             {{-- {{ $slot }} --}}
-            @endif
+{{--            @endif--}}
         </a>
     </td>
 </tr>

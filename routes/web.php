@@ -41,7 +41,6 @@ Route::get('/', function () {
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
-
 Route::prefix('/pages/admin')
     ->middleware(['auth', 'owner'])
     ->group(function () {

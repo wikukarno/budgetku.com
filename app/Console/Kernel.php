@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Mail\BillMail;
 use App\Mail\ExampleNotificationMail;
 use App\Mail\ExpenseNotificationEmptyMail;
+use App\Mail\WeeklyFinanceReportMail;
 use App\Models\Bill;
 use App\Models\Finance;
 use App\Models\User;
@@ -42,7 +43,31 @@ class Kernel extends ConsoleKernel
             }
         })
         ->dailyAt('18:00')->timezone('Asia/Jakarta');
+
+        // Schedule mingguan untuk pelaporan keuangan
+        $schedule->call(function () {
+            $users = User::whereIn('id', [1, 8])->get();
+
+            foreach ($users as $user) {
+                // Ambil total transaksi user selama seminggu terakhir
+                $weeklyTotal = Finance::where('users_id', $user->id)
+                    ->whereBetween('purchase_date', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                    ->sum('price');
+
+                // Kirim email laporan mingguan
+                if($user->notifications == 1) {
+                    Mail::to($user->email)->send(new WeeklyFinanceReportMail($user, $weeklyTotal));
+                    if ($user->email_parent) {
+                        Mail::to($user->email_parent)->send(new WeeklyFinanceReportMail($user, $weeklyTotal));
+                    }else{
+                        return;
+                    }
+                }
+            }
+        })->weeklyOn(7, '12:00')->timezone('Asia/Jakarta');
     }
+
+
 
     protected function commands()
     {

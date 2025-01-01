@@ -106,6 +106,35 @@ class UserFinanceController extends Controller
         ]);
     }
 
+    public function downloadWeeklyReport($userId)
+    {
+        // Cari user berdasarkan ID
+        $user = User::findOrFail($userId);
+
+        // Ambil transaksi minggu sebelumnya
+        $transactions = Finance::where('users_id', $user->id)
+            ->whereBetween('purchase_date', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+            ->get();
+
+        // Hitung total transaksi
+        $weeklyTotal = $transactions->sum('price');
+
+        // Ambil tanggal transaksi pertama dan terakhir
+        $startDate = $transactions->min('purchase_date') ? Carbon::parse($transactions->min('purchase_date')) : Carbon::now()->subWeek()->startOfWeek();
+        $endDate = $transactions->max('purchase_date') ? Carbon::parse($transactions->max('purchase_date')) : Carbon::now()->subWeek()->endOfWeek();
+
+        // Generate PDF
+        $pdf = Pdf::loadView('pdf.weekly-report', [
+            'user' => $user,
+            'transactions' => $transactions,
+            'weeklyTotal' => $weeklyTotal,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+
+        // Return file PDF sebagai download
+        return $pdf->download('Laporan-Keuangan-Mingguan-' . $user->name . '.pdf');
+    }
     public function create()
     {
         $categories = CategoryFinance::where('users_id', Auth::id())->get();
