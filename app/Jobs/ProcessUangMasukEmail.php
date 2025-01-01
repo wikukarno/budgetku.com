@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ProcessUangMasukEmail implements ShouldQueue
@@ -28,7 +29,7 @@ class ProcessUangMasukEmail implements ShouldQueue
      */
     public function __construct(array $data)
     {
-        $this->data = $data; 
+        $this->data = $data;
     }
 
     /**
@@ -43,22 +44,30 @@ class ProcessUangMasukEmail implements ShouldQueue
         $user = $this->data['user'];
         $salary = $this->data['salary'];
 
-        // Cek apakah ada email_parrent
-        if ($user->email_parrent) {
-            // Memisahkan email_parrent berdasarkan koma
-            $emailParents = explode(',', $user->email_parrent);
+        Log::info('Sending email to ' . $user->email);
 
-            // Mengirim email ke setiap email orang tua
-            foreach ($emailParents as $parentEmail) {
-                Mail::to(trim($parentEmail))->send(new UangMasuk($salary));
-            }
+        if ($user->notifications != 1) {
+            Log::info('Notifications are disabled for the main user. No email sent.');
+            return false;
         }
 
-        // if finance data exist then send email
-        // if ($salary) {
-        //     Mail::to($user->email)->send(new UangMasuk($salary));
-        // }else{
-        //     return false;
-        // }
+        if ($salary) {
+            Mail::to($user->email)->send(new UangMasuk($salary));
+
+            // Check if there is an email_parrent
+            if ($user->email_parrent) {
+                // Separate email_parrent by comma
+                $emailParents = explode(',', $user->email_parrent);
+
+                foreach ($emailParents as $emailParent) {
+                    Mail::to($emailParent)->send(new UangMasuk($salary));
+                }
+            }else{
+                Log::info('No email_parrent found for user ' . $user->email);
+            }
+        }else{
+            Log::info('No salary data found for user ' . $user->email);
+            return false;
+        }
     }
 }

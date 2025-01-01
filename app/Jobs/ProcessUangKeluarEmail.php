@@ -43,8 +43,6 @@ class ProcessUangKeluarEmail implements ShouldQueue
         $finance = $this->data['finance'];
         $saldo = $this->data['saldo'];
 
-        Log::info('Data user : ' . $user);
-
         // Cek apakah notifikasi user utama aktif
         if ($user->notifications != 1) {
             Log::info('Notifications are disabled for the main user. No email sent.');
@@ -54,7 +52,6 @@ class ProcessUangKeluarEmail implements ShouldQueue
         // Kirim email ke user utama
         if ($finance) {
             Mail::to($user->email)->send(new UangKeluar($finance, $saldo));
-            Log::info('Email sent to main user: ' . $user->email);
 
             // Cek apakah ada email_parrent
             if ($user->email_parrent) {
@@ -64,7 +61,6 @@ class ProcessUangKeluarEmail implements ShouldQueue
                 // Mengirim email ke setiap email orang tua
                 foreach ($emailParents as $parentEmail) {
                     Mail::to($parentEmail)->send(new UangKeluar($finance, $saldo));
-                    Log::info('Email sent to parent: ' . $parentEmail);
                 }
             } else {
                 Log::info('No parent emails found.');
