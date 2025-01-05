@@ -39,6 +39,8 @@ class Kernel extends ConsoleKernel
                 // Jika user tidak memiliki transaksi, kirim email
                 if ($count == 0) {
                     Mail::to($user->email)->send(new ExpenseNotificationEmptyMail($user));
+                }else{
+                    return;
                 }
             }
         })
@@ -57,8 +59,10 @@ class Kernel extends ConsoleKernel
                 // Kirim email laporan mingguan
                 if($user->notifications == 1) {
                     Mail::to($user->email)->send(new WeeklyFinanceReportMail($user, $weeklyTotal));
+                    Log::info('Email laporan keuangan mingguan telah dikirim ke ' . $user->email);
                     if ($user->email_parent) {
                         Mail::to($user->email_parent)->send(new WeeklyFinanceReportMail($user, $weeklyTotal));
+                        Log::info('Email laporan keuangan mingguan telah dikirim ke ' . $user->email . ' dan ' . $user->email_parent);
                     }else{
                         return;
                     }
