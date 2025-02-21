@@ -13,10 +13,12 @@
         "guzzlehttp/guzzle": "^7.9",
         "intervention/image": "^3.7",
         "laravel/framework": "^10.3",
+        "laravel/octane": "^2.8",
         "laravel/sanctum": "*",
         "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
+        "runtime/frankenphp-symfony": "^0.2.0",
         "sentry/sentry-laravel": "*",
         "yajra/laravel-datatables-oracle": "*"
     },
@@ -67,9 +69,16 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "symfony/runtime": true
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": {
+        "frankenphp": {
+            "type": "vcs",
+            "url": "https://github.com/dunglas/frankenphp"
+        }
+    }
 }

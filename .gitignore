@@ -17,3 +17,7 @@ yarn-error.log
 .htaccess
 index.php
 error_log
+
+**/caddy
+frankenphp
+frankenphp-worker.php
