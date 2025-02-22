@@ -90,9 +90,7 @@ class SalaryController extends Controller
             $data
         );
 
-        // return redirect()->route('salary.index');
-
-        return to_route('salary.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('salary.index');
     }
 
     /**

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\PortofoliosController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TelegramBotWebHook;
 use App\Http\Controllers\User\DashboardCustomerController;
 use App\Http\Controllers\User\UserAccountController;
@@ -33,10 +34,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    // return abort(403, 'Forbidden');
-    return view('auth.login');
-})->name('keuangan');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route::get('/', function () {
+//     // return abort(403, 'Forbidden');
+//     return view('auth.login');
+// })->name('keuangan');
 
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
@@ -63,14 +66,16 @@ Route::prefix('/pages/admin')
         Route::delete('/finance/delete', [FinanceController::class, 'destroy'])->name('delete-finance');
         Route::delete('/salary/delete', [SalaryController::class, 'destroy'])->name('delete-salary');
 
-        // Route custom debt
-        // Route::get('/debt/show', [AdminDebtController::class, 'show'])->name('debt.show');
-        // Route::delete('/debt/delete', [AdminDebtController::class, 'destroy'])->name('debt.delete');
-        // End Route custom debt
 
+        Route::get('/salary', [SalaryController::class, 'index'])->name('salary.index');
+        Route::get('/salary/create', [SalaryController::class, 'create'])->name('salary.create');
+        Route::post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
+        Route::get('/salary/edit/{id}', [SalaryController::class, 'edit'])->name('salary.edit');
+        Route::put('/salary/update/{id}', [SalaryController::class, 'update'])->name('salary.update');
+        Route::delete('/salary/delete/{id}', [SalaryController::class, 'destroy'])->name('salary.destroy');
 
         Route::resource('bill', BillController::class);
-        Route::resource('salary', SalaryController::class);
+        // Route::resource('salary', SalaryController::class);
         Route::resource('finance', FinanceController::class);
         // Route::resource('debt', AdminDebtController::class)->except(['show', 'destroy']);
         Route::resource('category', CategoryFinanceController::class);
