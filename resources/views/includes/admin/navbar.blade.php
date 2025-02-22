@@ -1,7 +1,7 @@
 <!-- partial:partials/_navbar.html -->
 <nav class="navbar p-0 fixed-top d-flex flex-row">
     <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-        <a class="navbar-brand text-white" href="{{ route('keuangan') }}">
+        <a class="navbar-brand text-white" href="{{ route('home') }}">
             <b>WIKUKARNO.COM</b>
         </a>
     </div>
