@@ -34,12 +34,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Route::get('/', function () {
-//     // return abort(403, 'Forbidden');
-//     return view('auth.login');
-// })->name('keuangan');
+Route::get('/', function () {
+    // return abort(403, 'Forbidden');
+    return view('auth.login');
+})->name('home');
 
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
