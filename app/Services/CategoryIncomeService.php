@@ -31,17 +31,18 @@ class CategoryIncomeService
 
             if ($data->wasRecentlyCreated) {
                 DB::commit();
-                return ['status' => 'success', 'message' => 'Data berhasil ditambahkan'];
+                return ['status' => 'success', 'message' => 'Data added successfully'];
             } elseif ($data->wasChanged()) {
                 DB::commit();
-                return ['status' => 'success', 'message' => 'Data berhasil diubah'];
+                return ['status' => 'success', 'message' => 'Data updated successfully'];
             } else {
                 DB::rollBack();
-                return ['status' => 'error', 'message' => 'Data tidak ada yang berubah'];
+                return ['status' => 'error', 'message' => 'No changes have been made'];
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            Log::error($e->getMessage());
+            return ['status' => 'error', 'message' => 'Failed to add data'];
         }
     }
 }

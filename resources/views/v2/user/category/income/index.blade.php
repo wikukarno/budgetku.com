@@ -3,12 +3,23 @@
 @section('title', 'Income Categories')
     
 @section('content')
+    <div class="alert alert-success d-none" role="alert">
+        <span id="success_message"></span>
+    </div>
+    <div class="alert alert-danger d-none" role="alert">
+        <span id="danger_message"></span>
+    </div>
     <div class="card bg-white border-0 rounded-3 mb-4">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                 <h3 class="mb-0">
                     Income Categories
                 </h3>
+
+                <button class="btn btn-primary" onclick="addCategoryIncome();" type="button">
+                    <i data-feather="plus" class="me-2"></i>
+                    Add New
+                </button>
             </div>
     
             <div class="default-table-area all-products">
@@ -31,12 +42,168 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="categoryIncomeModal" tabindex="-1" aria-labelledby="categoryIncomeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="categoryIncomeModalLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="form-tambah-kategori-income" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id_category_income">
+                        <div class="form-group">
+                            <label for="name">Nama Uang Masuk</label>
+                            <input type="text" name="name_category_incomes" id="name_category_incomes" class="form-control"
+                                placeholder="Gaji" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" id="btnSaveKategoriKeuangan" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('after-scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+        function addCategoryIncome() {
+            $('#categoryIncomeModal').modal('show');
+            $('#categoryIncomeModalLabel').html('Tambah Kategori Uang Masuk');
+            $('#id_category_income').val('');
+            $('#form-tambah-kategori-income').trigger('reset');
+            $('#btnSaveKategoriKeuangan').html('Simpan');
+            $('#btnSaveKategoriKeuangan').attr('disabled', false);
+        }
+
+        function updateKategoriIncome(id){
+            $('#form-tambah-kategori-income').trigger('reset');
+            $('#categoryIncomeModal').modal('show');
+            $('#categoryIncomeModalLabel').html('Update Kategori Uang Masuk');
+            $('#id_category_income').val(id);
+            $('#btnSaveKategoriKeuangan').html('Simpan Perubahan');
+            $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            $.ajax({
+                type:"GET",
+                url: "{{ route('category-income.show') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:id
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $(".preloader").fadeIn();
+                },
+                success: function(res){
+                    $('#id_kategori_income').val(res.id);
+                    $('#name_category_incomes').val(res.name_category_incomes);
+                },
+                complete: function(){
+                    $(".preloader").fadeOut();
+                }
+            });
+        }
+
+        function deleteKategoriIncome(id){
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type:"DELETE",
+                        url: "{{ route('category-income.destroy') }}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            id:id
+                        },
+                        dataType: 'json',
+                        beforeSend: function() {
+                            $(".preloader").fadeIn();
+                        },
+                        success: function(res){
+                            $('#tb_kategori_uang_masuk').DataTable().ajax.reload();
+                            Swal.fire(
+                                'Terhapus!',
+                                'Data berhasil dihapus.',
+                                'success'
+                            )
+                        },
+                        complete: function(){
+                            $(".preloader").fadeOut();
+                        }
+                    });
+                }
+            })
+        }
+        
+        $('#form-tambah-kategori-income').submit(function (e){
+            e.preventDefault();
+            var formData = new FormData(this);
+            
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('category-income.store') }}",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#btnSaveKategoriKeuangan').html('Loading...');
+                    $('#btnSaveKategoriKeuangan').attr('disabled', true);
+                },
+                success: (data) => {
+                    $('#success_message').text(data.message);
+                    $('.alert-success').removeClass('d-none');
+                    $('#form-tambah-kategori-income').trigger('reset');
+                    $('#categoryIncomeModal').modal('hide');
+                    $('#tb_kategori_uang_masuk').DataTable().ajax.reload();
+                },
+                complete: () => {
+                    $('#categoryIncomeModal').modal('hide');
+                },
+                error: function(data){
+                    console.log(data);
+                    $('#danger_message').text(data.responseJSON.message);
+                    $('.alert-danger').removeClass('d-none');
+                }
+            });
+        })
+        $('#tb_kategori_uang_masuk').dataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    type: 'get',
+                    url: "{!! url()->current() !!}",
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'id'},
+                    { data: 'name_category_incomes', name: 'name_category_incomes'},
+                    { data: 'created_at', name: 'created_at'},
+                    { data: 'updated_at', name: 'updated_at'},
+                    {
+                        data: 'action',
+                        searchable: false,
+                        sortable: false
+                    }
+                ]
+            });
+
         $('#categoryIncomeTable').dataTable({
             processing: true,
             serverSide: true,
