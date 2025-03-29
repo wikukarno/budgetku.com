@@ -131,4 +131,9 @@ class DashboardCustomerController extends Controller
             'totalPreviousYear'
         ));
     }
+
+    public function indexV2()
+    {
+        return view('v2.user.dashboard');
+    }
 }

@@ -56,6 +56,36 @@ class UserCategoryIncomeController extends Controller
         return view('user.kategori-income.index');
     }
 
+    public function indexv2()
+    {
+        if (request()->ajax()) {
+            $query = CategoryIncome::where('users_id', Auth::id());
+
+            return datatables()->of($query)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($item) {
+                    return $item->created_at->isoFormat('D MMMM Y');
+                })
+                ->editColumn('updated_at', function ($item) {
+                    return $item->updated_at->isoFormat('D MMMM Y');
+                })
+                ->editColumn('action', function ($item) {
+                    return '
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(' . $item->id . ')">
+                            Edit
+                        </a>
+                        
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(' . $item->id . ')">
+                            Delete
+                        </a>
+                    ';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('v2.user.category.income.index');
+    }
+
     /**
      * Show the form for creating a new resource.
      *

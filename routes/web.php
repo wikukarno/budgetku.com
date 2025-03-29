@@ -83,10 +83,14 @@ Route::prefix('/pages/admin')
         Route::resource('account', AccountController::class);
     });
 
-Route::prefix('/pages/customer')
+    
+    Route::prefix('/pages/customer')
     ->middleware(['auth', 'user'])
     ->group(function () {
         Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
+        
+        Route::get('/dashboard/v2', [DashboardCustomerController::class, 'indexV2'])->name('customer.dashboard.v2');
+
 
         // Route custom category finance
         Route::get('/category-finance/show', [UserCategoryFinancesController::class, 'show'])->name('category-finance.show');
@@ -97,6 +101,9 @@ Route::prefix('/pages/customer')
         Route::get('/category-income/show', [UserCategoryIncomeController::class, 'show'])->name('category-income.show');
         Route::delete('/category-income/delete', [UserCategoryIncomeController::class, 'destroy'])->name('category-income.destroy');
         // End Route custom category income
+
+        // Route custome category income v2
+        Route::get('/category/income/v2', [UserCategoryIncomeController::class, 'indexv2'])->name('category.income.index.v2');
 
         // Route custom income
         Route::get('/income/show', [UserIncomeController::class, 'show'])->name('income.show');

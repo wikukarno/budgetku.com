@@ -1,0 +1,20 @@
+<script src="{{ asset('v2/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('v2/js/sidebar-menu.js') }}"></script>
+<script src="{{ asset('v2/js/dragdrop.js') }}"></script>
+<script src="{{ asset('v2/js/rangeslider.min.js') }}"></script>
+<script src="{{ asset('v2/js/sweetalert.js') }}"></script>
+<script src="{{ asset('v2/js/quill.min.js') }}"></script>
+<script src="{{ asset('v2/js/data-table.js') }}"></script>
+<script src="{{ asset('v2/js/prism.js') }}"></script>
+<script src="{{ asset('v2/js/clipboard.min.js') }}"></script>
+<script src="{{ asset('v2/js/feather.min.js') }}"></script>
+<script src="{{ asset('v2/js/simplebar.min.js') }}"></script>
+<script src="{{ asset('v2/js/apexcharts.min.js') }}"></script>
+<script src="{{ asset('v2/js/swiper-bundle.min.js') }}"></script>
+<script src="{{ asset('v2/js/fullcalendar.main.js') }}"></script>
+<script src="{{ asset('v2/js/custom/apexcharts.js') }}"></script>
+<script src="{{ asset('v2/js/custom/custom.js') }}"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
