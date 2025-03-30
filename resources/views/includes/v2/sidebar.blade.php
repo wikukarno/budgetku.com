@@ -33,7 +33,7 @@
                         <span class="material-symbols-outlined menu-icon">
                             list_alt
                         </span>
-                        <span class="title">Income Categories</span>
+                        <span class="title">Income Category</span>
                     </a>
                 </li>
                 <li class="menu-item {{ request()->is('pages/customer/category/expense/v2') ? 'open' : '' }}">
@@ -41,13 +41,13 @@
                         <span class="material-symbols-outlined menu-icon">
                             list_alt
                         </span>
-                        <span class="title">Expense Categories</span>
+                        <span class="title">Expense Category</span>
                     </a>
                 </li>
             @endif
 
             <li class="menu-title small text-uppercase">
-                <span class="menu-title-text">APPS</span>
+                <span class="menu-title-text">TRANSACTIONS</span>
             </li>
 
             <li class="menu-item">
@@ -55,7 +55,7 @@
                     <span class="material-symbols-outlined menu-icon">
                         attach_money
                     </span>
-                    <span class="title">Incomes</span>
+                    <span class="title">Income</span>
                 </a>
             </li>
 
@@ -64,7 +64,7 @@
                     <span class="material-symbols-outlined menu-icon">
                         payments
                     </span>
-                    <span class="title">Expenses</span>
+                    <span class="title">Expense</span>
                 </a>
             </li>
 
@@ -75,14 +75,14 @@
             <li class="menu-item">
                 <a href="profile.html" class="menu-link">
                     <span class="material-symbols-outlined menu-icon">person</span>
-                    <span class="title">My Profile</span>
+                    <span class="title">Profile</span>
                 </a>
             </li>
 
             <li class="menu-item">
                 <a href="logout.html" class="menu-link">
                     <span class="material-symbols-outlined menu-icon">logout</span>
-                    <span class="title">Logout</span>
+                    <span class="title">Sign Out</span>
                 </a>
             </li>
         </ul>
