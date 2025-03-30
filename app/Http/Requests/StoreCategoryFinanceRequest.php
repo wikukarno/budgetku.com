@@ -22,7 +22,7 @@ class StoreCategoryFinanceRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->input('id'); // ambil dari input, bukan route
+        $id = $this->input('id');
         return [
             'id' => ['nullable', 'integer'],
             'name_category_finances' => [
