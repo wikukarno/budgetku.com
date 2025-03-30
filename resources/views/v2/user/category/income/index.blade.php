@@ -3,11 +3,13 @@
 @section('title', 'Income Categories')
     
 @section('content')
-    <div class="alert alert-success d-none" role="alert">
+    <div class="alert alert-success alert-dismissible d-none" role="alert">
         <span id="success_message"></span>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div class="alert alert-danger d-none" role="alert">
+    <div class="alert alert-danger alert-dismissible d-none" role="alert">
         <span id="danger_message"></span>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <div class="card bg-white border-0 rounded-3 mb-4">
         <div class="card-body p-4">
@@ -137,7 +139,7 @@
                             $(".preloader").fadeIn();
                         },
                         success: function(res){
-                            $('#tb_kategori_uang_masuk').DataTable().ajax.reload();
+                            $('#categoryIncomeTable').DataTable().ajax.reload();
                             Swal.fire(
                                 'Terhapus!',
                                 'Data berhasil dihapus.',
@@ -172,7 +174,7 @@
                     $('.alert-success').removeClass('d-none');
                     $('#form-tambah-kategori-income').trigger('reset');
                     $('#categoryIncomeModal').modal('hide');
-                    $('#tb_kategori_uang_masuk').DataTable().ajax.reload();
+                    $('#categoryIncomeTable').DataTable().ajax.reload();
                 },
                 complete: () => {
                     $('#categoryIncomeModal').modal('hide');
@@ -183,26 +185,7 @@
                     $('.alert-danger').removeClass('d-none');
                 }
             });
-        })
-        $('#tb_kategori_uang_masuk').dataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    type: 'get',
-                    url: "{!! url()->current() !!}",
-                },
-                columns: [
-                    { data: 'DT_RowIndex', name: 'id'},
-                    { data: 'name_category_incomes', name: 'name_category_incomes'},
-                    { data: 'created_at', name: 'created_at'},
-                    { data: 'updated_at', name: 'updated_at'},
-                    {
-                        data: 'action',
-                        searchable: false,
-                        sortable: false
-                    }
-                ]
-            });
+        });
 
         $('#categoryIncomeTable').dataTable({
             processing: true,

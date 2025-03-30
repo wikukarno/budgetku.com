@@ -16,8 +16,8 @@
             <li class="menu-title small text-uppercase">
                 <span class="menu-title-text">MAIN</span>
             </li>
-            <li class="menu-item open">
-                <a href="javascript:void(0);" class="menu-link">
+            <li class="menu-item {{ request()->is('pages/customer/dashboard/v2') ? 'open' : '' }}">
+                <a href="{{ route('customer.dashboard.v2') }}" class="menu-link {{ request()->is('pages/customer/dashboard/v2') ? 'active' : '' }}">
                     <span class="material-symbols-outlined menu-icon">dashboard</span>
                     <span class="title">Dashboard</span>
                 </a>
