@@ -15,7 +15,7 @@
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                 <h3 class="mb-0">
-                    Expense Categories
+                    Expense Category
                 </h3>
 
                 <button class="btn btn-primary" onclick="addCategoryExpense();" type="button">
@@ -124,8 +124,8 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

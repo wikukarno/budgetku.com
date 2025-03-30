@@ -15,7 +15,7 @@
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                 <h3 class="mb-0">
-                    Income Categories
+                    Income Category
                 </h3>
 
                 <button class="btn btn-primary" onclick="addCategoryIncome();" type="button">
@@ -58,14 +58,20 @@
                     <div class="modal-body">
                         <input type="hidden" name="id" id="id_category_income">
                         <div class="form-group">
-                            <label for="name">Nama Uang Masuk</label>
+                            <label for="name">
+                                Name
+                            </label>
                             <input type="text" name="name_category_incomes" id="name_category_incomes" class="form-control"
-                                placeholder="Gaji" required>
+                                placeholder="Salary or other" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" id="btnSaveKategoriKeuangan" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" id="btnSaveKategoriKeuangan" class="btn btn-primary">
+                            Save
+                        </button>
                     </div>
                 </form>
             </div>
@@ -79,17 +85,17 @@
     <script>
         function addCategoryIncome() {
             $('#categoryIncomeModal').modal('show');
-            $('#categoryIncomeModalLabel').html('Tambah Kategori Uang Masuk');
+            $('#categoryIncomeModalLabel').html('Add New Income Category');
             $('#id_category_income').val('');
             $('#form-tambah-kategori-income').trigger('reset');
-            $('#btnSaveKategoriKeuangan').html('Simpan');
+            $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
         }
 
         function updateKategoriIncome(id){
             $('#form-tambah-kategori-income').trigger('reset');
             $('#categoryIncomeModal').modal('show');
-            $('#categoryIncomeModalLabel').html('Update Kategori Uang Masuk');
+            $('#categoryIncomeModalLabel').html('Edit Income Category');
             $('#id_category_income').val(id);
             $('#btnSaveKategoriKeuangan').html('Simpan Perubahan');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
@@ -118,13 +124,13 @@
         function deleteKategoriIncome(id){
             Swal.fire({
                 title: 'Apakah anda yakin?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
+                text: "Data will be deleted!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

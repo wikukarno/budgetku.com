@@ -4,12 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryFinanceRequest;
+use App\Http\Requests\StoreCategoryFinanceRequest;
 use App\Models\CategoryFinance;
-use App\Models\User;
 use App\Services\CategoryFinanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class UserCategoryFinancesController extends Controller
 {
@@ -86,7 +85,7 @@ class UserCategoryFinancesController extends Controller
         return view('v2.user.category.expense.index');
     }
 
-    public function store(CategoryFinanceRequest $request)
+    public function store(StoreCategoryFinanceRequest $request)
     {
         $categoryFinance = CategoryFinance::find($request->id);
 

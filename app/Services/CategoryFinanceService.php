@@ -20,23 +20,33 @@ class CategoryFinanceService
         DB::beginTransaction();
         try {
             $id = $validated['id'] ?? null;
-            $data = $this->categoryFinanceRepository->updateOrCreate(
-                ['id' => $id],
-                [
-                    'users_id' => Auth::id(),
-                    'name_category_finances' => $validated['name_category_finances'],
-                ]
-            );
 
-            if ($data->wasRecentlyCreated) {
-                DB::commit();
+            // Cek apakah data lama ada (update) atau baru (create)
+            $category = $id
+                ? $this->categoryFinanceRepository->find($id)
+                : new \App\Models\CategoryFinance();
+
+            // Set data
+            $category->users_id = Auth::id();
+            $category->name_category_finances = $validated['name_category_finances'];
+
+            $isNew = !$category->exists;
+            $wasChanged = $category->isDirty(); // Cek apakah ada perubahan
+
+            // Simpan data
+            $category->save();
+
+            DB::commit();
+
+            if ($isNew) {
                 return ['status' => 'success', 'message' => 'Data added successfully'];
-            } elseif ($data->wasChanged()) {
-                DB::commit();
-                return ['status' => 'success', 'message' => 'Data updated successfully'];
-                DB::rollBack();
-                return ['status' => 'error', 'message' => 'No changes have been made'];
             }
+
+            if ($wasChanged) {
+                return ['status' => 'success', 'message' => 'Data updated successfully'];
+            }
+
+            return ['status' => 'error', 'message' => 'No changes have been made'];
         } catch (\Exception $e) {
             DB::rollBack();
             return ['status' => 'error', 'message' => $e->getMessage()];
