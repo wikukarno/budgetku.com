@@ -105,6 +105,9 @@ Route::prefix('/pages/admin')
         // Route custome category income v2
         Route::get('/category/income/v2', [UserCategoryIncomeController::class, 'indexv2'])->name('category.income.index.v2');
 
+        // Route custom category finance v2
+        Route::get('/category/expense/v2', [UserCategoryFinancesController::class, 'indexv2'])->name('category.expense.index.v2');
+
         // Route custom income
         Route::get('/income/show', [UserIncomeController::class, 'show'])->name('income.show');
         Route::delete('/income/delete', [UserIncomeController::class, 'destroy'])->name('income.destroy');

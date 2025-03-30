@@ -30,13 +30,12 @@ class CategoryFinanceService
 
             if ($data->wasRecentlyCreated) {
                 DB::commit();
-                return ['status' => 'success', 'message' => 'Data berhasil ditambahkan'];
+                return ['status' => 'success', 'message' => 'Data added successfully'];
             } elseif ($data->wasChanged()) {
                 DB::commit();
-                return ['status' => 'success', 'message' => 'Data berhasil diubah'];
-            } else {
+                return ['status' => 'success', 'message' => 'Data updated successfully'];
                 DB::rollBack();
-                return ['status' => 'error', 'message' => 'Data tidak ada yang berubah'];
+                return ['status' => 'error', 'message' => 'No changes have been made'];
             }
         } catch (\Exception $e) {
             DB::rollBack();

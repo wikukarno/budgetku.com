@@ -15,6 +15,11 @@ class CategoryIncome extends Model
         'name_category_incomes',
     ];
 
+    protected $casts = [
+        'id' => 'integer',
+        'users_id' => 'integer',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'users_id', 'id');

@@ -36,6 +36,14 @@
                         <span class="title">Income Categories</span>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('pages/customer/category/expense/v2') ? 'open' : '' }}">
+                    <a href="{{ route('category.expense.index.v2') }}" class="menu-link {{ request()->is('pages/customer/category/expense/v2') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            list_alt
+                        </span>
+                        <span class="title">Expense Categories</span>
+                    </a>
+                </li>
             @endif
 
             <li class="menu-title small text-uppercase">

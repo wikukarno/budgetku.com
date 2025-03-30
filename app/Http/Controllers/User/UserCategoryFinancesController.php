@@ -56,14 +56,34 @@ class UserCategoryFinancesController extends Controller
         return view('user.kategori-finance.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function indexv2()
     {
-        //
+        if (request()->ajax()) {
+            $query = CategoryFinance::where('users_id', Auth::id());
+
+            return datatables()->of($query)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($item) {
+                    return $item->created_at->isoFormat('D MMMM Y');
+                })
+                ->editColumn('updated_at', function ($item) {
+                    return $item->updated_at->isoFormat('D MMMM Y');
+                })
+                ->editColumn('action', function ($item) {
+                    return '
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriFinance(' . $item->id . ')">
+                            Edit
+                        </a>
+                        
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriFinance(' . $item->id . ')">
+                            Hapus
+                        </a>
+                    ';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('v2.user.category.expense.index');
     }
 
     public function store(CategoryFinanceRequest $request)
@@ -86,36 +106,13 @@ class UserCategoryFinancesController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryFinance::find($request->id);
-        if (!$data) {
-            // Memberikan response jika data tidak ditemukan
-            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
-        }
-        $this->authorize('view', $data, CategoryFinance::class);
+        $data = CategoryFinance::where('id', $request->id)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
+
+        $this->authorize('view', $data);
+
         return response()->json($data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -126,14 +123,17 @@ class UserCategoryFinancesController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryFinance::find($request->id);
-        if (!$data) {
-            // Memberikan response jika data tidak ditemukan
-            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
-        }
+        $data = CategoryFinance::where('id', $request->id)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
 
-        $this->authorize('delete', $data, CategoryFinance::class);
+        $this->authorize('delete', $data);
         $data->delete();
-        return response()->json($data);
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Data deleted successfully'
+            ]
+        );
     }
 }

@@ -16,22 +16,22 @@ class CategoryFinancePolicy
         // Periksa apakah pengguna adalah pemilik category finance
         return $user->id === $categoryFinance->users_id
             ? Response::allow()
-            : Response::deny('Anda tidak memiliki akses untuk melihat data ini');
+            : Response::deny('You do not own this category finance');
     }
 
-    public function updateOrCreate(User $user, CategoryFinance $categoryFinance = null)
+    public function updateOrCreate(User $user, CategoryFinance $categoryFinance)
     {
         // Periksa apakah pengguna adalah pemilik category finance untuk update
         return $user->id === $categoryFinance->users_id
             ? Response::allow()
-            : Response::deny('Anda tidak memiliki akses untuk mengubah data ini');
+            : Response::deny('You do not have access to update this data');
     }
 
-    public function delete(User $user, CategoryFinance $categoryFinance = null)
+    public function delete(User $user, CategoryFinance $categoryFinance)
     {
         // Periksa apakah pengguna adalah pemilik category finance untuk delete
         return $user->id === $categoryFinance->users_id
             ? Response::allow()
-            : Response::deny('Anda tidak memiliki akses untuk menghapus data ini');
+            : Response::deny('You do not have access to delete this data');
     }
 }
