@@ -1,6 +1,6 @@
 @extends('layouts.v2.app')
 
-@section('title', 'Expense Categories')
+@section('title', 'Expense Category')
     
 @section('content')
     <div class="card bg-white border-0 rounded-3 mb-4">
