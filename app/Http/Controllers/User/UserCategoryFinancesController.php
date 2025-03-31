@@ -130,7 +130,7 @@ class UserCategoryFinancesController extends Controller
         $data->delete();
         return response()->json(
             [
-                'status' => 'success',
+                'status' => true,
                 'message' => 'Data deleted successfully'
             ]
         );

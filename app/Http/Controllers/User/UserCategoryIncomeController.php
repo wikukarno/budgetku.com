@@ -129,6 +129,11 @@ class UserCategoryIncomeController extends Controller
         $data = CategoryIncome::find($request->id);
         $this->authorize('delete', $data);
         $data->delete();
-        return response()->json($data);
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Data deleted successfully',
+            ]
+        );
     }
 }

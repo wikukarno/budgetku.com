@@ -42,6 +42,7 @@
             <!-- End Header Area -->
 
             <div class="main-content-container overflow-hidden">
+                <div id="customAlertWrapper" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
                 @yield('content')
             </div>
 

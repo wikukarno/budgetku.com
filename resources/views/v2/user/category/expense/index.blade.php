@@ -3,14 +3,6 @@
 @section('title', 'Expense Categories')
     
 @section('content')
-    <div class="alert alert-success alert-dismissible d-none" role="alert">
-        <span id="success_message"></span>
-        <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div class="alert alert-danger alert-dismissible d-none" role="alert">
-        <span id="danger_message"></span>
-        <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
     <div class="card bg-white border-0 rounded-3 mb-4">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
@@ -77,7 +69,6 @@
 
 @push('after-scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <script>
         function addCategoryExpense() {
             $('#categoryExpenseModal').modal('show');
@@ -141,15 +132,13 @@
                         },
                         success: function(res){
                             $('#categoryExpenseTable').DataTable().ajax.reload();
-                            $('#success_message').text(res.message);
-                            $('.alert-success').removeClass('d-none');
+                            showCustomAlert('success', res.message);
                         },
                         complete: function(){
                             $(".preloader").fadeOut();
                         },
                         error: function(data){
-                            $('#danger_message').text(data.responseJSON.message);
-                            $('.alert-danger').removeClass('d-none');
+                            showCustomAlert('danger', data.responseJSON.message);
                         }
                     });
                 }
@@ -172,8 +161,7 @@
                     $('#btnSaveKategoriKeuangan').attr('disabled', true);
                 },
                 success: (data) => {
-                    $('#success_message').text(data.message);
-                    $('.alert-success').removeClass('d-none');
+                    showCustomAlert('success', data.message);
                     $('#form-tambah-kategori-finance').trigger('reset');
                     $('#categoryExpenseModal').modal('hide');
                     $('#categoryExpenseTable').DataTable().ajax.reload();
@@ -182,8 +170,9 @@
                     $('#categoryExpenseModal').modal('hide');
                 },
                 error: function(data){
-                    $('#danger_message').text(data.responseJSON.message);
-                    $('.alert-danger').removeClass('d-none');
+                    showCustomAlert('danger', data.responseJSON.message);
+                    $('#btnSaveKategoriKeuangan').html('Save');
+                    $('#btnSaveKategoriKeuangan').attr('disabled', false);
                 }
             });
         });
