@@ -25,37 +25,8 @@ class UserCategoryFinancesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
-    {
-        if (request()->ajax()) {
-            $query = CategoryFinance::where('users_id', Auth::id());
-
-            return datatables()->of($query)
-                ->addIndexColumn()
-                ->editColumn('created_at', function ($item) {
-                    return $item->created_at->isoFormat('D MMMM Y');
-                })
-                ->editColumn('updated_at', function ($item) {
-                    return $item->updated_at->isoFormat('D MMMM Y');
-                })
-                ->editColumn('action', function ($item) {
-                    return '
-                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary" onclick="updateKategoriFinance(' . $item->id . ')">
-                            Edit
-                        </a>
-                        
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteKategoriFinance(' . $item->id . ')">
-                            Hapus
-                        </a>
-                    ';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-        return view('user.kategori-finance.index');
-    }
-
-    public function indexv2()
     {
         if (request()->ajax()) {
             $query = CategoryFinance::where('users_id', Auth::id());

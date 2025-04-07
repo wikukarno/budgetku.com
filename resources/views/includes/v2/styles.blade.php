@@ -168,4 +168,20 @@
             border: 1px solid #dee2e6;
         }
     }
+
+    .count {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 4px 12px !important;
+        min-width: 60px !important;
+        text-align: center !important;
+        border-radius: 999px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        height: 30px !important;
+        /* FIX: biar sejajar */
+    }
 </style>

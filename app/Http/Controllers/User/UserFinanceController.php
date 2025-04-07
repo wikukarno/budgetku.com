@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessUangKeluarEmail;
 use App\Models\CategoryFinance;
 use App\Models\Finance;
+use App\Models\PaymentMethod;
 use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
@@ -13,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Yajra\DataTables\Exceptions\Exception;
+use Illuminate\Support\Facades\Storage;
 use PDF;
 
 class UserFinanceController extends Controller
@@ -39,10 +40,10 @@ class UserFinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('expense.edit', $item->id) . '" class="btn btn-sm btn-warning">
+                        <a href="' . route('customer.expense.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteExpense(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteExpense(' . $item->id . ')">
                             Delete
                         </a>
                     ';
@@ -56,7 +57,7 @@ class UserFinanceController extends Controller
             ->where('users_id', Auth::id())
             ->groupBy('year')
             ->get();
-        return view('user.expense.index', [
+        return view('v2.user.expense.index', [
             'categories' => $categories,
             'filterByYear' => $filterByYear
         ]);
@@ -83,7 +84,7 @@ class UserFinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('expense.edit', $item->id) . '" class="btn btn-sm btn-warning">
+                        <a href="' . route('customer.expense.edit', $item->id) . '" class="btn btn-sm btn-warning">
                             Edit
                         </a>
                         <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteExpense(' . $item->id . ')">
@@ -100,7 +101,7 @@ class UserFinanceController extends Controller
             ->where('users_id', Auth::id())
             ->groupBy('year')
             ->get();
-        return view('user.expense.index', [
+        return view('v2.user.expense.index', [
             'categories' => $categories,
             'filterByYear' => $filterByYear
         ]);
@@ -138,43 +139,45 @@ class UserFinanceController extends Controller
     public function create()
     {
         $categories = CategoryFinance::where('users_id', Auth::id())->get();
-        return view('user.expense.create', compact('categories'));
+        $paymentMethods = PaymentMethod::select('id', 'name')->get();
+        return view('v2.user.expense.create', compact('categories', 'paymentMethods'));
     }
 
     public function store(Request $request)
     {
+        // Validasi dulu sebelum simpan
+        $request->validate([
+            'category_finances_id' => 'required|exists:category_finances,id',
+            'name_item' => 'required|string|max:255',
+            'price' => 'required|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_by' => 'nullable|string|max:255',
+            'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
         try {
-
-            if($request->hasFile('bukti_pembayaran')) {
-                $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
-            }else{
-                $file = null;
-            }
-
+            // Simpan data utama tanpa file dulu
             $data = Finance::create([
                 'users_id' => Auth::id(),
                 'category_finances_id' => $request->category_finances_id,
                 'name_item' => $request->name_item,
-                'price' => str_replace(
-                    ['Rp. ', '.'],
-                    ['', ''],
-                    $request->price
-                ),
+                'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date ?? Carbon::now(),
                 'purchase_by' => $request->purchase_by ?? 'Tunai',
-                'bukti_pembayaran' => $file
+                'bukti_pembayaran' => null, // sementara null
             ]);
 
-            $user = User::where('email', Auth::user()->email)->first();
+            // Kalau ada file, baru simpan ke storage dan update data
+            if ($request->hasFile('bukti_pembayaran')) {
+                $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
+                $data->update(['bukti_pembayaran' => $file]);
+            }
 
-            $userId = Auth::user()->id;
+            // Proses saldo & email
+            $user = Auth::user();
 
-            $salary = Salary::where('users_id', $userId)
-            ->sum('salary');
-
-            $pengeluaran = Finance::where('users_id', $userId)
-                ->sum('price');
-
+            $salary = Salary::where('users_id', $user->id)->sum('salary');
+            $pengeluaran = Finance::where('users_id', $user->id)->sum('price');
             $saldo = $salary - $pengeluaran;
 
             $sendEmail = [
@@ -183,16 +186,19 @@ class UserFinanceController extends Controller
                 'saldo' => $saldo
             ];
 
-            ProcessUangKeluarEmail::dispatch($sendEmail);
+            // ProcessUangKeluarEmail::dispatch($sendEmail);
 
-            if ($data) {
-                return to_route('expense.index');
-            } else {
-                return to_route('expense.index');
-            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Data saved successfully'
+            ]);
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-            return to_route('expense.index');
+            Log::error('Finance Store Error: ' . $th->getMessage());
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Data failed to save'
+            ]);
         }
     }
 
@@ -207,60 +213,70 @@ class UserFinanceController extends Controller
         $data = Finance::findOrFail($id);
         $categories = CategoryFinance::where('users_id', Auth::id())
             ->get();
-        return view('user.expense.edit', compact('data', 'categories'));
+        $data->price = 'Rp. ' . number_format($data->price, 0, ',', '.');
+        $paymentMethods = PaymentMethod::select('id', 'name')->get();
+        return view('v2.user.expense.edit', compact('data', 'categories', 'paymentMethods'));
     }
 
     public function update(Request $request, $id)
     {
-        if($request->hasFile('bukti_pembayaran')) {
-            $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
-        }
+        $request->validate([
+            'category_finances_id' => 'required|exists:category_finances,id',
+            'name_item' => 'required|string|max:255',
+            'price' => 'required|string',
+            'purchase_date' => 'required|date',
+            'purchase_by' => 'required|string|max:255',
+            'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // max 2MB
+        ]);
 
         try {
             $data = Finance::findOrFail($id);
             $this->authorize('update', $data);
-            $item = $data->update([
-                'users_id' => Auth::user()->id,
+
+            $updated = $data->update([
+                'users_id' => Auth::id(),
                 'category_finances_id' => $request->category_finances_id,
                 'name_item' => $request->name_item,
-                'price' => str_replace(
-                    ['Rp. ', '.'],
-                    ['', ''],
-                    $request->price
-                ),
+                'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date,
                 'purchase_by' => $request->purchase_by,
-                'bukti_pembayaran' => $file ?? $data->bukti_pembayaran
             ]);
 
-            $user = User::where('email', Auth::user()->email)->first();
+            if ($updated && $request->hasFile('bukti_pembayaran')) {
+                if ($data->bukti_pembayaran && Storage::disk('public')->exists($data->bukti_pembayaran)) {
+                    Storage::disk('public')->delete($data->bukti_pembayaran);
+                }
 
-            $userId = Auth::user()->id;
+                $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
 
-            $salary = Salary::where('users_id', $userId)
-            ->sum('salary');
+                $data->update(['bukti_pembayaran' => $file]);
+            }
 
-            $pengeluaran = Finance::where('users_id', $userId)
-            ->sum('price');
-
+            // Hitung ulang saldo user
+            $user = Auth::user();
+            $salary = Salary::where('users_id', $user->id)->sum('salary');
+            $pengeluaran = Finance::where('users_id', $user->id)->sum('price');
             $saldo = $salary - $pengeluaran;
 
             $sendEmail = [
-                'finance' => $item,
+                'finance' => $data,
                 'user' => $user,
                 'saldo' => $saldo
             ];
 
-            ProcessUangKeluarEmail::dispatch($sendEmail);
+            // ProcessUangKeluarEmail::dispatch($sendEmail);
 
-
-            if ($item) {
-                return to_route('expense.index');
-            } else {
-                return to_route('expense.index');
-            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Data updated successfully'
+            ]);
         } catch (\Throwable $th) {
-            return to_route('expense.index');
+            Log::error('Finance Update Error: ' . $th->getMessage());
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Data failed to update'
+            ]);
         }
     }
 
@@ -274,12 +290,12 @@ class UserFinanceController extends Controller
 
             return response()->json([
                 'code' => 200,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Data deleted successfully'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'code' => 500,
-                'message' => 'Data gagal dihapus'
+                'message' => 'Data failed to delete'
             ]);
         }
     }

@@ -41,10 +41,10 @@ class UserIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('income.edit', $item->id) . '" class="btn btn-sm btn-warning">
+                        <a href="' . route('customer.income.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="deleteSalary(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(' . $item->id . ')">
                             Delete
                         </a>
                     ';
@@ -54,7 +54,7 @@ class UserIncomeController extends Controller
         }
 
         
-        return view('user.salary.index');
+        return view('v2.user.income.index');
     }
 
     /**
@@ -65,7 +65,7 @@ class UserIncomeController extends Controller
     public function create()
     {
         $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
-        return view('user.salary.create', compact('categoryIncome'));
+        return view('v2.user.income.create', compact('categoryIncome'));
     }
 
     /**
@@ -95,11 +95,14 @@ class UserIncomeController extends Controller
             'user' => $email
         ];
 
-        ProcessUangMasukEmail::dispatch(
-            $data
-        );
+        // ProcessUangMasukEmail::dispatch(
+        //     $data
+        // );
 
-        return to_route('income.index');
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Created Successfully',
+        ]);
     }
 
     /**
@@ -125,7 +128,8 @@ class UserIncomeController extends Controller
         $data = Salary::where('users_id', Auth::id())->findOrFail($id);
         $categoryIncome = CategoryIncome::where('users_id', Auth::id())
             ->get();
-        return view('user.salary.edit', compact('data', 'categoryIncome'));
+        $data->salary = 'Rp. ' . number_format($data->salary, 0, ',', '.');
+        return view('v2.user.income.edit', compact('data', 'categoryIncome'));
     }
 
     /**
@@ -141,26 +145,6 @@ class UserIncomeController extends Controller
             DB::transaction(function () use ($id, $request) {
                 $data = Salary::findOrFail($id); // Gunakan findOrFail untuk memastikan data ditemukan
                 $this->authorize('update', $data);
-
-                $userId = Auth::user()->id;
-                $lastMonth = Carbon::now()->subMonth();
-                $pengeluaran = 0;
-
-                $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
-                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
-                ->pluck('date')->toArray();
-
-                $salary = Salary::where('users_id', $userId)
-                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
-                ->sum('salary');
-
-                if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
-                    $pengeluaran = Finance::where('users_id', $userId)
-                        ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
-                        ->sum('price');
-                } else {
-                    $pengeluaran = 0;
-                }
 
                 // kalau update tanggal melebihi tanggal sekarang maka akan error
                 if ($request->date > Carbon::now()->format('Y-m-d')) {
@@ -180,18 +164,18 @@ class UserIncomeController extends Controller
                 $data->description = $request->description;
                 $data->save();
 
-                $totalPendapatan = $salary - $pengeluaran;
-
-                // update saldo
-                $user = User::find(Auth::id());
-                $user->saldo = $totalPendapatan;
-                $user->save();
-
             });
 
-            return redirect()->route('income.index');
+            return response()->json([
+                'status' => true,
+                'message' => 'Data Updated Successfully',
+            ]);
         } catch (\Throwable $th) {
-            return redirect()->route('income.index')->withErrors(['error' => $th->getMessage()]);
+            Log::error('Error updating data: ' . $th->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Failed to Update',
+            ]);
         }
     }
 
@@ -208,19 +192,15 @@ class UserIncomeController extends Controller
             $this->authorize('delete', $data);
             $data->delete();
 
-            // Update saldo
-            $user = User::find(Auth::id());
-            $user->saldo -= $data->salary;
-            $user->save();
-
             return response()->json([
                 'code' => 200,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Data Deleted Successfully',
             ]);
         } catch (\Throwable $th) {
+            Log::error('Error deleting data: ' . $th->getMessage());
             return response()->json([
                 'code' => 500,
-                'message' => 'Data gagal dihapus'
+                'message' => 'Data Failed to Delete',
             ]);
         }
     }

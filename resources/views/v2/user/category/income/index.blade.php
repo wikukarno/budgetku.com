@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit" id="btnSaveKategoriKeuangan" class="btn btn-primary">
@@ -94,7 +94,7 @@
             
             $.ajax({
                 type:"GET",
-                url: "{{ route('category-income.show') }}",
+                url: "{{ route('customer.category.income.show') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     id:id
@@ -127,7 +127,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type:"DELETE",
-                        url: "{{ route('category-income.destroy') }}",
+                        url: "{{ route('customer.category.income.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
                             id:id
@@ -154,7 +154,7 @@
             
             $.ajax({
                 type: 'POST',
-                url: "{{ route('category-income.store') }}",
+                url: "{{ route('customer.category.income.store') }}",
                 data: formData,
                 cache: false,
                 contentType: false,

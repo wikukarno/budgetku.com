@@ -83,59 +83,6 @@
             </span>
         </li>
 
-        @elseif (Auth::user()->roles == 'Customer')
-
-        <li class="nav-item {{ (request()->is('pages/customer/dashboard') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('customer.dashboard') }}">
-                <span class="menu-title">Dashboard</span>
-                <i class="mdi mdi-home menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/customer/category-finance') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('category-finance.index') }}">
-                <span class="menu-title">
-                    Expense Category
-                </span>
-                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/customer/category-income') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('category-income.index') }}">
-                <span class="menu-title">
-                    Income Category
-                </span>
-                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/customer/income') ? 'active' : '') }}">
-            <a class="nav-link " href="{{ route('income.index') }}">
-                <span class="menu-title">Income</span>
-                <i class="mdi mdi mdi-currency-usd menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/customer/expense') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('expense.index') }}">
-                <span class="menu-title">Expense</span>
-                <i class="mdi mdi-cash-100 menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ (request()->is('pages/customer/akun') ? 'active' : '') }}">
-            <a class="nav-link" href="{{ route('akun.index') }}">
-                <span class="menu-title">Account</span>
-                <i class="mdi mdi-account-box-outline menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item sidebar-actions">
-            <span class="nav-link d-grid">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-block col btn-lg btn-gradient-primary mt-4">
-                        Keluar
-                    </button>
-                </form>
-            </span>
-        </li>
-
         @endif
     </ul>
 </nav>

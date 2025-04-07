@@ -30,7 +30,7 @@
                             <i class="material-symbols-outlined text-body">fullscreen</i>
                         </button>
                     </li>
-                    <li class="header-right-item">
+                    {{-- <li class="header-right-item">
                         <div class="dropdown notifications noti">
                             <button class="btn btn-secondary border-0 p-0 position-relative badge" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -137,7 +137,7 @@
                                 </a>
                             </div>
                         </div>
-                    </li>
+                    </li> --}}
                     <li class="header-right-item">
                         <div class="dropdown admin-profile">
                             <div class="d-xxl-flex align-items-center bg-transparent border-0 text-start p-0 cursor dropdown-toggle"
@@ -150,7 +150,9 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-none d-xxl-block">
                                             <div class="d-flex align-content-center">
-                                                <h3>Olivia</h3>
+                                                <h3>
+                                                    {{ Auth::user()->name }}
+                                                </h3>
                                             </div>
                                         </div>
                                     </div>
@@ -164,28 +166,32 @@
                                             src="{{ asset('v2/images/administrator.jpg') }}" alt="admin">
                                     </div>
                                     <div class="flex-grow-1 ms-2">
-                                        <h3 class="fw-medium">William John</h3>
-                                        <span class="fs-12">Marketing Manager</span>
+                                        <h3 class="fw-medium">
+                                            {{ Auth::user()->name }}
+                                        </h3>
+                                        <span class="fs-12">
+                                            {{ Auth::user()->roles }}
+                                        </span>
                                     </div>
                                 </div>
                                 <ul class="admin-link ps-0 mb-0 list-unstyled">
                                     <li>
                                         <a class="dropdown-item d-flex align-items-center text-body"
-                                            href="my-profile.html">
+                                            href="{{ route('customer.account.index') }}">
                                             <i class="material-symbols-outlined">account_circle</i>
                                             <span class="ms-2">My Profile</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a class="dropdown-item d-flex align-items-center text-body"
                                             href="my-profile.html">
                                             <i class="material-symbols-outlined">credit_card </i>
                                             <span class="ms-2">Billing</span>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                                 <ul class="admin-link ps-0 mb-0 list-unstyled">
-                                    <li>
+                                    {{-- <li>
                                         <a class="dropdown-item d-flex align-items-center text-body"
                                             href="settings.html">
                                             <i class="material-symbols-outlined">settings </i>
@@ -205,9 +211,9 @@
                                             <i class="material-symbols-outlined">lock</i>
                                             <span class="ms-2">Lock Screen</span>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                     <li>
-                                        <a class="dropdown-item d-flex align-items-center text-body" href="login.html">
+                                        <a class="dropdown-item d-flex align-items-center text-body" onclick="logout()">
                                             <i class="material-symbols-outlined">logout</i>
                                             <span class="ms-2">Logout</span>
                                         </a>
