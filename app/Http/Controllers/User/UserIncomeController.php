@@ -95,9 +95,9 @@ class UserIncomeController extends Controller
             'user' => $email
         ];
 
-        // ProcessUangMasukEmail::dispatch(
-        //     $data
-        // );
+        ProcessUangMasukEmail::dispatch(
+            $data
+        );
 
         return response()->json([
             'status' => true,

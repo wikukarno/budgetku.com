@@ -186,7 +186,7 @@ class UserFinanceController extends Controller
                 'saldo' => $saldo
             ];
 
-            // ProcessUangKeluarEmail::dispatch($sendEmail);
+            ProcessUangKeluarEmail::dispatch($sendEmail);
 
             return response()->json([
                 'status' => true,
@@ -264,7 +264,7 @@ class UserFinanceController extends Controller
                 'saldo' => $saldo
             ];
 
-            // ProcessUangKeluarEmail::dispatch($sendEmail);
+            ProcessUangKeluarEmail::dispatch($sendEmail);
 
             return response()->json([
                 'status' => true,
