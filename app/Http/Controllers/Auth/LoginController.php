@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Models\Finance;
 use App\Models\Salary;
+use App\Notifications\UserLoginNotification;
+use App\Notifications\UserRegisteredNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Providers\RouteServiceProvider;
@@ -51,18 +53,24 @@ class LoginController extends Controller
         if ($findUser) {
             Auth::login($findUser);
 
-            if ($findUser->roles == 'Owner') {
-                return to_route('dashboard');
-            } else {
-                return to_route('customer.dashboard');
-            }
+            // Kirim email notifikasi login
+            $findUser->notify(new UserLoginNotification());
+
+            return $findUser->roles == 'Owner'
+                ? to_route('dashboard')
+                : to_route('customer.dashboard');
         } else {
             $newUser = User::create([
                 'name' => $user->name,
                 'email' => $user->email,
                 'roles' => 'Customer',
             ]);
+
             Auth::login($newUser);
+
+            // Kirim email notifikasi pendaftaran
+            $newUser->notify(new UserRegisteredNotification());
+
             return to_route('customer.dashboard');
         }
     }
