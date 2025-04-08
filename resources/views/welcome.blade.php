@@ -5,57 +5,38 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="title" content="BudgetKu - Smart Financial Management Made Easy">
+    <meta name="title" content="BudgetKu - Aplikasi Keuangan Pribadi Terbaik untuk Atur Pengeluaran & Pemasukan">
     <meta name="description"
-        content="Track your income, expenses, and budgeting effortlessly with BudgetKu. Gain real-time insights and take control of your finances today!">
+        content="BudgetKu adalah aplikasi manajemen keuangan pribadi yang membantu kamu mencatat pemasukan, pengeluaran, dan mengatur anggaran bulanan dengan mudah. Dapatkan insight keuangan secara real-time dan kontrol arus kas kamu hari ini!">
     <meta name="keywords"
-        content="budgeting, finance, money management, expense tracking, personal finance, financial planning">
+        content="aplikasi keuangan pribadi, catatan keuangan, budgeting, pengeluaran bulanan, aplikasi pengatur uang, manajemen keuangan, aplikasi keuangan Indonesia, pengatur pengeluaran, aplikasi budgeting terbaik, kelola uang harian">
     <meta name="author" content="BudgetKu">
     <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://budgetku.com/">
-    <meta property="og:title" content="BudgetKu - Smart Financial Management Made Easy">
-    <meta property="og:description"
-        content="Track your income, expenses, and budgeting effortlessly with BudgetKu. Gain real-time insights and take control of your finances today!">
-    <meta property="og:image" content="https://budgetku.com/assets/images/og-image.jpg">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://budgetku.com/">
-    <meta property="twitter:title" content="BudgetKu - Smart Financial Management Made Easy">
-    <meta property="twitter:description"
-        content="Track your income, expenses, and budgeting effortlessly with BudgetKu. Gain real-time insights and take control of your finances today!">
-    <meta property="twitter:image" content="https://budgetku.com/assets/images/twitter-image.jpg">
+    <meta name="language" content="en">
     
     <!-- Favicon -->
-    <link rel="icon" sizes="32x32" type="image/png" href="{{ asset('assets-v2/images/favicon.png') }}">
+    <link rel="icon" sizes="32x32" type="image/png" href="{{ asset('v2/images/favicon.png') }}">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://budgetku.com/">
 
     <!-- Links Of CSS File -->
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/sidebar-menu.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/simplebar.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/apexcharts.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/prism.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/rangeslider.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/sweetalert.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/quill.snow.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/google-icon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/swiper-bundle.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/fullcalendar.main.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets-v2/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/sidebar-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/simplebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/apexcharts.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/prism.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/rangeslider.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/sweetalert.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/quill.snow.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/google-icon.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/fullcalendar.main.css') }}">
+    <link rel="stylesheet" href="{{ asset('v2/css/style.css') }}">
     <!-- Favicon -->
-    <link rel="icon" sizes="32x32" type="image/png" href="{{ asset('assets-v2/images/favicon.png') }}">
+    <link rel="icon" sizes="32x32" type="image/png" href="{{ asset('v2/images/favicon.png') }}">
     <!-- Title -->
-    <title>
-        BudgetKu - Application for Managing Your Budget
-    </title>
+    <title>BudgetKu - Smart Personal Finance Management App</title>
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%"
@@ -81,7 +62,7 @@
     <nav class="navbar navbar-expand-lg bg-white bg-opacity-25 fixed-top" id="navbar">
         <div class="container">
             <a class="navbar-brand me-xl-5 me-3" href="landing-page.html">
-                <img src="{{ asset('assets-v2/images/logo-sm-vertical.svg') }}" alt="logo">
+                <img src="{{ asset('v2/images/logo.svg') }}" alt="logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -104,7 +85,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fs-16 fw-medium text-body hover px-0 px-md-2 mx-1 mx-xl-0 px-xl-4"
-                            href="#contact">Contact</a>
+                            href="#footer">Contact</a>
                     </li>
                 </ul>
                 <div class="othres">
@@ -136,8 +117,8 @@
                 </a>
             </div>
 
-            <img src="assets-v2/images/landing/shape-3.png" class="shape shape-7" alt="shape">
-            <img src="assets-v2/images/landing/shape-4.png" class="shape shape-8" alt="shape">
+            <img src="v2/images/landing/shape-3.png" class="shape shape-7" alt="shape">
+            <img src="v2/images/landing/shape-4.png" class="shape shape-8" alt="shape">
         </div>
     </div>
     <!-- End Banner Area -->
@@ -184,14 +165,14 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="key-features-single-item">
                         <i
-                            class="material-symbols-outlined wh-87 bg-danger bg-opacity-25 d-inline-block text-danger">
-                            lock
+                            class="material-symbols-outlined wh-87 bg-primary-div bg-opacity-25 d-inline-block text-primary-div">
+                            pie_chart
                         </i>
                         <h3>
-                            Privacy & Security
+                            Smart Budget Planning
                         </h3>
                         <p>
-                            Your data is encrypted and protected, ensuring your financial information stays private and secure.
+                            Plan monthly budgets, track spending categories, and make sure your money goes where it matters most.
                         </p>
                     </div>
                 </div>
@@ -206,7 +187,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-5 text-center">
                     <div class="tailor-img">
-                        <img src="assets-v2/images/brand.svg" alt="tailor">
+                        <img src="{{ asset('v2/images/brand.svg') }}" alt="tailor">
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -258,8 +239,12 @@
                                         <i class="material-symbols-outlined fs-20 text-primary">done_outline</i>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h3>Secure & Private</h3>
-                                        <p>Your financial data is protected with top-tier security, ensuring privacy and peace of mind.</p>
+                                        <h3>
+                                            Smart Budget Planning
+                                        </h3>
+                                        <p>
+                                            Plan monthly budgets, track spending categories, and make sure your money goes where it matters most.
+                                        </p>
                                     </div>
                                 </div>
                             </li>
@@ -268,8 +253,8 @@
                 </div>
             </div>
         </div>
-        <img src="assets-v2/images/landing/shape-1.png" class="shape shape-1" alt="shape">
-        <img src="assets-v2/images/landing/shape-2.png" class="shape shape-2" alt="shape">
+        <img src="v2/images/landing/shape-1.png" class="shape shape-1" alt="shape">
+        <img src="v2/images/landing/shape-2.png" class="shape shape-2" alt="shape">
     </div>
     <!-- End Tailor Area -->
 
@@ -280,7 +265,13 @@
                 <span class="top-title">
                     <span>FAQ’s</span>
                 </span>
-                <h2>Inspiring Feedback: What Users Love About Trezo Dashboard</h2>
+                <h2>
+                    Frequently Asked Questions
+                </h2>
+                <p class="mb-0">
+                    Have questions? We have answers! Explore our FAQ section to find out more about BudgetKu and how it can
+                    help you manage your finances better.
+                </p>
             </div>
 
             <div class="accordion faq-wrapper mw-740 m-auto" id="accordionExample">
@@ -330,13 +321,14 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button text-secondary bg-white collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" role="button">
-                            How secure is my financial data on BudgetKu?
+                            Can I customize my budget categories?
                         </button>
                     </h2>
                     <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <p>Your privacy is our priority. BudgetKu uses advanced encryption and strict security measures to
-                                protect your financial data, ensuring it remains private and accessible only to you.</p>
+                            <p>
+                                Absolutely. You can create, edit, and manage your own categories easily.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -354,7 +346,7 @@
                         <h2>Unlock the Power of Smart Budgeting with BudgetKu.</h2>
                         <p>Take control of your finances effortlessly with BudgetKu. Sign up today and discover how our
                             intuitive platform can simplify your money management.</p>
-                        <a href="contact.html" class="btn btn-primary-div py-2 px-4 fs-16 fw-medium rounded-3 text-white">
+                        <a href="{{ route('login') }}" class="btn btn-primary py-2 px-4 fs-16 fw-medium rounded-3 text-white">
                             <i class="ri-user-line fs-18"></i>
                             <span class="ms-1">Get Started - It's Free</span>
                         </a>
@@ -363,22 +355,37 @@
             </div>
         </div>
     
-        <img src="assets-v2/images/landing/shape-1.png" class="shape shape-front shape-5" alt="shape">
-        <img src="assets-v2/images/landing/shape-2.png" class="shape shape-front shape-6" alt="shape">
+        <img src="v2/images/landing/shape-1.png" class="shape shape-front shape-5 custom-shape" alt="shape">
+        <img src="v2/images/landing/shape-2.png" class="shape shape-front shape-6 custom-shape" alt="shape">
     </div>
     <!-- End Unlock Area -->
 
     <!-- Start Forter Area -->
-    <div class="footers-area pb-125 position-relative z-2">
+    <div class="footers-area pb-125 position-relative z-2" id="footer">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-sm-6">
                     <div class="footer-single-item mb-4">
-                        <a href="#" class="footer-logo d-inline-block mb-4">
-                            <img src="{{ asset('assets-v2/images/logo-sm-vertical.svg') }}" alt="BudgetKu Logo">
+                        <a href="/" class="footer-logo d-inline-block mb-4">
+                            <img src="{{ asset('v2/images/logo.svg') }}" alt="BudgetKu Logo"> 
                         </a>
                         <p class="mb-4 pb-lg-2">Manage your finances effortlessly with BudgetKu. Track income, expenses, and
                             budgets all in one place with real-time insights.</p>
+
+                        <ul class="list-unstyled text-muted fs-14">
+                            <li class="mb-1">
+                                <i class="ri-mail-line me-2 text-primary"></i>
+                                <a href="mailto:cs@budgetku.com" class="text-decoration-none text-muted">
+                                    cs@budgetku.com
+                                </a>
+                            </li>
+                            <li>
+                                <i class="ri-phone-line me-2 text-primary"></i>
+                                <a href="https://wa.me/6287831247352" target="_blank" class="text-decoration-none text-muted">
+                                    +62 878-3124-7352
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-lg-3 col-sm-6">
@@ -414,7 +421,7 @@
                                 <a href="faqs.html" class="text-decoration-none">FAQs</a>
                             </li>
                             <li class="mb-0">
-                                <a href="contact.html" class="text-decoration-none">Contact Us</a>
+                                <a href="#footer" class="text-decoration-none">Contact Us</a>
                             </li>
                         </ul>
                     </div>
@@ -459,22 +466,22 @@
     <!-- End Back To Up Area -->
 
     <!-- Link Of JS File -->
-    <script src="{{ asset('assets-v2/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/sidebar-menu.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/dragdrop.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/rangeslider.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/sweetalert.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/quill.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/data-table.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/prism.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/clipboard.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/feather.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/fullcalendar.main.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/custom/apexcharts.js') }}"></script>
-    <script src="{{ asset('assets-v2/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('v2/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('v2/js/sidebar-menu.js') }}"></script>
+    <script src="{{ asset('v2/js/dragdrop.js') }}"></script>
+    <script src="{{ asset('v2/js/rangeslider.min.js') }}"></script>
+    <script src="{{ asset('v2/js/sweetalert.js') }}"></script>
+    <script src="{{ asset('v2/js/quill.min.js') }}"></script>
+    <script src="{{ asset('v2/js/data-table.js') }}"></script>
+    <script src="{{ asset('v2/js/prism.js') }}"></script>
+    <script src="{{ asset('v2/js/clipboard.min.js') }}"></script>
+    <script src="{{ asset('v2/js/feather.min.js') }}"></script>
+    <script src="{{ asset('v2/js/simplebar.min.js') }}"></script>
+    <script src="{{ asset('v2/js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('v2/js/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('v2/js/fullcalendar.main.js') }}"></script>
+    <script src="{{ asset('v2/js/custom/apexcharts.js') }}"></script>
+    <script src="{{ asset('v2/js/custom/custom.js') }}"></script>
 </body>
 
 </html>

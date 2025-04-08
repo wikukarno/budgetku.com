@@ -11,8 +11,8 @@
     <div class="col-lg-6">
         <div class="mw-480 ms-lg-auto">
             <div class="d-inline-block mb-4">
-                <img src="{{ asset('logo.svg') }}" class="rounded-3 for-light-logo" alt="login">
-                <img src="auth/images/white-logo.svg" class="rounded-3 for-dark-logo" alt="login">
+                <img src="{{ asset('v2/images/logo.svg') }}" class="rounded-3 for-light-logo" alt="login">
+                <img src="{{ asset('v2/images/logo.svg') }}" class="rounded-3 for-dark-logo" alt="login">
             </div>
             <h3 class="fs-28 mb-2">Welcome back to BudgetKu!</h3>
             <p class="fw-medium fs-16 mb-4">Sign In or Sign Up with social account or enter your details</p>
