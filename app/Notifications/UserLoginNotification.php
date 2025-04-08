@@ -34,14 +34,18 @@ class UserLoginNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $dashboardUrl = $notifiable->roles === 'Owner'
+            ? 'https://budgetku.com/pages/admin/dashboard'
+            : 'https://budgetku.com/pages/customer/dashboard';
+
         return (new MailMessage)
             ->subject('New Login Detected')
-            ->greeting('Hi ' . $notifiable->name)
+            ->greeting('Hi ' . $notifiable->name . ' 👋')
             ->line('We noticed a new login to your BudgetKu account.')
             ->line('If this was you, you can ignore this message.')
             ->line('If not, please secure your account immediately.')
-            ->action('Open Dashboard', url('/dashboard'))
-            ->line('Stay safe with BudgetKu.');
+            ->action('Open Dashboard', $dashboardUrl)
+            ->line('Stay safe and smart with BudgetKu.');
     }
 
     /**
