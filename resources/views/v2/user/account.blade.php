@@ -97,450 +97,230 @@
             </div>
         </div> --}}
     </div>
-    {{-- <div class="row">
-        <div class="col-xxl-3">
+    <div class="row">
+        <div class="col-xxl-12">
             <div class="row">
                 <div class="col-xxl-12 col-md-6 col-lg-4">
                     <div class="card bg-white border-0 rounded-3 mb-4">
                         <div class="card-body p-4">
-                            <h3 class="mb-3 mb-lg-4">Profile Intro</h3>
-    
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="flex-shrink-0">
-                                    <img src="{{ asset('v2/images/user-70.png') }}" class="rounded-circle border border-2 wh-75"
-                                        alt="user">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h4 class="fs-17 mb-1 fw-semibold">Olivia John</h4>
-                                    <span class="fs-14">Marketing Manager</span>
-                                </div>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                <h3 class="mb-0">Account Settings</h3>
                             </div>
     
-                            <h4 class="fw-semibold fs-14 mb-2">About Me</h4>
-                            <p>Molestie tincidunt ut consequat a urna tortor. Vitae velit ac nisl velit mauris placerat nisi
-                                placerat. Pellentesque viverra lorem malesuada nunc tristique sapien. Imperdiet sit
-                                hendrerit tincidunt bibendum donec adipiscing.</p>
-                            <h4 class="fw-semibold fs-14 mb-2 pb-1">Social Profile</h4>
-                            <ul class="ps-0 mb-0 list-unstyled d-flex flex-wrap gap-2">
-                                <li>
-                                    <a href="https://www.facebook.com/" target="_blank"
-                                        class="text-decoration-none wh-30 d-inline-block lh-30 text-center rounded-circle text-white transition-y"
-                                        style="background-color: #3a559f;">
-                                        <i class="ri-facebook-fill"></i>
-                                    </a>
+                            {{-- Tabs --}}
+                            <ul class="nav nav-tabs mb-4" id="settingsTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="account-tab" data-bs-toggle="tab"
+                                        data-bs-target="#account" type="button" role="tab">Account Settings</button>
                                 </li>
-                                <li>
-                                    <a href="https://www.twitter.com/" target="_blank"
-                                        class="text-decoration-none wh-30 d-inline-block lh-30 text-center rounded-circle text-white transition-y"
-                                        style="background-color: #03a9f4;">
-                                        <i class="ri-twitter-x-line"></i>
-                                    </a>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="password-tab" data-bs-toggle="tab"
+                                        data-bs-target="#password" type="button" role="tab">Change Password</button>
                                 </li>
-                                <li>
-                                    <a href="https://www.linkedin.com/" target="_blank"
-                                        class="text-decoration-none wh-30 d-inline-block lh-30 text-center rounded-circle text-white transition-y"
-                                        style="background-color: #007ab9;">
-                                        <i class="ri-linkedin-fill"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.google.com/" target="_blank"
-                                        class="text-decoration-none wh-30 d-inline-block lh-30 text-center rounded-circle text-white transition-y"
-                                        style="background-color: #2196f3;">
-                                        <i class="ri-mail-line"></i>
-                                    </a>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete"
+                                        type="button" role="tab">Delete Account</button>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xxl-12 col-md-6 col-lg-4">
-                    <div class="card bg-white border-0 rounded-3 mb-4">
-                        <div class="card-body p-4">
-                            <h3 class="mb-3 mb-lg-4">Profile Information</h3>
-                            <ul class="ps-0 mb-0 list-unstyled">
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>User ID:</span>
-                                    <span class="text-secondary fw-medium ms-1">7001</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Full Name:</span>
-                                    <span class="text-secondary fw-medium ms-1">Olivia John</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Email:</span>
-                                    <span class="text-secondary fw-medium ms-1">olivia@trezo.com</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Role:</span>
-                                    <span class="text-secondary fw-medium ms-1">Administrator</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Location:</span>
-                                    <span class="text-secondary fw-medium ms-1">New York, USA</span>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <span>Join Date:</span>
-                                    <span class="text-secondary fw-medium ms-1">10 May 2022</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xxl-12 col-md-6 col-lg-4">
-                    <div class="card bg-white border-0 rounded-3 mb-4">
-                        <div class="card-body p-4">
-                            <h3 class="mb-3 mb-lg-4">Additional Information</h3>
-                            <ul class="ps-0 mb-0 list-unstyled">
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Phone:</span>
-                                    <span class="text-secondary fw-medium ms-1">+1 444 266 5599</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Address:</span>
-                                    <span class="text-secondary fw-medium ms-1">84 S. Arrowhead Court Branford</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Orders:</span>
-                                    <span class="text-secondary fw-medium ms-1">696</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Products:</span>
-                                    <span class="text-secondary fw-medium ms-1">9240</span>
-                                </li>
-                                <li class="d-flex align-items-center mb-2 pb-1">
-                                    <span>Events:</span>
-                                    <span class="text-secondary fw-medium ms-1">5</span>
-                                </li>
-                            </ul>
+    
+                            <div class="tab-content" id="settingsTabContent">
+                                {{-- Account Settings --}}
+                                <div class="tab-pane fade show active" id="account" role="tabpanel">
+                                    <div class="mb-4">
+                                        <h4 class="fs-20 mb-1">Profile</h4>
+                                        <p class="fs-15">Update your photo and personal details here.</p>
+                                    </div>
+                                    <form id="account-form">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-4">
+                                                    <label class="label text-secondary">Name</label>
+                                                    <div class="form-group position-relative">
+                                                        <input type="text" name="name" value="{{ Auth::user()->name }}"
+                                                            class="form-control text-dark ps-5 h-55" required>
+                                                        <i
+                                                            class="ri-user-line position-absolute top-50 start-0 translate-middle-y fs-20 text-gray-light ps-20"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-4">
+                                                    <label class="label text-secondary">Email Address</label>
+                                                    <div class="form-group position-relative">
+                                                        <input type="email" name="email" value="{{ Auth::user()->email }}"
+                                                            class="form-control text-dark ps-5 h-55" readonly>
+                                                        <i
+                                                            class="ri-mail-line position-absolute top-50 start-0 translate-middle-y fs-20 text-gray-light ps-20"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-4">
+                                                    <label class="label text-secondary">Parent Email (Optional)</label>
+                                                    <div class="form-group position-relative">
+                                                        <input type="email" name="email_parrent" value="{{ Auth::user()->email_parrent }}"
+                                                            class="form-control text-dark ps-5 h-55">
+                                                        <i
+                                                            class="ri-mail-unread-line position-absolute top-50 start-0 translate-middle-y fs-20 text-gray-light ps-20"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                                        </div>
+                                    </form>
+                                </div>
+    
+                                {{-- Change Password --}}
+                                <div class="tab-pane fade" id="password" role="tabpanel">
+                                    <div class="mb-4">
+                                        <h4 class="fs-20 mb-1">Change Password</h4>
+                                        <p class="fs-15">Update your account password securely.</p>
+                                    </div>
+                                    <form id="change-password-form">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label class="label">Current Password</label>
+                                            <input type="password" name="current_password" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="label">New Password</label>
+                                            <input type="password" name="new_password" class="form-control" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="label">Confirm New Password</label>
+                                            <input type="password" name="new_password_confirmation" class="form-control" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Update Password</button>
+                                    </form>
+                                </div>
+    
+                                {{-- Delete Account --}}
+                                <div class="tab-pane fade" id="delete" role="tabpanel">
+                                    <div class="mb-4">
+                                        <h4 class="fs-20 text-danger mb-1">Delete Account</h4>
+                                        <p class="fs-15">Once deleted, your account and all data will be permanently
+                                            removed. This action cannot be undone.</p>
+                                    </div>
+                                    <form id="delete-account-form">
+                                        @csrf
+                                        <p class="text-muted mb-3">
+                                            Once deleted, your account and all associated data will be <strong>permanently removed</strong>. This action
+                                            cannot be undone.
+                                        </p>
+                                        <button type="submit" class="btn btn-danger text-white">
+                                            Delete Account
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xxl-9">
-            <div class="card bg-white border-0 rounded-3 mb-4">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3 mb-lg-4">
-                        <h3 class="mb-0">Project Analysis</h3>
-                        <select class="form-select month-select form-control p-0 h-auto border-0 w-90"
-                            style="background-position: right 0 center;" aria-label="Default select example">
-                            <option selected>Last 7 Days</option>
-                            <option value="1">This Month</option>
-                            <option value="2">This Year</option>
-                        </select>
-                    </div>
-    
-                    <div id="project_analysis2"></div>
-                </div>
-            </div>
-    
-            <div class="card bg-white border-0 rounded-3 mb-4">
-                <div class="card-body p-0">
-                    <div class="p-4">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                            <h3 class="mb-0">To Do List</h3>
-                            <form class="position-relative table-src-form me-0">
-                                <input type="text" class="form-control" placeholder="Search here">
-                                <i
-                                    class="material-symbols-outlined position-absolute top-50 start-0 translate-middle-y">search</i>
-                            </form>
-                        </div>
-                    </div>
-    
-                    <div class="default-table-area style-two to-do-list">
-                        <div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault7">
-                                                <label class="position-relative top-2 ms-1"
-                                                    for="flexCheckDefault7">ID</label>
-                                            </div>
-                                        </th>
-                                        <th scope="col">Task Title</th>
-                                        <th scope="col">Assigned To</th>
-                                        <th scope="col">Due Date</th>
-                                        <th scope="col">Priority</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault12">
-                                                <label class="position-relative top-2 ms-1"
-                                                    for="flexCheckDefault12">#854</label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="project-overview.html" class="text-body">Network Infrastructure</a>
-                                        </td>
-                                        <td>Oliver Clark</td>
-                                        <td class="text-body">30 Apr 2024</td>
-                                        <td class="text-body">High</td>
-                                        <td>
-                                            <span
-                                                class="badge bg-success bg-opacity-10 text-success p-2 fs-12 fw-normal">Finished</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-body">edit</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-danger">delete</i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault8">
-                                                <label class="position-relative top-2 ms-1"
-                                                    for="flexCheckDefault8">#853</label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="project-overview.html" class="text-body">Cloud Migration</a>
-                                        </td>
-                                        <td>Ethan Baker</td>
-                                        <td class="text-body">25 Apr 2024</td>
-                                        <td class="text-body">Low</td>
-                                        <td>
-                                            <span
-                                                class="badge bg-danger bg-opacity-10 text-danger p-2 fs-12 fw-normal">Pending</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-body">edit</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-danger">delete</i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault9">
-                                                <label class="position-relative top-2 ms-1"
-                                                    for="flexCheckDefault9">#852</label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="project-overview.html" class="text-body">Website Revamp</a>
-                                        </td>
-                                        <td>Sophia Carter</td>
-                                        <td class="text-body">20 Apr 2024</td>
-                                        <td class="text-body">Medium</td>
-                                        <td>
-                                            <span
-                                                class="badge bg-primary-div bg-opacity-10 text-primary-div p-2 fs-12 fw-normal">In
-                                                Progress</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-body">edit</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-danger">delete</i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault10">
-                                                <label class="position-relative top-2 ms-1"
-                                                    for="flexCheckDefault10">#851</label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="project-overview.html" class="text-body">Mobile Application</a>
-                                        </td>
-                                        <td>Ava Cooper</td>
-                                        <td class="text-body">15 Apr 2024</td>
-                                        <td class="text-body">High</td>
-                                        <td>
-                                            <span
-                                                class="badge bg-success bg-opacity-10 text-success p-2 fs-12 fw-normal">Finished</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-body">edit</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-danger">delete</i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault11">
-                                                <label class="position-relative top-2 ms-1"
-                                                    for="flexCheckDefault11">#850</label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="project-overview.html" class="text-body">System Deployment</a>
-                                        </td>
-                                        <td>Isabella Evans</td>
-                                        <td class="text-body">10 Apr 2024</td>
-                                        <td class="text-body">Low</td>
-                                        <td>
-                                            <span
-                                                class="badge bg-danger bg-opacity-25 text-danger p-2 fs-12 fw-normal">Cancelled</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-body">edit</i>
-                                                </button>
-                                                <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2">
-                                                    <i class="material-symbols-outlined fs-16 text-danger">delete</i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-    
-                        <div class="p-4 text-end">
-                            <button class="btn btn-outline-primary py-1 px-2 px-sm-4 fs-14 fw-medium rounded-3 hover-bg"
-                                data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                                <span class="py-sm-1 d-block">
-                                    <i class="ri-add-line"></i>
-                                    <span>Add New Task</span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="card bg-white border-0 rounded-3 mb-4">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h3 class="mb-3 mb-lg-4">Recent Activity</h3>
-                        <div class="dropdown action-opt ms-2 position-relative top-3" data-bs-toggle="tooltip"
-                            data-bs-placement="top" data-bs-title="More Option">
-                            <button class="p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="material-symbols-outlined fs-20 text-body hover">more_horiz</i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end bg-white border box-shadow">
-                                <li>
-                                    <a class="dropdown-item" href="javascript:void(0);">
-                                        <i data-feather="eye"></i>
-                                        View All
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="javascript:void(0);">
-                                        <i data-feather="edit"></i>
-                                        Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="javascript:void(0);">
-                                        <i data-feather="trash-2"></i>
-                                        Delete One
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="javascript:void(0);">
-                                        <i data-feather="lock"></i>
-                                        Block
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="position-relative timeline-item">
-                        <span class="time-line-date">Just now</span>
-    
-                        <div class="border-style-for-timeline">
-                            <h4 class="fs-14 fw-medium mb-2">Weekly Stand-Up Meetings:</h4>
-                            <p class="fs-13">We continued our weekly stand-up meetings where team members provided updates
-                                on their current tasks, discussed any roadblocks, and coordinated efforts for the week
-                                ahead.</p>
-                            <p>By: <span class="text-primary">Olivia Rodriguez</span></p>
-                        </div>
-                    </div>
-                    <div class="position-relative timeline-item">
-                        <span class="time-line-date">1 day ago</span>
-    
-                        <div class="border-style-for-timeline dot-2">
-                            <h4 class="fs-14 fw-medium mb-2">Project Kickoff Session:</h4>
-                            <p class="fs-13">The session included introductions, a review of project goals and objectives,
-                                and initial planning discussions.</p>
-                            <p>By: <span class="text-primary">Isabella Cooper</span></p>
-                        </div>
-                    </div>
-                    <div class="position-relative timeline-item">
-                        <span class="time-line-date">2 days ago</span>
-    
-                        <div class="border-style-for-timeline dot-3">
-                            <h4 class="fs-14 fw-medium mb-2">Team Building Workshop:</h4>
-                            <p class="fs-13">Last Friday, we conducted a team building workshop focused on improving
-                                communication and collaboration among team members. Activities included team challenges,
-                                icebreakers, and open discussions.</p>
-                            <p>By: <span class="text-primary">Lucas Morgan</span></p>
-                        </div>
-                    </div>
-                    <div class="position-relative timeline-item">
-                        <span class="time-line-date">3 days ago</span>
-    
-                        <div class="border-style-for-timeline dot-4 pb-0">
-                            <h4 class="fs-14 fw-medium mb-2">Lunch and Learn Session:</h4>
-                            <p class="fs-13">We organized a lunch and learn session on March 15th where a guest speaker from
-                                the industry discussed emerging trends in our field. It was an insightful session that
-                                sparked valuable discussions among team members.</p>
-                            <p>By: <span class="text-primary">Ethan Parker</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+    </div>
 @endsection
 
 @push('after-scripts')
     <script>
+        document.getElementById('account-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+    
+            let formData = new FormData(this);
+    
+            axios.post("{{ route('customer.account.update', Auth::user()->id) }}", formData, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                    'Content-Type': 'multipart/form-data',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                params: {
+                    _method: 'PUT'
+                }
+            }).then(response => {
+                console.log(response);
+                if (response.data.status) {
+                    showCustomAlert('success', response.data.message);
+                } else {
+                    showCustomAlert('danger', 'Failed to update profile');
+                }
+            }).catch(error => {
+                console.error(error);
+                showCustomAlert('danger', 'Something went wrong!');
+            });
+        });
+
+        document.getElementById('change-password-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            axios.post("{{ route('customer.account.password.update') }}", formData, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                    'Content-Type': 'multipart/form-data',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                params: {
+                    _method: 'PUT'
+                }
+            }).then(response => {
+                if (response.data.status) {
+                    showCustomAlert('success', response.data.message);
+                    document.getElementById('change-password-form').reset();
+                } else {
+                    showCustomAlert('danger', response.data.message);
+                }
+            }).catch(error => {
+                showCustomAlert('danger', error.response.data.message || 'Something went wrong!');
+            });
+        });
+
+        document.getElementById('delete-account-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Your account will be permanently deleted!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post("{{ route('customer.account.delete') }}", null, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    params: {
+                        _method: 'DELETE'
+                    }
+                }).then(response => {
+                    if (response.data.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = "{{ route('login') }}";
+                        });
+                    } else {
+                        Swal.fire('Error', response.data.message, 'error');
+                    }
+                }).catch(() => {
+                    Swal.fire('Error', 'Something went wrong!', 'error');
+                });
+            }
+        });
+    });
+
     </script>
 @endpush

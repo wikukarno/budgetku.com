@@ -35,11 +35,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Route::get('/', function () {
-//     // return abort(403, 'Forbidden');
-//     return view('auth.login');
-// })->name('home');
+Route::get('/terms-and-conditions', [HomeController::class, 'termsAndConditions'])->name('terms');
 
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
@@ -133,9 +129,10 @@ Route::prefix('/pages/admin')
             Route::get('/account', [UserAccountController::class, 'index'])->name('account.index');
             Route::get('/account/edit/{id}', [UserAccountController::class, 'edit'])->name('account.edit');
             Route::put('/account/update/{id}', [UserAccountController::class, 'update'])->name('account.update');
-            Route::delete('/account/delete', [UserAccountController::class, 'destroy'])->name('account.destroy');
+            Route::put('/account/password/update', [UserAccountController::class, 'updatePassword'])->name('account.password.update');
+            Route::delete('/account/delete', [UserAccountController::class, 'destroy'])->name('account.delete');
             // End Route custom account
-            
+
             Route::resource('akun', UserAccountController::class);
 
 
