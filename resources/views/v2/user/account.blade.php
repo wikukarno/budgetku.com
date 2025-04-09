@@ -11,8 +11,7 @@
                         <h3 class="text-white fw-semibold">Welcome Back, <span class="text-danger-div">
                             {{ Auth::user()->name }}!</span></h3>
                         <p class="text-light">
-                            {{-- Have a nice and blessed day. --}}
-                            This account page is under development. Please check back later for updates.
+                            Have a nice and blessed day.
                         </p>
                     </div>
     
