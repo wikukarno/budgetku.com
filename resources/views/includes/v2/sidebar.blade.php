@@ -82,7 +82,7 @@
             </li>
 
             <li class="menu-item">
-                <a href="logout.html" class="menu-link">
+                <a href="javascript:void()" onclick="logout()" class="menu-link">
                     <span class="material-symbols-outlined menu-icon">logout</span>
                     <span class="title">Sign Out</span>
                 </a>
