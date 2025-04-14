@@ -24,7 +24,7 @@ class UserFinanceController extends Controller
         if (request()->ajax()) {
             $query = Finance::with(['category_finance'])
                 ->where('users_id', Auth::id())
-                ->whereYear('created_at', Carbon::now()->year)
+                // ->whereYear('created_at', Carbon::now()->year)
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
