@@ -482,6 +482,14 @@
     <script src="{{ asset('v2/js/fullcalendar.main.js') }}"></script>
     <script src="{{ asset('v2/js/custom/apexcharts.js') }}"></script>
     <script src="{{ asset('v2/js/custom/custom.js') }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F3R8SVSH01"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-F3R8SVSH01');
+    </script>
 </body>
 
 </html>
