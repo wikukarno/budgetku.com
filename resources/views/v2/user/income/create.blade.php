@@ -76,27 +76,36 @@
 <script>
 
     $('#formdata').on('submit', function(e) {
-        e.preventDefault();
-        let formData = new FormData(this);
-        
-        axios.post('{{ route('customer.income.store') }}', formData)
-            .then(function(response) {
-                if (response.data.status == true) {
-                    showCustomAlert('success', response.data.message);
-                    setTimeout(function() {
-                        window.location.href = '{{ route('customer.income.index') }}';
-                    }, 2000);
-                } else {
-                    showCustomAlert('error', response.data.message);
-                }
-            })
-            .catch(function(error) {
-                if (error.response) {
-                    showCustomAlert('error', error.response.data.message);
-                } else {
-                    showCustomAlert('error', 'An error occurred. Please try again.');
-                }
-            });
-    });
+    e.preventDefault();
+    
+    let formData = new FormData(this);
+    let submitButton = $(this).find('button[type="submit"]');
+
+    // 🔸 Disable tombol dan ubah teks saat submit
+    submitButton.prop('disabled', true);
+    let originalText = submitButton.html(); // simpan teks awal
+    submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+
+    axios.post('{{ route('customer.income.store') }}', formData)
+        .then(function(response) {
+            if (response.data.status == true) {
+                showCustomAlert('success', response.data.message);
+                setTimeout(function() {
+                    window.location.href = '{{ route('customer.income.index') }}';
+                }, 2000);
+            } else {
+                showCustomAlert('error', response.data.message);
+                submitButton.prop('disabled', false).html(originalText); // enable lagi kalau gagal
+            }
+        })
+        .catch(function(error) {
+            if (error.response) {
+                showCustomAlert('error', error.response.data.message);
+            } else {
+                showCustomAlert('error', 'An error occurred. Please try again.');
+            }
+            submitButton.prop('disabled', false).html(originalText); // enable lagi kalau error
+        });
+});
 </script>
 @endpush

@@ -75,12 +75,17 @@
 @endsection
 
 @push('after-scripts')
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
     $('#formdata').submit(function(e) {
         e.preventDefault();
         var formData = new FormData(this);
+        var submitButton = $(this).find('button[type="submit"]');
+        var originalText = submitButton.html();
+
+        // 🔸 Disable tombol dan ubah isi jadi loading
+        submitButton.prop('disabled', true);
+        submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
 
         axios.post("{{ route('customer.income.update', $data->id) }}", formData)
             .then(function(response) {
@@ -91,6 +96,7 @@
                     }, 2000);
                 } else {
                     showCustomAlert('error', response.data.message);
+                    submitButton.prop('disabled', false).html(originalText);
                 }
             })
             .catch(function(error) {
@@ -99,6 +105,7 @@
                 } else {
                     showCustomAlert('error', 'An error occurred. Please try again.');
                 }
+                submitButton.prop('disabled', false).html(originalText);
             });
     });
 </script>

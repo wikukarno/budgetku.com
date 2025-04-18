@@ -58,8 +58,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" id="btnSaveKategoriKeuangan" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-danger text-white" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btnSaveKategoriKeuangan" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -109,7 +109,7 @@
 
         function deleteKategoriFinance(id){
             Swal.fire({
-                title: 'Apakah anda yakin?',
+                title: 'Are you sure?',
                 text: "Data will be deleted!",
                 icon: 'warning',
                 showCancelButton: true,

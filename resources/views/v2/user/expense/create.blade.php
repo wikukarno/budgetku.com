@@ -104,7 +104,15 @@
 <script>
     $('#formdata').on('submit', function(e) {
         e.preventDefault();
+
         var formData = new FormData(this);
+        var submitButton = $(this).find('button[type="submit"]');
+        var originalText = submitButton.html();
+
+        // 🔸 Disable tombol dan tampilkan animasi loading
+        submitButton.prop('disabled', true);
+        submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+
         axios.post("{{ route('customer.expense.store') }}", formData)
             .then(function(response) {
                 if (response.data.status == true) {
@@ -114,6 +122,7 @@
                     }, 2000);
                 } else {
                     showCustomAlert('error', response.data.message);
+                    submitButton.prop('disabled', false).html(originalText);
                 }
             })
             .catch(function(error) {
@@ -122,6 +131,7 @@
                 } else {
                     showCustomAlert('error', 'An error occurred. Please try again.');
                 }
+                submitButton.prop('disabled', false).html(originalText);
             });
     });
 </script>

@@ -116,67 +116,35 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+    $('#formdata').on('submit', function (e) {
+        e.preventDefault();
 
-        $('#formdata').on('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const url = "{{ route('customer.expense.update', $data->id) }}";
+        const formData = new FormData(this);
+        const url = "{{ route('customer.expense.update', $data->id) }}";
+        const submitButton = $(this).find('button[type="submit"]');
+        const originalText = submitButton.html();
 
-            axios.post(url, formData)
-                .then(function (response) {
-                    if (response.data.status == true) {
-                        showCustomAlert('success', response.data.message);
-                        setTimeout(function () {
-                            window.location.href = "{{ route('customer.expense.index') }}";
-                        }, 2000);
-                    } else {
-                        showCustomAlert('error', response.message);
-                    }
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
-        });
+        // 🔸 Disable tombol dan ubah teks jadi loading
+        submitButton.prop('disabled', true);
+        submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
 
-        $('#categoryExpenseTable').dataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{!! url()->current() !!}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'id'},
-                { data: 'salary', name: 'salary'},
-                { data: 'tipe', name: 'tipe'},
-                { data: 'date', name: 'date'},
-                {
-                    data: 'action',
-                    searchable: false,
-                    sortable: false
+        axios.post(url, formData)
+            .then(function (response) {
+                if (response.data.status == true) {
+                    showCustomAlert('success', response.data.message);
+                    setTimeout(function () {
+                        window.location.href = "{{ route('customer.expense.index') }}";
+                    }, 2000);
+                } else {
+                    showCustomAlert('error', response.message);
+                    submitButton.prop('disabled', false).html(originalText);
                 }
-            ],
-            language: {
-                search: "",
-                searchPlaceholder: "Search...",
-                zeroRecords: "No data available!",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                lengthMenu: "Show _MENU_ entries",
-                paginate: {
-                    previous: "Previous",
-                    next: "Next"
-                }
-            },
-            initComplete: function () {
-                const lengthEl = $('.dataTables_length');
-                const filterEl = $('.dataTables_filter');
-                
-                const wrapper = $('<div class="dt-top w-100"></div>');
-                lengthEl.appendTo(wrapper);
-                filterEl.appendTo(wrapper);
-                
-                wrapper.insertBefore($('#categoryExpenseTable'));
-
-            }
-        });
+            })
+            .catch(function (error) {
+                console.error(error);
+                showCustomAlert('error', 'An error occurred. Please try again.');
+                submitButton.prop('disabled', false).html(originalText);
+            });
+    });
 </script>
 @endpush
