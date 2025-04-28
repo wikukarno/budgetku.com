@@ -75,38 +75,62 @@
 @endsection
 
 @push('after-scripts')
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-<script>
-    $('#formdata').submit(function(e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        var submitButton = $(this).find('button[type="submit"]');
-        var originalText = submitButton.html();
+    <script>
+        $('#formdata').submit(function(e) {
+            e.preventDefault();
 
-        // 🔸 Disable tombol dan ubah isi jadi loading
-        submitButton.prop('disabled', true);
-        submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+            // 🔁 Bersihkan error sebelumnya
+            $('.text-danger.validation-error').remove();
+            $(this).find('.is-invalid').removeClass('is-invalid');
 
-        axios.post("{{ route('customer.income.update', $data->id) }}", formData)
-            .then(function(response) {
-                if (response.data.status == true) {
-                    showCustomAlert('success', response.data.message);
-                    setTimeout(function() {
-                        window.location.href = '{{ route('customer.income.index') }}';
-                    }, 2000);
-                } else {
-                    showCustomAlert('danger', response.data.message);
-                    submitButton.prop('disabled', false).html(originalText);
+            let isValid = true;
+
+            // 🔍 Validasi semua field yang required
+            $(this).find('[required]').each(function () {
+                const isSelect = $(this).is('select');
+                const value = $(this).val();
+
+                if (!value || (isSelect && (value === 'Select' || value === ''))) {
+                    isValid = false;
+
+                    $(this).addClass('is-invalid');
+                    $(this).next('.validation-error').remove();
+                    $(this).after(`<div class="text-danger validation-error mt-1">This field is required.</div>`);
                 }
-            })
-            .catch(function(error) {
-                if (error.response) {
-                    showCustomAlert('danger', error.response.data.message);
-                } else {
-                    showCustomAlert('danger', 'An error occurred. Please try again.');
-                }
-                submitButton.prop('disabled', false).html(originalText);
             });
-    });
-</script>
+
+            if (!isValid) {
+                showCustomAlert('danger', 'Please fill all required fields.');
+                return;
+            }
+
+            var formData = new FormData(this);
+            var submitButton = $(this).find('button[type="submit"]');
+            var originalText = submitButton.html();
+
+            // 🔄 Tampilkan loading state
+            submitButton.prop('disabled', true);
+            submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+
+            axios.post("{{ route('customer.income.update', $data->id) }}", formData)
+                .then(function(response) {
+                    if (response.data.status === true) {
+                        showCustomAlert('success', response.data.message);
+                        setTimeout(function() {
+                            window.location.href = '{{ route('customer.income.index') }}';
+                        }, 2000);
+                    } else {
+                        showCustomAlert('danger', response.data.message || 'Update failed.');
+                        submitButton.prop('disabled', false).html(originalText);
+                    }
+                })
+                .catch(function(error) {
+                    showCustomAlert('danger', error.response?.data?.message || 'An error occurred. Please try again.');
+                    submitButton.prop('disabled', false).html(originalText);
+                });
+        });
+    </script>
 @endpush
+

@@ -19,7 +19,7 @@ class UserIncomeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -53,7 +53,6 @@ class UserIncomeController extends Controller
                 ->make(true);
         }
 
-        
         return view('v2.user.income.index');
     }
 
@@ -72,37 +71,52 @@ class UserIncomeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        $data = Salary::create([
-            'users_id' => Auth::id(),
-            'salary' => str_replace(
-                ['Rp. ', '.'],
-                ['', ''],
-                $request->salary
-            ),
-            'date' => $request->date,
-            'tipe' => $request->tipe,
-            'description' => $request->description,
+        $request->validate([
+            'salary' => 'required|numeric',
+            'date' => 'required|date',
+            'tipe' => 'required|string',
+            'description' => 'required|string',
         ]);
 
-        $email = User::where('email', Auth::user()->email)->first();
+        try {
+            $data = Salary::create([
+                'users_id' => Auth::id(),
+                'salary' => str_replace(
+                    ['Rp. ', '.'],
+                    ['', ''],
+                    $request->salary
+                ),
+                'date' => $request->date,
+                'tipe' => $request->tipe,
+                'description' => $request->description,
+            ]);
 
-        $data = [
-            'salary' => $data,
-            'user' => $email
-        ];
+            $email = User::where('email', Auth::user()->email)->first();
 
-        ProcessUangMasukEmail::dispatch(
-            $data
-        );
+            $data = [
+                'salary' => $data,
+                'user' => $email
+            ];
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data Created Successfully',
-        ]);
+            ProcessUangMasukEmail::dispatch(
+                $data
+            );
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data Created Successfully',
+            ]);
+        }catch (\Exception $exception){
+            Log::error('Error creating data: ' . $exception->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Failed to Create',
+            ]);
+        }
     }
 
     /**
@@ -137,34 +151,38 @@ class UserIncomeController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'salary' => 'required|numeric',
+            'date' => 'required|date',
+            'tipe' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
         try {
-            DB::transaction(function () use ($id, $request) {
-                $data = Salary::findOrFail($id); // Gunakan findOrFail untuk memastikan data ditemukan
-                $this->authorize('update', $data);
+            $data = Salary::findOrFail($id); // Gunakan findOrFail untuk memastikan data ditemukan
+            $this->authorize('update', $data);
 
-                // kalau update tanggal melebihi tanggal sekarang maka akan error
-                if ($request->date > Carbon::now()->format('Y-m-d')) {
-                    Log::error('Tanggal tidak boleh melebihi tanggal sekarang');
-                    return false;
-                }
+            // kalau update tanggal melebihi tanggal sekarang maka akan error
+            if ($request->date > Carbon::now()->format('Y-m-d')) {
+                Log::error('Tanggal tidak boleh melebihi tanggal sekarang');
+                return false;
+            }
 
-                // Update fields
-                $data->users_id = Auth::user()->id;
-                $data->salary = str_replace(
-                    ['Rp.', '.'],
-                    ['', ''],
-                    $request->salary
-                );
-                $data->date = $request->date;
-                $data->tipe = $request->tipe;
-                $data->description = $request->description;
-                $data->save();
-
-            });
+            // Update fields
+            $data->users_id = Auth::user()->id;
+            $data->salary = str_replace(
+                ['Rp.', '.'],
+                ['', ''],
+                $request->salary
+            );
+            $data->date = $request->date;
+            $data->tipe = $request->tipe;
+            $data->description = $request->description;
+            $data->save();
 
             return response()->json([
                 'status' => true,
@@ -183,7 +201,7 @@ class UserIncomeController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request)
     {

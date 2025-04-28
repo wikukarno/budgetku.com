@@ -71,41 +71,62 @@
 @endsection
 
 @push('after-scripts')
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-<script>
+    <script>
+        $('#formdata').on('submit', function(e) {
+            e.preventDefault();
 
-    $('#formdata').on('submit', function(e) {
-    e.preventDefault();
+            // 🔁 Hapus semua error sebelumnya
+            $('.text-danger.validation-error').remove();
+            $(this).find('.is-invalid').removeClass('is-invalid');
 
-    let formData = new FormData(this);
-    let submitButton = $(this).find('button[type="submit"]');
+            let isValid = true;
 
-    // 🔸 Disable tombol dan ubah teks saat submit
-    submitButton.prop('disabled', true);
-    let originalText = submitButton.html(); // simpan teks awal
-    submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+            // 🔍 Cek setiap input/select/textarea yang required
+            $(this).find('[required]').each(function () {
+                const isSelect = $(this).is('select');
+                const value = $(this).val();
 
-    axios.post('{{ route('customer.income.store') }}', formData)
-        .then(function(response) {
-            if (response.data.status == true) {
-                showCustomAlert('success', response.data.message);
-                setTimeout(function() {
-                    window.location.href = '{{ route('customer.income.index') }}';
-                }, 2000);
-            } else {
-                showCustomAlert('danger', response.data.message);
-                submitButton.prop('disabled', false).html(originalText); // enable lagi kalau gagal
+                if (!value || (isSelect && (value === 'Select' || value === ''))) {
+                    isValid = false;
+
+                    $(this).addClass('is-invalid');
+                    $(this).next('.validation-error').remove();
+                    $(this).after(`<div class="text-danger validation-error mt-1">This field is required.</div>`);
+                }
+            });
+
+            if (!isValid) {
+                showCustomAlert('danger', 'Please fill all required fields.');
+                return;
             }
-        })
-        .catch(function(error) {
-            if (error.response) {
-                showCustomAlert('danger', error.response.data.message);
-            } else {
-                showCustomAlert('danger', 'An error occurred. Please try again.');
-            }
-            submitButton.prop('disabled', false).html(originalText); // enable lagi kalau error
+
+            // ✅ Jika valid, lanjut submit
+            let formData = new FormData(this);
+            let submitButton = $(this).find('button[type="submit"]');
+            let originalText = submitButton.html();
+
+            submitButton.prop('disabled', true);
+            submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+
+            axios.post('{{ route('customer.income.store') }}', formData)
+                .then(function(response) {
+                    if (response.data.status == true) {
+                        showCustomAlert('success', response.data.message);
+                        setTimeout(function() {
+                            window.location.href = '{{ route('customer.income.index') }}';
+                        }, 2000);
+                    } else {
+                        showCustomAlert('danger', response.data.message);
+                        submitButton.prop('disabled', false).html(originalText);
+                    }
+                })
+                .catch(function(error) {
+                    showCustomAlert('danger', error.response?.data?.message || 'An error occurred. Please try again.');
+                    submitButton.prop('disabled', false).html(originalText);
+                });
         });
-});
-</script>
+    </script>
 @endpush
+
