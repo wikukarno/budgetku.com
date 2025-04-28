@@ -40,7 +40,7 @@
                             <select class="form-select form-control" required name="tipe">
                                 <option selected>Select</option>
                                 @forelse ($categoryIncome as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name_category_incomes }}</option>  
+                                    <option value="{{ $item->id }}">{{ $item->name_category_incomes }}</option>
                                 @empty
                                     <option value="">No data available</option>
                                 @endforelse
@@ -77,7 +77,7 @@
 
     $('#formdata').on('submit', function(e) {
     e.preventDefault();
-    
+
     let formData = new FormData(this);
     let submitButton = $(this).find('button[type="submit"]');
 
@@ -94,15 +94,15 @@
                     window.location.href = '{{ route('customer.income.index') }}';
                 }, 2000);
             } else {
-                showCustomAlert('error', response.data.message);
+                showCustomAlert('danger', response.data.message);
                 submitButton.prop('disabled', false).html(originalText); // enable lagi kalau gagal
             }
         })
         .catch(function(error) {
             if (error.response) {
-                showCustomAlert('error', error.response.data.message);
+                showCustomAlert('danger', error.response.data.message);
             } else {
-                showCustomAlert('error', 'An error occurred. Please try again.');
+                showCustomAlert('danger', 'An error occurred. Please try again.');
             }
             submitButton.prop('disabled', false).html(originalText); // enable lagi kalau error
         });

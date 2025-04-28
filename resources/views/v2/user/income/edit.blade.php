@@ -63,7 +63,7 @@
                         <div class="d-flex flex-wrap justify-content-end gap-3">
                             <a href="{{ route('customer.income.index') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
                             <button type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16"> <i
-                                    class="ri-add-line text-white fw-medium"></i> 
+                                    class="ri-add-line text-white fw-medium"></i>
                                 Update</button>
                         </div>
                     </div>
@@ -95,15 +95,15 @@
                         window.location.href = '{{ route('customer.income.index') }}';
                     }, 2000);
                 } else {
-                    showCustomAlert('error', response.data.message);
+                    showCustomAlert('danger', response.data.message);
                     submitButton.prop('disabled', false).html(originalText);
                 }
             })
             .catch(function(error) {
                 if (error.response) {
-                    showCustomAlert('error', error.response.data.message);
+                    showCustomAlert('danger', error.response.data.message);
                 } else {
-                    showCustomAlert('error', 'An error occurred. Please try again.');
+                    showCustomAlert('danger', 'An error occurred. Please try again.');
                 }
                 submitButton.prop('disabled', false).html(originalText);
             });

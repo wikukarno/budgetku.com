@@ -50,7 +50,7 @@
                             <input type="date" class="form-control" name="purchase_date" required value="{{ $data->purchase_date }}">
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-6">
                         <div class="form-group mb-4">
                             <label class="label">
@@ -87,7 +87,7 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-12">
                         <div class="form-group mb-4">
                             <label class="label">
@@ -101,7 +101,7 @@
                         <div class="d-flex flex-wrap justify-content-end gap-3">
                             <a href="{{ route('customer.expense.index') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
                             <button type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16"> <i
-                                    class="ri-add-line text-white fw-medium"></i> 
+                                    class="ri-add-line text-white fw-medium"></i>
                                 Update</button>
                         </div>
                     </div>
@@ -113,38 +113,64 @@
 @endsection
 
 @push('after-scripts')
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-<script>
-    $('#formdata').on('submit', function (e) {
-        e.preventDefault();
+    <script>
+        $('#formdata').on('submit', function (e) {
+            e.preventDefault();
 
-        const formData = new FormData(this);
-        const url = "{{ route('customer.expense.update', $data->id) }}";
-        const submitButton = $(this).find('button[type="submit"]');
-        const originalText = submitButton.html();
+            // 🔁 Bersihkan error sebelumnya
+            $('.text-danger.validation-error').remove();
+            $(this).find('.is-invalid').removeClass('is-invalid');
 
-        // 🔸 Disable tombol dan ubah teks jadi loading
-        submitButton.prop('disabled', true);
-        submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+            let isValid = true;
 
-        axios.post(url, formData)
-            .then(function (response) {
-                if (response.data.status == true) {
-                    showCustomAlert('success', response.data.message);
-                    setTimeout(function () {
-                        window.location.href = "{{ route('customer.expense.index') }}";
-                    }, 2000);
-                } else {
-                    showCustomAlert('error', response.message);
-                    submitButton.prop('disabled', false).html(originalText);
+            // 🔍 Cek semua input/select yang required
+            $(this).find('[required]').each(function () {
+                const isSelect = $(this).is('select');
+                const value = $(this).val();
+
+                if (!value || (isSelect && (value === 'Select' || value === ''))) {
+                    isValid = false;
+
+                    $(this).addClass('is-invalid');
+                    $(this).next('.validation-error').remove();
+                    $(this).after(`<div class="text-danger validation-error mt-1">This field is required.</div>`);
                 }
-            })
-            .catch(function (error) {
-                console.error(error);
-                showCustomAlert('error', 'An error occurred. Please try again.');
-                submitButton.prop('disabled', false).html(originalText);
             });
-    });
-</script>
+
+            // ❌ Stop jika ada yang kosong
+            if (!isValid) {
+                showCustomAlert('danger', 'Please fill all required fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const url = "{{ route('customer.expense.update', $data->id) }}";
+            const submitButton = $(this).find('button[type="submit"]');
+            const originalText = submitButton.html();
+
+            // 🔄 Tampilkan loading
+            submitButton.prop('disabled', true);
+            submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
+
+            axios.post(url, formData)
+                .then(function (response) {
+                    if (response.data.status === true) {
+                        showCustomAlert('success', response.data.message);
+                        setTimeout(() => {
+                            window.location.href = "{{ route('customer.expense.index') }}";
+                        }, 2000);
+                    } else {
+                        showCustomAlert('danger', response.data.message || 'Failed to update data.');
+                        submitButton.prop('disabled', false).html(originalText);
+                    }
+                })
+                .catch(function (error) {
+                    showCustomAlert('danger', error.response?.data?.message || 'An error occurred. Please try again.');
+                    submitButton.prop('disabled', false).html(originalText);
+                });
+        });
+    </script>
 @endpush
+

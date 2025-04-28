@@ -150,8 +150,8 @@ class UserFinanceController extends Controller
             'category_finances_id' => 'required|exists:category_finances,id',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
-            'purchase_date' => 'nullable|date',
-            'purchase_by' => 'nullable|string|max:255',
+            'purchase_date' => 'required|date',
+            'purchase_by' => 'required|string|max:255',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 

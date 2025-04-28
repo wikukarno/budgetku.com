@@ -16,4 +16,9 @@ class HomeController extends Controller
     {
         return view('welcome');
     }
+
+    public function termsAndConditions()
+    {
+        return view('terms');
+    }
 }

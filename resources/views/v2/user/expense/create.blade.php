@@ -47,7 +47,7 @@
                             <input type="date" class="form-control" name="purchase_date" required>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-6">
                         <div class="form-group mb-4">
                             <label class="label">
@@ -74,7 +74,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-12">
                         <div class="form-group mb-4">
                             <label class="label">
@@ -86,7 +86,7 @@
                     </div>
                     <div class="col-lg-12">
                         <div class="d-flex flex-wrap justify-content-end gap-3">
-                            <a href="{{ route('customer.income.index') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
+                            <a href="{{ route('customer.expense.index') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
                             <button type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16"> <i
                                     class="ri-add-line text-white fw-medium"></i> Create</button>
                         </div>
@@ -105,32 +105,56 @@
     $('#formdata').on('submit', function(e) {
         e.preventDefault();
 
-        var formData = new FormData(this);
-        var submitButton = $(this).find('button[type="submit"]');
-        var originalText = submitButton.html();
+        // 🔁 Bersihkan error sebelumnya
+        $('.text-danger.validation-error').remove();
+        $(this).find('.is-invalid').removeClass('is-invalid');
 
-        // 🔸 Disable tombol dan tampilkan animasi loading
+        let isValid = true;
+
+        // 🔍 Cek tiap input/select/file yang required
+        $(this).find('[required]').each(function () {
+            const isSelect = $(this).is('select');
+            const value = $(this).val();
+
+            if (!value || (isSelect && (value === 'Select' || value === ''))) {
+                isValid = false;
+
+                // Tambahkan pesan error
+                $(this).addClass('is-invalid');
+                $(this).next('.validation-error').remove();
+                $(this).after(`<div class="text-danger validation-error mt-1">This field is required.</div>`);
+            }
+        });
+
+        // 🔒 Stop proses jika tidak valid
+        if (!isValid) {
+            showCustomAlert('danger', 'Please fill all required fields.');
+            return;
+        }
+
+        // ✅ Lanjut submit pakai Axios
+        const formData = new FormData(this);
+        const submitButton = $(this).find('button[type="submit"]');
+        const originalText = submitButton.html();
+
+        // Loading state
         submitButton.prop('disabled', true);
         submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
 
         axios.post("{{ route('customer.expense.store') }}", formData)
             .then(function(response) {
-                if (response.data.status == true) {
+                if (response.data.status === true) {
                     showCustomAlert('success', response.data.message);
-                    setTimeout(function() {
+                    setTimeout(() => {
                         window.location.href = "{{ route('customer.expense.index') }}";
                     }, 2000);
                 } else {
-                    showCustomAlert('error', response.data.message);
+                    showCustomAlert('danger', response.data.message);
                     submitButton.prop('disabled', false).html(originalText);
                 }
             })
             .catch(function(error) {
-                if (error.response) {
-                    showCustomAlert('error', error.response.data.message);
-                } else {
-                    showCustomAlert('error', 'An error occurred. Please try again.');
-                }
+                showCustomAlert('danger', error.response?.data?.message || 'An error occurred. Please try again.');
                 submitButton.prop('disabled', false).html(originalText);
             });
     });

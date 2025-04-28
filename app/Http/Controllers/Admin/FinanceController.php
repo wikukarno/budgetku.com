@@ -117,13 +117,9 @@ class FinanceController extends Controller
                 $pengeluaran = 0;
             }
 
-
-            $saldo = $salary - $pengeluaran;
-
             $data = [
                 'finance' => $data,
                 'user' => $user,
-                'saldo' => $saldo
             ];
 
             ProcessUangKeluarEmail::dispatch($data);
