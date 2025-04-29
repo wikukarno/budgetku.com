@@ -76,7 +76,7 @@ class UserIncomeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'salary' => 'required|numeric',
+            'salary' => 'required|string',
             'date' => 'required|date',
             'tipe' => 'required|string',
             'description' => 'required|string',
@@ -156,7 +156,7 @@ class UserIncomeController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'salary' => 'required|numeric',
+            'salary' => 'required|string',
             'date' => 'required|date',
             'tipe' => 'required|string',
             'description' => 'required|string',
