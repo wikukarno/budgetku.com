@@ -22,7 +22,7 @@
                                 <span class="text-danger">*</span>
                                 Category Name
                             </label>
-                            <select class="form-select form-control" name="category_finances_id" required>
+                            <select class="form-select form-control" name="category_finances_id" required id="select2Categories">
                                 <option selected>Select</option>
                                 @forelse ($categories as $item)
                                     <option value="{{ $item->id }}" {{ $data->category_finances_id == $item->id ? 'selected' : '' }}>{{ $item->name_category_finances }}</option>
@@ -67,7 +67,7 @@
                                 <span class="text-danger">*</span>
                                 Payment Method
                             </label>
-                            <select class="form-select form-control" required name="purchase_by">
+                            <select class="form-select form-control" required name="purchase_by" id="select2Payment">
                                 <option selected>Select</option>
                                 @forelse ($paymentMethods as $item)
                                     <option value="{{ $item->id }}" {{ $data->purchase_by == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
@@ -116,6 +116,11 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+        // Inisialisasi Select2
+        $('#select2Categories, #select2Payment').select2({
+            placeholder: 'Select',
+        });
+
         $('#formdata').on('submit', function (e) {
             e.preventDefault();
 

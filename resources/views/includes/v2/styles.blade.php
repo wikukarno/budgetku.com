@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="{{ asset('v2/css/swiper-bundle.min.css') }}">
 <link rel="stylesheet" href="{{ asset('v2/css/fullcalendar.main.css') }}">
 <link rel="stylesheet" href="{{ asset('v2/css/style.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="{{ asset('v2/images/favicon.png') }}">
@@ -184,4 +185,132 @@
         height: 30px !important;
         /* FIX: biar sejajar */
     }
+
+    /* Select 2 custom */
+
+    /* Tinggi dan padding sama dengan input form biasa */
+    .select2-container .select2-selection--single {
+        height: 45px !important;
+        padding: 8px 14px;
+        border: 1px solid #ced4da;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Text di dalam select2 */
+    .select2-selection__rendered {
+        line-height: 28px !important;
+        color: #495057;
+    }
+
+    /* Icon dropdown */
+    .select2-selection__arrow {
+        height: 100% !important;
+        top: 10px;
+        right: 8px;
+    }
+
+    /* Saat fokus: ubah border jadi ungu dan ada efek shadow */
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #7c3aed !important; /* Ungu seperti input */
+        box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25); /* efek glowing */
+        outline: 0;
+    }
+
+    /* Search input di dropdown */
+    .select2-container .select2-search--dropdown .select2-search__field {
+        height: 40px;
+        border-radius: 0.5rem;
+        border: 1px solid #ced4da;
+        padding: 8px 12px;
+        font-size: 1rem;
+    }
+
+    /* Saat search input focus */
+    .select2-container .select2-search--dropdown .select2-search__field:focus {
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25);
+        outline: none;
+    }
+
+    /* Warna highlight ungu saat item di-hover atau terseleksi */
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #7c3aed !important; /* warna ungu */
+        color: #fff;
+    }
+
+    /* Warna background ungu saat item dipilih (yang aktif) */
+    .select2-container--default .select2-results__option[aria-selected="true"] {
+        background-color: #ede9fe !important; /* ungu muda */
+        color: #7c3aed !important; /* ungu teks */
+    }
+
+    /* Saat search field sedang fokus */
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25);
+        outline: none;
+    }
+
+    /* Hapus efek inner box tambahan & fix double border */
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1px solid #7c3aed;
+        box-shadow: none !important; /* hilangkan shadow extra */
+        outline: none;
+        background-color: #fff; /* biar gak tumpang tindih */
+    }
+
+    /* Saat fokus tetap ungu tapi 1 border aja */
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border: 1px solid #7c3aed;
+        box-shadow: none !important;
+        outline: none;
+    }
+
+    /* Sembunyikan arrow default Select2 */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        display: none !important;
+    }
+
+    /* Tambahkan custom arrow dengan pseudo-element */
+    .select2-container--default .select2-selection--single {
+        position: relative;
+    }
+
+    .select2-container--default .select2-selection--single::after {
+        content: "▾"; /* atau bisa pakai FontAwesome / Feather */
+        font-size: 1rem;
+        color: #6c757d;
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    /* Tambahan biar tidak keganggu sama padding */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        padding-right: 2rem !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        display: none !important; /* hide the default arrow triangle */
+    }
+
+    /* Tambahkan custom arrow pakai background SVG Remix */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        background-image: url("data:image/svg+xml,%3Csvg fill='gray' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.292 9.293a1 1 0 011.416 0L12 11.586l2.292-2.293a1 1 0 011.416 1.414l-3 3a1 1 0 01-1.416 0l-3-3a1 1 0 010-1.414z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 1rem 1rem;
+        width: 30px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        pointer-events: none;
+    }
+
 </style>
