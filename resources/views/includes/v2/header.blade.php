@@ -62,13 +62,21 @@
                                     </div>
                                 </div>
                                 <ul class="admin-link ps-0 mb-0 list-unstyled">
-                                    <li>
-                                        <a class="dropdown-item d-flex align-items-center text-body"
-                                            href="{{ route('customer.account.index') }}">
-                                            <i class="material-symbols-outlined">account_circle</i>
-                                            <span class="ms-2">My Profile</span>
-                                        </a>
-                                    </li>
+                                    @if (Auth::user()->roles == "Owner")
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center text-body" href="{{ route('admin.account.index') }}">
+                                                <i class="material-symbols-outlined">account_circle</i>
+                                                <span class="ms-2">My Profile</span>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center text-body" href="{{ route('customer.account.index') }}">
+                                                <i class="material-symbols-outlined">account_circle</i>
+                                                <span class="ms-2">My Profile</span>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                                 <ul class="admin-link ps-0 mb-0 list-unstyled">
                                     <li>
