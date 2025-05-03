@@ -89,12 +89,31 @@
                     </li>
                 </ul>
                 <div class="othres">
-                    <a href="{{ route('login') }}" class="btn btn-outline-primary-div py-2 px-4 fw-medium fs-16 rounded-3">
-                        <i class="ri-login-box-line fs-18 position-relative top-2"></i>
-                        <span class="ms-1">
-                            Try for Free
-                        </span>
-                    </a>
+                    @guest
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary-div py-2 px-4 fw-medium fs-16 rounded-3">
+                            <i class="ri-login-box-line fs-18 position-relative top-2"></i>
+                            <span class="ms-1">
+                                Try for Free
+                            </span>
+                        </a>
+                    @endguest
+                    @auth
+                        @if (Auth::user()->roles == "Owner")
+                            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary-div py-2 px-4 fw-medium fs-16 rounded-3">
+                                <i class="ri-dashboard-line fs-18 position-relative top-2"></i>
+                                <span class="ms-1">
+                                    Dashboard
+                                </span>
+                            </a>
+                        @else
+                            <a href="{{ route('customer.dashboard') }}" class="btn btn-outline-primary-div py-2 px-4 fw-medium fs-16 rounded-3">
+                                <i class="ri-dashboard-line fs-18 position-relative top-2"></i>
+                                <span class="ms-1">
+                                    Dashboard
+                                </span>
+                            </a>
+                        @endif
+                    @endauth
                 </div>
             </div>
         </div>
