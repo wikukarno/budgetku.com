@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryFinanceRequest;
 use App\Models\CategoryFinance;
+use App\Services\CategoryFinanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CategoryFinanceController extends Controller
 {
+    protected $categoryFinanceService;
+
+    public function __construct(CategoryFinanceService $categoryFinanceService)
+    {
+        $this->categoryFinanceService = $categoryFinanceService;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -32,28 +40,18 @@ class CategoryFinanceController extends Controller
                 ->editColumn('action', function ($item) {
                     return '
                         <a href="javascript:void(0)" onclick="updateKategoriFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-warning">Edit</button>
+                            <button type="button" class="btn btn-warning text-white">Edit</button>
                         </a>
                         
                         <a href="javascript:void(0)" onclick="deleteKategoriFinance(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                            <button type="button" class="btn btn-danger text-white">Delete</button>
                         </a>
                     ';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.kategori-finance.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('v2.admin.category.expense.index');
     }
 
     /**
@@ -64,22 +62,14 @@ class CategoryFinanceController extends Controller
      */
     public function store(CategoryFinanceRequest $request)
     {
+        $categoryFinance = CategoryFinance::find($request->id);
 
-        $data = CategoryFinance::updateOrCreate(
-            [
-                'id' => $request->id_category_finance
-            ],
-            [
-                'users_id' => Auth::id(),
-                'name_category_finances' => $request->name_category_finances,
-            ]
-        );
-
-        if ($data) {
-            return redirect()->route('category.index')->with('success', 'Data berhasil disimpan');
-        } else {
-            return redirect()->route('category.index')->with('error', 'Data gagal disimpan');
+        if ($categoryFinance) {
+            $this->authorize('updateOrCreate', $categoryFinance);
         }
+        $validated = $request->validated();
+        $data = $this->categoryFinanceService->updateOrCreateCategoryFinance($validated);
+        return response()->json($data);
     }
 
     /**
@@ -90,31 +80,13 @@ class CategoryFinanceController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryFinance::find($request->id);
+        $data = CategoryFinance::where('id', $request->id)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
+
+        $this->authorize('view', $data);
+
         return response()->json($data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -125,8 +97,17 @@ class CategoryFinanceController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryFinance::find($request->id);
+        $data = CategoryFinance::where('id', $request->id)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
+
+        $this->authorize('delete', $data);
         $data->delete();
-        return response()->json($data);
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Data deleted successfully'
+            ]
+        );
     }
 }

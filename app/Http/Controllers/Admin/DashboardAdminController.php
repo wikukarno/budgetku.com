@@ -121,7 +121,7 @@ class DashboardAdminController extends Controller
                 ->make(true);
         }
 
-        return view('admin.dashboard', compact(
+        return view('v2.admin.dashboard', compact(
             'totalPendapatan',
             'pengeluaran',
             'categoryFinances',

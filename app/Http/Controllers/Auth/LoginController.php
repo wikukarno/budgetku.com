@@ -51,24 +51,28 @@ class LoginController extends Controller
         $findUser = User::where('email', $user->email)->first();
 
         if ($findUser) {
-            Auth::login($findUser);
+            // Cek apakah avatar kosong atau bukan dari Google
+            if (empty($findUser->avatar) || !str_contains($findUser->avatar, 'googleusercontent.com')) {
+                $findUser->update([
+                    'avatar' => $user->avatar,
+                ]);
+            }
 
-            // Kirim email notifikasi login
+            Auth::login($findUser);
             $findUser->notify(new UserLoginNotification());
 
-            return $findUser->roles == 'Owner'
+            return $findUser->roles === 'Owner'
                 ? to_route('dashboard')
                 : to_route('customer.dashboard');
         } else {
             $newUser = User::create([
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => 'Customer',
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'avatar' => $user->avatar,
+                'roles'  => 'Customer',
             ]);
 
             Auth::login($newUser);
-
-            // Kirim email notifikasi pendaftaran
             $newUser->notify(new UserRegisteredNotification());
 
             return to_route('customer.dashboard');

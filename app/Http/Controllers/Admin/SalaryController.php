@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalaryRequest;
 use App\Jobs\ProcessUangMasukEmail;
+use App\Models\CategoryIncome;
 use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
@@ -23,11 +24,15 @@ class SalaryController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Salary::where('users_id', Auth::id())
+            $query = Salary::with('category_income')
+                ->where('users_id', Auth::id())
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->editColumn('tipe', function ($item) {
+                    return $item->category_income->name_category_incomes;
+                })
                 ->editColumn('salary', function ($item) {
                     return 'Rp.' . number_format($item->salary, 0, ',', '.');
                 })
@@ -36,19 +41,19 @@ class SalaryController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="'. route('salary.edit', $item->id) .'" class="btn btn-warning">
+                        <a href="' . route('admin.income.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" onclick="deleteSalary(' . $item->id . ')">
-                            <button type="button" class="btn btn-danger">Delete</button>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(' . $item->id . ')">
+                            Delete
                         </a>
                     ';
                 })
-                ->rawColumns(['action', 'date', 'salary'])
+                ->rawColumns(['action', 'date', 'salary', 'tipe'])
                 ->make(true);
         }
 
-        return view('admin.salary.index');
+        return view('v2.admin.income.index');
     }
 
     /**
@@ -58,7 +63,7 @@ class SalaryController extends Controller
      */
     public function create()
     {
-        return view('admin.salary.create');
+        return view('v2.admin.income.create');
     }
 
     /**
@@ -69,28 +74,48 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        $data = Salary::create([
-            'users_id' => Auth::user()->id,
-            'salary' => str_replace(
-                ['Rp. ', '.'],
-                ['', ''],
-                $request->salary
-            ),
-            'date' => $request->date,
-            'tipe' => $request->tipe,
-            'description' => $request->description,
+        $request->validate([
+            'salary' => 'required|string',
+            'date' => 'required|date',
+            'tipe' => 'required|string',
+            'description' => 'required|string',
         ]);
 
-        $email = User::where('email', Auth::user()->email_parrent)->firstOrFail();
-        $data = [
-            'salary' => $data,
-            'user' => $email
-        ];
-        ProcessUangMasukEmail::dispatch(
-            $data
-        );
+        try {
+            $data = Salary::create([
+                'users_id' => Auth::id(),
+                'salary' => str_replace(
+                    ['Rp. ', '.'],
+                    ['', ''],
+                    $request->salary
+                ),
+                'date' => $request->date,
+                'tipe' => $request->tipe,
+                'description' => $request->description,
+            ]);
 
-        return redirect()->route('salary.index');
+            $email = User::where('email', Auth::user()->email)->first();
+
+            $data = [
+                'salary' => $data,
+                'user' => $email
+            ];
+
+            ProcessUangMasukEmail::dispatch(
+                $data
+            );
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data Created Successfully',
+            ]);
+        } catch (\Exception $exception) {
+            Log::error('Error creating data: ' . $exception->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Failed to Create',
+            ]);
+        }
     }
 
     /**
@@ -113,10 +138,11 @@ class SalaryController extends Controller
      */
     public function edit($id)
     {
-        $data = Salary::find($id);
-        return view('admin.salary.edit', [
-            'data' => $data
-        ]);
+        $data = Salary::where('users_id', Auth::id())->findOrFail($id);
+        $categoryIncome = CategoryIncome::where('users_id', Auth::id())
+            ->get();
+        $data->salary = 'Rp. ' . number_format($data->salary, 0, ',', '.');
+        return view('v2.admin.income.edit', compact('data', 'categoryIncome'));
     }
 
     /**
@@ -128,9 +154,24 @@ class SalaryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'salary' => 'required|string',
+            'date' => 'required|date',
+            'tipe' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
         try {
-            $data = Salary::find($id);
+            $data = Salary::findOrFail($id); // Gunakan findOrFail untuk memastikan data ditemukan
             $this->authorize('update', $data);
+
+            // kalau update tanggal melebihi tanggal sekarang maka akan error
+            if ($request->date > Carbon::now()->format('Y-m-d')) {
+                Log::error('Tanggal tidak boleh melebihi tanggal sekarang');
+                return false;
+            }
+
+            // Update fields
             $data->users_id = Auth::user()->id;
             $data->salary = str_replace(
                 ['Rp.', '.'],
@@ -142,11 +183,16 @@ class SalaryController extends Controller
             $data->description = $request->description;
             $data->save();
 
-            // return redirect()->route('salary.index');
-            return to_route('salary.index')->with('success', 'Data berhasil diubah');
+            return response()->json([
+                'status' => true,
+                'message' => 'Data Updated Successfully',
+            ]);
         } catch (\Throwable $th) {
-            // return redirect()->route('salary.index');
-            return to_route('salary.index')->with('error', 'Data gagal diubah');
+            Log::error('Error updating data: ' . $th->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Failed to Update',
+            ]);
         }
     }
 

@@ -37,7 +37,7 @@ class CategoryIncomeController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.kategori-income.index');
+        return view('v2.admin.category.income.index');
     }
 
     public function create()

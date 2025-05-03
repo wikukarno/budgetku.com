@@ -17,7 +17,7 @@ class AccountController extends Controller
     public function index()
     {
         $user = User::where('id', Auth::user()->id)->first();
-        return view('admin.account', compact('user'));
+        return view('v2.admin.account', compact('user'));
     }
 
     /**

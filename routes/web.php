@@ -44,39 +44,46 @@ Route::prefix('/pages/admin')
     ->middleware(['auth', 'owner'])
     ->group(function () {
         Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
-        Route::post('/ubah-profile', [AccountController::class, 'ubahProfile'])->name('ubah-profile');
-        Route::post('/show/finance', [FinanceController::class, 'show']);
-        Route::post('/show/kategori', [CategoryFinanceController::class, 'show']);
-        Route::post('/delete/kategori', [CategoryFinanceController::class, 'destroy']);
-        Route::post('/delete/finance', [FinanceController::class, 'destroy']);
-        Route::post('/show/salary', [SalaryController::class, 'show']);
 
-        Route::post('/kategori/finance/show', [CategoryFinanceController::class, 'show']);
-        Route::delete('/kategori/finance/delete', [CategoryFinanceController::class, 'destroy']);
+        // Category Income
+        Route::get('/category/income', [CategoryIncomeController::class, 'index'])->name('admin.category.income.index');
+        Route::get('/category/income/show', [CategoryIncomeController::class, 'show'])->name('admin.category.income.show');
+        Route::post('/category/income/store', [CategoryIncomeController::class, 'store'])->name('admin.category.income.store');
+        Route::delete('/category/income/delete', [CategoryIncomeController::class, 'destroy'])->name('admin.category.income.destroy');
 
-        Route::post('/kategori/income/show', [CategoryIncomeController::class, 'show']);
-        Route::delete('/kategori/income/delete', [CategoryIncomeController::class, 'destroy']);
+        // Category Expense
+        Route::get('/category/expense', [CategoryFinanceController::class, 'index'])->name('admin.category.expense.index');
+        Route::get('/category/expense/show', [CategoryFinanceController::class, 'show'])->name('admin.category.expense.show');
+        Route::post('/category/expense/store', [CategoryFinanceController::class, 'store'])->name('admin.category.expense.store');
+        Route::delete('/category/expense/delete', [CategoryFinanceController::class, 'destroy'])->name('admin.category.expense.destroy');
+        
+        // Income
+        Route::get('/income', [SalaryController::class, 'index'])->name('admin.income.index');
+        Route::get('/income/create', [SalaryController::class, 'create'])->name('admin.income.create');
+        Route::get('/income/show', [SalaryController::class, 'show'])->name('admin.income.show');
+        Route::get('/income/edit/{id}', [SalaryController::class, 'edit'])->name('admin.income.edit');
+        Route::post('/income/store', [SalaryController::class, 'store'])->name('admin.income.store');
+        Route::put('/income/update/{id}', [SalaryController::class, 'update'])->name('admin.income.update');
+        Route::delete('/income/delete', [SalaryController::class, 'destroy'])->name('admin.income.destroy');
+        // End Route custom income
 
+        // Expense
+        Route::get('/expense', [FinanceController::class, 'index'])->name('admin.expense.index');
+        Route::get('/expense/create', [FinanceController::class, 'create'])->name('admin.expense.create');
+        Route::get('/expense/edit/{id}', [FinanceController::class, 'edit'])->name('admin.expense.edit');
+        Route::get('/expense/show', [FinanceController::class, 'show'])->name('admin.expense.show');
+        Route::post('/expense/store', [FinanceController::class, 'store'])->name('admin.expense.store');
+        Route::put('/expense/update/{id}', [FinanceController::class, 'update'])->name('admin.expense.update');
+        Route::delete('/expense/delete', [FinanceController::class, 'destroy'])->name('admin.expense.destroy');
+        // End Route custom expense
 
-        Route::delete('/bill/delete', [BillController::class, 'destroy'])->name('delete-bill');
-        Route::delete('/finance/delete', [FinanceController::class, 'destroy'])->name('delete-finance');
-        Route::delete('/salary/delete', [SalaryController::class, 'destroy'])->name('delete-salary');
-
-
-        Route::get('/salary', [SalaryController::class, 'index'])->name('salary.index');
-        Route::get('/salary/create', [SalaryController::class, 'create'])->name('salary.create');
-        Route::post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
-        Route::get('/salary/edit/{id}', [SalaryController::class, 'edit'])->name('salary.edit');
-        Route::put('/salary/update/{id}', [SalaryController::class, 'update'])->name('salary.update');
-        Route::delete('/salary/delete/{id}', [SalaryController::class, 'destroy'])->name('salary.destroy');
-
-        Route::resource('bill', BillController::class);
-        // Route::resource('salary', SalaryController::class);
-        Route::resource('finance', FinanceController::class);
-        // Route::resource('debt', AdminDebtController::class)->except(['show', 'destroy']);
-        Route::resource('category', CategoryFinanceController::class);
-        Route::resource('admin-category-income', CategoryIncomeController::class);
-        Route::resource('account', AccountController::class);
+        // Account
+        Route::get('/account', [AccountController::class, 'index'])->name('admin.account.index');
+        Route::get('/account/edit/{id}', [AccountController::class, 'edit'])->name('admin.account.edit');
+        Route::put('/account/update/{id}', [AccountController::class, 'update'])->name('admin.account.update');
+        Route::put('/account/password/update', [AccountController::class, 'updatePassword'])->name('admin.account.password.update');
+        Route::delete('/account/delete', [AccountController::class, 'destroy'])->name('admin.account.delete');
+        // End Route custom account
     });
 
     
@@ -134,8 +141,6 @@ Route::prefix('/pages/admin')
             // End Route custom account
 
             Route::resource('akun', UserAccountController::class);
-
-
     });
 
 

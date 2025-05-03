@@ -18,16 +18,49 @@
             <li class="menu-title small text-uppercase">
                 <span class="menu-title-text">MAIN</span>
             </li>
-            <li class="menu-item {{ request()->is('pages/customer/dashboard') ? 'open' : '' }}">
-                <a href="{{ route('customer.dashboard') }}" class="menu-link {{ request()->is('pages/customer/dashboard') ? 'active' : '' }}">
-                    <span class="material-symbols-outlined menu-icon">dashboard</span>
-                    <span class="title">Dashboard</span>
-                </a>
-            </li>
+            
+            @if (Auth::user()->roles == "Owner")
+                <li class="menu-item {{ request()->is('pages/customer/dashboard') ? 'open' : '' }}">
+                    <a href="{{ route('customer.dashboard') }}"
+                        class="menu-link {{ request()->is('pages/customer/dashboard') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">dashboard</span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+            @else
+                <li class="menu-item {{ request()->is('pages/customer/dashboard') ? 'open' : '' }}">
+                    <a href="{{ route('customer.dashboard') }}"
+                        class="menu-link {{ request()->is('pages/customer/dashboard') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">dashboard</span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+            @endif
 
             <li class="menu-title small text-uppercase">
                 <span class="menu-title-text">CATEGORY</span>
             </li>
+
+            @if (Auth::user()->roles == "Owner")
+                <li class="menu-item {{ request()->is('pages/admin/category/income') ? 'open' : '' }}">
+                    <a href="{{ route('admin.category.income.index') }}"
+                        class="menu-link {{ request()->is('pages/admin/category/income') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            list_alt
+                        </span>
+                        <span class="title">Income Category</span>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('pages/admin/category/expense') ? 'open' : '' }}">
+                    <a href="{{ route('admin.category.expense.index') }}"
+                        class="menu-link {{ request()->is('pages/admin/category/expense') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            list_alt
+                        </span>
+                        <span class="title">Expense Category</span>
+                    </a>
+                </li>
+            @endif
 
             @if (Auth::user()->roles == "Customer")
                 <li class="menu-item {{ request()->is('pages/customer/category/income') ? 'open' : '' }}">
@@ -52,34 +85,69 @@
                 <span class="menu-title-text">TRANSACTIONS</span>
             </li>
 
-            <li class="menu-item {{ request()->is('pages/customer/income') ? 'open' : '' }}">
-                <a href="{{ route('customer.income.index') }}" class="menu-link {{ request()->is('pages/customer/income') ? 'active' : '' }}">
-                    <span class="material-symbols-outlined menu-icon">
-                        attach_money
-                    </span>
-                    <span class="title">Income</span>
-                </a>
-            </li>
-
-            <li class="menu-item {{ request()->is('pages/customer/expense') ? 'open' : '' }}">
-                <a href="{{ route('customer.expense.index') }}" class="menu-link {{ request()->is('pages/customer/expense') ? 'active' : '' }}">
-                    <span class="material-symbols-outlined menu-icon">
-                        payments
-                    </span>
-                    <span class="title">Expense</span>
-                </a>
-            </li>
+            @if (Auth::user()->roles == "Owner")
+                <li class="menu-item {{ request()->is('pages/admin/income') ? 'open' : '' }}">
+                    <a href="{{ route('admin.income.index') }}"
+                        class="menu-link {{ request()->is('pages/admin/income') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            attach_money
+                        </span>
+                        <span class="title">Income</span>
+                    </a>
+                </li>
+                
+                <li class="menu-item {{ request()->is('pages/admin/expense') ? 'open' : '' }}">
+                    <a href="{{ route('admin.expense.index') }}"
+                        class="menu-link {{ request()->is('pages/admin/expense') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            payments
+                        </span>
+                        <span class="title">Expense</span>
+                    </a>
+                </li>
+            @else
+                <li class="menu-item {{ request()->is('pages/customer/income') ? 'open' : '' }}">
+                    <a href="{{ route('customer.income.index') }}"
+                        class="menu-link {{ request()->is('pages/customer/income') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            attach_money
+                        </span>
+                        <span class="title">Income</span>
+                    </a>
+                </li>
+                
+                <li class="menu-item {{ request()->is('pages/customer/expense') ? 'open' : '' }}">
+                    <a href="{{ route('customer.expense.index') }}"
+                        class="menu-link {{ request()->is('pages/customer/expense') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            payments
+                        </span>
+                        <span class="title">Expense</span>
+                    </a>
+                </li>
+            @endif
 
             <li class="menu-title small text-uppercase">
                 <span class="menu-title-text">ACCOUNT</span>
             </li>
 
-            <li class="menu-item {{ request()->is('pages/customer/account') ? 'open' : '' }}">
-                <a href="{{ route('customer.account.index') }}" class="menu-link {{ request()->is('pages/customer/account') ? 'active' : '' }}">
-                    <span class="material-symbols-outlined menu-icon">person</span>
-                    <span class="title">Profile</span>
-                </a>
-            </li>
+            @if (Auth::user()->roles == "Owner")
+                <li class="menu-item {{ request()->is('pages/admin/account') ? 'open' : '' }}">
+                    <a href="{{ route('admin.account.index') }}"
+                        class="menu-link {{ request()->is('pages/admin/account') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">person</span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+            @else
+                <li class="menu-item {{ request()->is('pages/customer/account') ? 'open' : '' }}">
+                    <a href="{{ route('customer.account.index') }}"
+                        class="menu-link {{ request()->is('pages/customer/account') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">person</span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+            @endif
 
             <li class="menu-item">
                 <a href="javascript:void()" onclick="logout()" class="menu-link">
