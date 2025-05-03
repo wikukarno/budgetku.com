@@ -110,7 +110,7 @@ class DashboardAdminController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('bill.edit', $item->id) . '" class="btn btn-warning">Edit
+                        <a href="#" class="btn btn-warning">Edit
                         </a>
                         <a href="javascript:void(0)" onclick="deleteBill(' . $item->id . ')">
                             <button type="button" class="btn btn-danger">Delete</button>
