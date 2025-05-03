@@ -20,9 +20,9 @@
             </li>
             
             @if (Auth::user()->roles == "Owner")
-                <li class="menu-item {{ request()->is('pages/customer/dashboard') ? 'open' : '' }}">
-                    <a href="{{ route('customer.dashboard') }}"
-                        class="menu-link {{ request()->is('pages/customer/dashboard') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('pages/admin/dashboard') ? 'open' : '' }}">
+                    <a href="{{ route('dashboard') }}"
+                        class="menu-link {{ request()->is('pages/admin/dashboard') ? 'active' : '' }}">
                         <span class="material-symbols-outlined menu-icon">dashboard</span>
                         <span class="title">Dashboard</span>
                     </a>
