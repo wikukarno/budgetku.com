@@ -104,28 +104,30 @@ class FinanceController extends Controller
                 $data->update(['bukti_pembayaran' => $file]);
             }
 
-            // Proses saldo & email
+            // Kirim email ke user
             $user = Auth::user();
 
-            // Get UsersID
-            $userId = Auth::id();
+            // Proses saldo & email
+            $userId = Auth::user()->id;
             $lastMonth = Carbon::now()->subMonth();
 
             $pengeluaran = 0;
 
-            $allSalaryForPreviousMonthAndCurrentMonth = Salary::where('users_id', $userId)
+            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
                 ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
                 ->pluck('date')->toArray();
+
 
             $salary = Salary::where('users_id', $userId)
                 ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
                 ->sum('salary');
 
-            if(!empty($allSalaryForPreviousMonthAndCurrentMonth)) {
+
+            if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
                 $pengeluaran = Finance::where('users_id', $userId)
-                    ->whereBetween('purchase_date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                    ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
                     ->sum('price');
-            }else{
+            } else {
                 $pengeluaran = 0;
             }
 
@@ -201,16 +203,37 @@ class FinanceController extends Controller
                 $data->update(['bukti_pembayaran' => $file]);
             }
 
-            // Hitung ulang saldo user
+            // Kirim email ke user
             $user = Auth::user();
-            $salary = Salary::where('users_id', $user->id)->sum('salary');
-            $pengeluaran = Finance::where('users_id', $user->id)->sum('price');
-            $saldo = $salary - $pengeluaran;
+
+            // Proses saldo & email
+            $userId = Auth::user()->id;
+            $lastMonth = Carbon::now()->subMonth();
+
+            $pengeluaran = 0;
+
+            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->pluck('date')->toArray();
+
+
+            $salary = Salary::where('users_id', $userId)
+                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->sum('salary');
+
+
+            if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
+                $pengeluaran = Finance::where('users_id', $userId)
+                    ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
+                    ->sum('price');
+            } else {
+                $pengeluaran = 0;
+            }
 
             $sendEmail = [
                 'finance' => $data,
                 'user' => $user,
-                'saldo' => $saldo
+                'saldo' => $salary - $pengeluaran
             ];
 
             ProcessUangKeluarEmail::dispatch($sendEmail);
