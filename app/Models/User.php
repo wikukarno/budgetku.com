@@ -31,6 +31,7 @@ class User extends Authenticatable
         'auth_token',
         'notifications',
         'avatar',
+        'roles',
     ];
 
     /**

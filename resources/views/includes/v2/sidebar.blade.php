@@ -21,7 +21,7 @@
             
             @if (Auth::user()->roles == "Owner")
                 <li class="menu-item {{ request()->is('pages/admin/dashboard') ? 'open' : '' }}">
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="menu-link {{ request()->is('pages/admin/dashboard') ? 'active' : '' }}">
                         <span class="material-symbols-outlined menu-icon">dashboard</span>
                         <span class="title">Dashboard</span>

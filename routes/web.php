@@ -43,7 +43,7 @@ Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 Route::prefix('/pages/admin')
     ->middleware(['auth', 'owner'])
     ->group(function () {
-        Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
 
         // Category Income
         Route::get('/category/income', [CategoryIncomeController::class, 'index'])->name('admin.category.income.index');

@@ -62,7 +62,7 @@ class LoginController extends Controller
             $findUser->notify(new UserLoginNotification());
 
             return $findUser->roles === 'Owner'
-                ? to_route('dashboard')
+                ? to_route('admin.dashboard')
                 : to_route('customer.dashboard');
         } else {
             $newUser = User::create([
@@ -83,7 +83,7 @@ class LoginController extends Controller
     protected function authenticated($request, $user)
     {
         if($user->roles == 'Owner') {
-            return to_route('dashboard');
+            return to_route('admin.dashboard');
         } elseif($user->roles == 'Customer') {
             return to_route('customer.dashboard');
         }

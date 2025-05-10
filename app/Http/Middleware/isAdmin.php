@@ -20,6 +20,7 @@ class isAdmin
         if (Auth::user() && Auth::user()->roles == 'Owner') {
             return $next($request);
         }
-        return to_route('dashboard');
+        
+        return abort(403, 'Unauthorized action.');
     }
 }
