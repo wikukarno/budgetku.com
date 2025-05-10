@@ -107,14 +107,32 @@ class FinanceController extends Controller
             // Proses saldo & email
             $user = Auth::user();
 
-            $salary = Salary::where('users_id', $user->id)->sum('salary');
-            $pengeluaran = Finance::where('users_id', $user->id)->sum('price');
-            $saldo = $salary - $pengeluaran;
+            // Get UsersID
+            $userId = Auth::id();
+            $lastMonth = Carbon::now()->subMonth();
+
+            $pengeluaran = 0;
+
+            $allSalaryForPreviousMonthAndCurrentMonth = Salary::where('users_id', $userId)
+                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->pluck('date')->toArray();
+
+            $salary = Salary::where('users_id', $userId)
+                ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                ->sum('salary');
+
+            if(!empty($allSalaryForPreviousMonthAndCurrentMonth)) {
+                $pengeluaran = Finance::where('users_id', $userId)
+                    ->whereBetween('purchase_date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
+                    ->sum('price');
+            }else{
+                $pengeluaran = 0;
+            }
 
             $sendEmail = [
                 'finance' => $data,
                 'user' => $user,
-                'saldo' => $saldo
+                'saldo' => $salary - $pengeluaran
             ];
 
             ProcessUangKeluarEmail::dispatch($sendEmail);
