@@ -58,7 +58,7 @@
                     </div>
                     <div class="col-lg-12">
                         <div class="d-flex flex-wrap justify-content-end gap-3">
-                            <a href="{{ route('customer.income.index') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
+                            <a href="{{ route('admin.income.index') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
                             <button type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16"> <i
                                     class="ri-add-line text-white fw-medium"></i> Create</button>
                         </div>
@@ -110,12 +110,12 @@
             submitButton.prop('disabled', true);
             submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
 
-            axios.post('{{ route('customer.income.store') }}', formData)
+            axios.post('{{ route('admin.income.store') }}', formData)
                 .then(function(response) {
                     if (response.data.status == true) {
                         showCustomAlert('success', response.data.message);
                         setTimeout(function() {
-                            window.location.href = '{{ route('customer.income.index') }}';
+                            window.location.href = '{{ route('admin.income.index') }}';
                         }, 2000);
                     } else {
                         showCustomAlert('danger', response.data.message);

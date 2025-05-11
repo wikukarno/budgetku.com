@@ -99,7 +99,7 @@
                     @endguest
                     @auth
                         @if (Auth::user()->roles == "Owner")
-                            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary-div py-2 px-4 fw-medium fs-16 rounded-3">
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-primary-div py-2 px-4 fw-medium fs-16 rounded-3">
                                 <i class="ri-dashboard-line fs-18 position-relative top-2"></i>
                                 <span class="ms-1">
                                     Dashboard

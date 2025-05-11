@@ -54,6 +54,42 @@ it('returns correct dashboard data structure', function () {
         ->and($data['totalPendapatan'])->toEqual(800000);
 });
 
+it('generates correct monthly finance summary', function () {
+    $user = User::factory()->create();
+
+    // Jan
+    Finance::factory()->create([
+        'users_id' => $user->id,
+        'purchase_date' => now()->startOfYear()->format('Y-01-15'),
+        'price' => 100000,
+    ]);
+
+    // Jan lagi
+    Finance::factory()->create([
+        'users_id' => $user->id,
+        'purchase_date' => now()->startOfYear()->format('Y-01-20'),
+        'price' => 200000,
+    ]);
+
+    // Feb
+    Finance::factory()->create([
+        'users_id' => $user->id,
+        'purchase_date' => now()->startOfYear()->format('Y-02-10'),
+        'price' => 150000,
+    ]);
+
+    $repo = new \App\Repositories\Admin\FinanceRepository();
+    $result = $repo->getMonthlySummaryThisYear($user->id);
+
+    expect($result)->toHaveCount(2); // Januari & Februari
+
+    $january = $result->firstWhere('month', 1);
+    $february = $result->firstWhere('month', 2);
+
+    expect($january->total)->toEqual(300000);
+    expect($february->total)->toEqual(150000);
+});
+
 it('renders the admin dashboard with required data', function () {
     Config::set('auth.defaults.guard', 'web');
 

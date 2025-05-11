@@ -27,4 +27,37 @@ class SalaryRepository
             ])
             ->sum('salary');
     }
+
+    public function getByUserId($userId)
+    {
+        return Salary::with('category_income')
+            ->where('users_id', $userId)
+            ->orderByDesc('created_at');
+    }
+
+    public function create(array $data)
+    {
+        return Salary::create($data);
+    }
+
+    public function findById($id)
+    {
+        return Salary::find($id);
+    }
+
+    public function findOrFailByUser($id, $userId)
+    {
+        return Salary::where('users_id', $userId)->findOrFail($id);
+    }
+
+    public function update(Salary $salary, array $data)
+    {
+        $salary->update($data);
+        return $salary;
+    }
+
+    public function delete(Salary $salary)
+    {
+        return $salary->delete();
+    }
 }

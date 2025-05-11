@@ -7,47 +7,35 @@ use App\Http\Requests\SalaryRequest;
 use App\Jobs\ProcessUangMasukEmail;
 use App\Models\CategoryIncome;
 use App\Models\Salary;
-use App\Models\User;
-use Carbon\Carbon;
+use App\Services\Admin\SalaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class SalaryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $salaryService;
+
+    public function __construct(SalaryService $salaryService)
+    {
+        $this->salaryService = $salaryService;
+    }
+
     public function index()
     {
         if (request()->ajax()) {
-            $query = Salary::with('category_income')
-                ->where('users_id', Auth::id())
-                ->orderBy('created_at', 'DESC');
+            $query = $this->salaryService->getDatatableQuery();
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('tipe', function ($item) {
-                    return $item->category_income->name_category_incomes;
-                })
-                ->editColumn('salary', function ($item) {
-                    return 'Rp.' . number_format($item->salary, 0, ',', '.');
-                })
-                ->editColumn('date', function ($item) {
-                    return Carbon::parse($item->date)->isoFormat('D MMMM Y');
-                })
+                ->editColumn('tipe', fn($item) => $item->category_income->name_category_incomes)
+                ->editColumn('salary', fn($item) => 'Rp.' . number_format($item->salary, 0, ',', '.'))
+                ->editColumn('date', fn($item) => Carbon::parse($item->date)->isoFormat('D MMMM Y'))
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('admin.income.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
-                            Edit
-                        </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(' . $item->id . ')">
-                            Delete
-                        </a>
-                    ';
+                        <a href="' . route('admin.income.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(' . $item->id . ')">Delete</a>';
                 })
                 ->rawColumns(['action', 'date', 'salary', 'tipe'])
                 ->make(true);
@@ -56,168 +44,88 @@ class SalaryController extends Controller
         return view('v2.admin.income.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        return view('v2.admin.income.create');
+        $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        return view('v2.admin.income.create', compact('categoryIncome'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
             'salary' => 'required|string',
             'date' => 'required|date',
-            'tipe' => 'required|string',
+            'tipe' => 'required|integer',
             'description' => 'required|string',
         ]);
 
         try {
-            $data = Salary::create([
-                'users_id' => Auth::id(),
-                'salary' => str_replace(
-                    ['Rp. ', '.'],
-                    ['', ''],
-                    $request->salary
-                ),
-                'date' => $request->date,
-                'tipe' => $request->tipe,
-                'description' => $request->description,
-            ]);
+            Log::info('Request received:', $request->all());
+            $salary = $this->salaryService->create($request->all());
+            Log::info('Request received:', $request->all());
 
-            $email = User::where('email', Auth::user()->email)->first();
+            // ProcessUangMasukEmail::dispatch([
+            //     'salary' => $salary,
+            //     'user' => Auth::user()
+            // ]);
 
-            $data = [
-                'salary' => $data,
-                'user' => $email
-            ];
-
-            ProcessUangMasukEmail::dispatch(
-                $data
-            );
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Data Created Successfully',
-            ]);
-        } catch (\Exception $exception) {
-            Log::error('Error creating data: ' . $exception->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Data Failed to Create',
-            ]);
+            return response()->json(['status' => true, 'message' => 'Data Created Successfully']);
+        } catch (\Throwable $e) {
+            Log::error($e);
+            return response()->json(['status' => false, 'message' => 'Data Failed to Create']);
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Request $request)
     {
-        $data = Salary::find($request->id);
+        $data = $this->salaryService->getById($request->id);
         return response()->json($data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        $data = Salary::where('users_id', Auth::id())->findOrFail($id);
-        $categoryIncome = CategoryIncome::where('users_id', Auth::id())
-            ->get();
+        $data = $this->salaryService->getByUser($id);
+        $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
         $data->salary = 'Rp. ' . number_format($data->salary, 0, ',', '.');
         return view('v2.admin.income.edit', compact('data', 'categoryIncome'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
             'salary' => 'required|string',
             'date' => 'required|date',
-            'tipe' => 'required|string',
+            'tipe' => 'required|integer',
             'description' => 'required|string',
         ]);
 
         try {
-            $data = Salary::findOrFail($id); // Gunakan findOrFail untuk memastikan data ditemukan
-            $this->authorize('update', $data);
+            $salary = $this->salaryService->getById($id); // Ambil datanya dulu
+            $this->authorize('update', $salary); // Cek policy
 
-            // kalau update tanggal melebihi tanggal sekarang maka akan error
-            if ($request->date > Carbon::now()->format('Y-m-d')) {
-                Log::error('Tanggal tidak boleh melebihi tanggal sekarang');
-                return false;
-            }
+            $this->salaryService->update($id, $request->all());
 
-            // Update fields
-            $data->users_id = Auth::user()->id;
-            $data->salary = str_replace(
-                ['Rp.', '.'],
-                ['', ''],
-                $request->salary
-            );
-            $data->date = $request->date;
-            $data->tipe = $request->tipe;
-            $data->description = $request->description;
-            $data->save();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Data Updated Successfully',
-            ]);
+            return response()->json(['status' => true, 'message' => 'Data Updated Successfully']);
         } catch (\Throwable $th) {
             Log::error('Error updating data: ' . $th->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Data Failed to Update',
-            ]);
+            return response()->json(['status' => false, 'message' => 'Data Failed to Update']);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         try {
-            $data = Salary::find($request->id);
-            $this->authorize('delete', $data);
-            $data->delete();
+            $salary = $this->salaryService->getById($request->id);
 
-            return response()->json([
-                'code' => 200,
-                'message' => 'Data berhasil dihapus'
-            ]);
+            // 🔒 Authorization check
+            $this->authorize('delete', $salary);
+
+            $this->salaryService->delete($salary->id);
+
+            return response()->json(['code' => 200, 'message' => 'Data berhasil dihapus']);
         } catch (\Throwable $th) {
-            return response()->json([
-                'code' => 500,
-                'message' => 'Data gagal dihapus'
-            ]);
+            Log::error($th);
+            return response()->json(['code' => 500, 'message' => 'Data gagal dihapus']);
         }
     }
 }

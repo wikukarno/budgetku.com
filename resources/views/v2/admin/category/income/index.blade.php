@@ -94,7 +94,7 @@
             
             $.ajax({
                 type:"GET",
-                url: "{{ route('customer.category.income.show') }}",
+                url: "{{ route('admin.category.income.show') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     id:id
@@ -127,7 +127,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type:"DELETE",
-                        url: "{{ route('customer.category.income.destroy') }}",
+                        url: "{{ route('admin.category.income.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
                             id:id
@@ -154,7 +154,7 @@
             
             $.ajax({
                 type: 'POST',
-                url: "{{ route('customer.category.income.store') }}",
+                url: "{{ route('admin.category.income.store') }}",
                 data: formData,
                 cache: false,
                 contentType: false,

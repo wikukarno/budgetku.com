@@ -96,7 +96,7 @@
                             @auth
                                 <div class="d-grid mb-3">
                                     @if (Auth::user()->roles == 'Owner')
-                                        <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg col">
+                                        <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-lg col">
                                             <i class="mdi mdi-home"></i> Dashboard
                                         </a>
                                     @elseif (Auth::user()->roles == 'Customer')

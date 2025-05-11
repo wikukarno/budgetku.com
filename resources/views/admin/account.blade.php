@@ -100,7 +100,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="d-block d-lg-flex d-grid gap-2">
-                            <a href="{{ route('dashboard') }}" class="btn btn-danger col-12 col-lg-6">Batal</a>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-danger col-12 col-lg-6">Batal</a>
                             <button class="btn btn-primary col-12 col-lg-6" type="submit">Simpan</button>
                         </div>
                     </div>
