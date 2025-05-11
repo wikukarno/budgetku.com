@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SalaryRequest;
 use App\Jobs\ProcessUangMasukEmail;
 use App\Models\CategoryIncome;
-use App\Models\Salary;
 use App\Services\Admin\SalaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,10 +63,10 @@ class SalaryController extends Controller
             $salary = $this->salaryService->create($request->all());
             Log::info('Request received:', $request->all());
 
-            // ProcessUangMasukEmail::dispatch([
-            //     'salary' => $salary,
-            //     'user' => Auth::user()
-            // ]);
+            ProcessUangMasukEmail::dispatch([
+                'salary' => $salary,
+                'user' => Auth::user()
+            ]);
 
             return response()->json(['status' => true, 'message' => 'Data Created Successfully']);
         } catch (\Throwable $e) {
