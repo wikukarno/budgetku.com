@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    {{-- <div class="row justify-content-center">
+    <div class="row justify-content-center">
         <div class="col-xl-12">
             <div class="card bg-white border-0 rounded-3 mb-4">
                 <div class="card-body p-4" style="padding-bottom: 0 !important;">
@@ -41,15 +41,15 @@
                                         <div class="flex-grow-1 ms-2">
                                             <span>Total Balance</span>
                                             <h3 class="fs-20 mt-1 mb-0">
-                                                Rp. {{ number_format($totalSaldo, 0, ',', '.') }}
+                                                Rp. {{ number_format($totalPendapatan, 0, ',', '.') }}
                                             </h3>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
+                                    {{-- <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
                                         <span class="fs-12">Remaining this month</span>
                                         <span class="count fw-medium ms-0 {{ $balanceChange < 0 ? 'down' : 'up' }}">
                                             {{ $balanceChange < 0 ? '' : '+' }}{{ number_format($balanceChange, 1) }}% </span>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -65,20 +65,20 @@
                                         <div class="flex-grow-1 ms-2">
                                             <span>Monthly Spending</span>
                                             <h3 class="fs-20 mt-1 mb-0">
-                                                Rp. {{ number_format($pengeluaranBulanIni, 0, ',', '.') }}
+                                                Rp. {{ number_format($pengeluaran, 0, ',', '.') }}
                                             </h3>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
+                                    {{-- <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
                                         <span class="fs-12">Compared to last month</span>
                                         <span class="count fw-medium ms-0 {{ $spendingChange < 0 ? 'up' : 'down' }}">
                                             {{ $spendingChange < 0 ? '' : '+' }}{{ number_format($spendingChange, 1) }}% </span>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
         
-                        <div class="col-xxl-12">
+                        {{-- <div class="col-xxl-12">
                             <div
                                 class="card bg-success bg-opacity-10 border-success border-opacity-10 rounded-3 mb-4 stats-box style-three">
                                 <div class="card-body p-4">
@@ -103,7 +103,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="col-xxl-6 col-xl-6 col-sm-6">
                             <div class="card bg-warning bg-opacity-10 border-warning border-opacity-10 rounded-3 mb-4 stats-box style-three">
@@ -115,15 +115,15 @@
                                         <div class="flex-grow-1 ms-2">
                                             <span>Weekly Spending</span>
                                             <h3 class="fs-20 mt-1 mb-0">
-                                                Rp. {{ number_format($pengeluaranMingguIni, 0, ',', '.') }}
+                                                Rp. {{ number_format($weeklyReport, 0, ',', '.') }}
                                             </h3>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
+                                    {{-- <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
                                         <span class="fs-12">Compared to last week</span>
                                         <span class="count fw-medium ms-0 {{ $spendingChange < 0 ? 'up' : 'down' }}">
                                             {{ $spendingChange < 0 ? '' : '+' }}{{ number_format($spendingChange, 1) }}% </span>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -138,16 +138,16 @@
                                         <div class="flex-grow-1 ms-2">
                                             <span>Daily Spending</span>
                                             <h3 class="fs-20 mt-1 mb-0">
-                                                Rp. {{ number_format($pengeluaranHariIni, 0, ',', '.') }}
+                                                Rp. {{ number_format($todayExpenditure, 0, ',', '.') }}
                                             </h3>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
+                                    {{-- <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
                                         <span class="fs-12">Compared to yesterday</span>
                                         <span class="count fw-medium ms-0 {{ $dailyChange < 0 ? 'up' : 'down' }}">
                                             {{ $dailyChange < 0 ? '' : '+' }}{{ number_format($dailyChange, 1) }}%
                                         </span>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 @endsection
 
 @push('after-scripts')
