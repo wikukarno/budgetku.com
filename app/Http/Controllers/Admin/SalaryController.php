@@ -99,8 +99,8 @@ class SalaryController extends Controller
         ]);
 
         try {
-            $salary = $this->salaryService->getById($id); // Ambil datanya dulu
-            $this->authorize('update', $salary); // Cek policy
+            $salary = $this->salaryService->getById($id);
+            $this->authorize('update', $salary);
 
             $this->salaryService->update($id, $request->all());
 
@@ -116,7 +116,6 @@ class SalaryController extends Controller
         try {
             $salary = $this->salaryService->getById($request->id);
 
-            // 🔒 Authorization check
             $this->authorize('delete', $salary);
 
             $this->salaryService->delete($salary->id);
