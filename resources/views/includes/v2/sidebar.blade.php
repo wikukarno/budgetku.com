@@ -60,6 +60,15 @@
                         <span class="title">Expense Category</span>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('pages/admin/payment-method') ? 'open' : '' }}">
+                    <a href="{{ route('admin.payment.method.index') }}"
+                        class="menu-link {{ request()->is('pages/admin/payment-method') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            credit_card
+                        </span>
+                        <span class="title">Payment Method</span>
+                    </a>
+                </li>
             @endif
 
             @if (Auth::user()->roles == "Customer")

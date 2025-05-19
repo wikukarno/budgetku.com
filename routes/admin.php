@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\CategoryIncomeController;
 use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\Admin\CategoryFinanceController;
+use App\Http\Controllers\Admin\PaymentMethodController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/pages/admin')
@@ -24,6 +25,15 @@ Route::prefix('/pages/admin')
         Route::get('/category/expense/show', [CategoryFinanceController::class, 'show'])->name('admin.category.expense.show');
         Route::post('/category/expense/store', [CategoryFinanceController::class, 'store'])->name('admin.category.expense.store');
         Route::delete('/category/expense/delete', [CategoryFinanceController::class, 'destroy'])->name('admin.category.expense.destroy');
+
+        // Payment Method
+        Route::get('/payment-method', [PaymentMethodController::class, 'index'])->name('admin.payment.method.index');
+        Route::get('/payment-method/show', [PaymentMethodController::class, 'show'])->name('admin.payment.method.show');
+        Route::post('/payment-method/store', [PaymentMethodController::class, 'store'])->name('admin.payment.method.store');
+        Route::put('/payment-method/update/{id}', [PaymentMethodController::class, 'update'])->name('admin.payment.method.update');
+        Route::delete('/payment-method/delete', [PaymentMethodController::class, 'destroy'])->name('admin.payment.method.destroy');
+        // End Route custom payment method
+
 
         // Income
         Route::get('/income', [SalaryController::class, 'index'])->name('admin.income.index');
