@@ -24,12 +24,12 @@ class CategoryIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <button class="btn btn-sm btn-warning" onclick="updateKategoriIncome(' . $item->id . ')">
+                        <button class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(' . $item->id . ')">
                             Edit
                         </button>
 
 
-                        <button class="btn btn-sm btn-danger" onclick="deleteKategoriIncome(' . $item->id . ')">
+                        <button class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(' . $item->id . ')">
                             Delete
                         </button>
                     ';
