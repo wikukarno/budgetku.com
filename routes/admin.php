@@ -34,7 +34,6 @@ Route::prefix('/pages/admin')
         Route::delete('/payment-method/delete', [PaymentMethodController::class, 'destroy'])->name('admin.payment.method.destroy');
         // End Route custom payment method
 
-
         // Income
         Route::get('/income', [SalaryController::class, 'index'])->name('admin.income.index');
         Route::get('/income/create', [SalaryController::class, 'create'])->name('admin.income.create');

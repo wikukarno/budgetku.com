@@ -7,6 +7,7 @@ use App\Models\PaymentMethod;
 use App\Services\Admin\PaymentMethodService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class PaymentMethodController extends Controller
@@ -78,6 +79,8 @@ class PaymentMethodController extends Controller
                 $request->id ?? null
             );
 
+            Cache::forget('payment_methods');
+
             return response()->json([
                 'status' => true,
                 'message' => $request->id
@@ -115,6 +118,7 @@ class PaymentMethodController extends Controller
             $paymentMethod = $this->paymentMethodService->getPaymentMethodById($request->id);
             $this->authorize('delete', $paymentMethod);
             $this->paymentMethodService->deletePaymentMethod($request->id);
+            Cache::forget('payment_methods');
             return response()->json(['status' => true, 'message' => 'Payment method deleted successfully.']);
         } catch (\Exception $e) {
             // Log the error message for debugging

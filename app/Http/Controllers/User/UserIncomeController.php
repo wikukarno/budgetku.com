@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -63,7 +64,11 @@ class UserIncomeController extends Controller
      */
     public function create()
     {
-        $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        // $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        $categoryIncome = Cache::remember('user_categories_income_' . Auth::id(), 3600, function () {
+            return CategoryIncome::where('users_id', Auth::id())->get();
+        });
+
         return view('v2.user.income.create', compact('categoryIncome'));
     }
 
@@ -94,6 +99,13 @@ class UserIncomeController extends Controller
                 'tipe' => $request->tipe,
                 'description' => $request->description,
             ]);
+
+            // Hapus cache
+            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
+            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
+            Cache::forget('laporan_tahunan_user_' . Auth::id());
 
             $email = User::where('email', Auth::user()->email)->first();
 
@@ -140,8 +152,11 @@ class UserIncomeController extends Controller
     public function edit($id)
     {
         $data = Salary::where('users_id', Auth::id())->findOrFail($id);
-        $categoryIncome = CategoryIncome::where('users_id', Auth::id())
-            ->get();
+
+        $categoryIncome = Cache::remember('user_categories_income_' . Auth::id(), 3600, function () {
+            return CategoryIncome::where('users_id', Auth::id())->get();
+        });
+
         $data->salary = 'Rp. ' . number_format($data->salary, 0, ',', '.');
         return view('v2.user.income.edit', compact('data', 'categoryIncome'));
     }
@@ -184,6 +199,13 @@ class UserIncomeController extends Controller
             $data->description = $request->description;
             $data->save();
 
+            // Hapus cache
+            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
+            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
+            Cache::forget('laporan_tahunan_user_' . Auth::id());
+
             return response()->json([
                 'status' => true,
                 'message' => 'Data Updated Successfully',
@@ -209,6 +231,14 @@ class UserIncomeController extends Controller
             $data = Salary::find($request->id);
             $this->authorize('delete', $data);
             $data->delete();
+
+            // Hapus cache
+            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
+            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
+            Cache::forget('laporan_tahunan_user_' . Auth::id());
+            Cache::forget('user_categories_income_' . Auth::id());
 
             return response()->json([
                 'code' => 200,

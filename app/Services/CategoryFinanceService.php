@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\CategoryFinanceRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryFinanceService
 {
@@ -35,6 +36,8 @@ class CategoryFinanceService
 
             // Simpan data
             $category->save();
+
+            Cache::forget('user_categories_finance_' . Auth::id());
 
             DB::commit();
 

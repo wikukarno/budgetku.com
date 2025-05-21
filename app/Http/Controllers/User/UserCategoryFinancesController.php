@@ -9,6 +9,7 @@ use App\Models\CategoryFinance;
 use App\Services\CategoryFinanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class UserCategoryFinancesController extends Controller
 {
@@ -99,6 +100,8 @@ class UserCategoryFinancesController extends Controller
 
         $this->authorize('delete', $data);
         $data->delete();
+        // Hapus cache
+        Cache::forget('user_categories_finance_' . Auth::id());
         return response()->json(
             [
                 'status' => true,

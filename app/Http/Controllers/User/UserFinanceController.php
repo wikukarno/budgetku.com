@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -52,11 +53,23 @@ class UserFinanceController extends Controller
                 ->make(true);
         }
 
-        $categories = CategoryFinance::where('users_id', Auth::id())->get();
-        $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
-            ->where('users_id', Auth::id())
-            ->groupBy('year')
-            ->get();
+        // $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        // $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
+        //     ->where('users_id', Auth::id())
+        //     ->groupBy('year')
+        //     ->get();
+
+        $categories = Cache::remember("user_categories_finance_" . Auth::id(), 3600, function () {
+            return CategoryFinance::where('users_id', Auth::id())->get();
+        });
+
+        $filterByYear = Cache::remember("finance_years_" . Auth::id(), 3600, function () {
+            return Finance::select(DB::raw('YEAR(created_at) as year'))
+                ->where('users_id', Auth::id())
+                ->groupBy('year')
+                ->get();
+        });
+
         return view('v2.user.expense.index', [
             'categories' => $categories,
             'filterByYear' => $filterByYear
@@ -136,10 +149,17 @@ class UserFinanceController extends Controller
         // Return file PDF sebagai download
         return $pdf->download('Laporan-Keuangan-Mingguan-' . $user->name . '.pdf');
     }
+
     public function create()
     {
-        $categories = CategoryFinance::where('users_id', Auth::id())->get();
-        $paymentMethods = PaymentMethod::select('id', 'name')->get();
+        $categories = Cache::remember("user_categories_finance_" . Auth::id(), 3600, function () {
+            return CategoryFinance::where('users_id', Auth::id())->get();
+        });
+
+        $paymentMethods = Cache::remember("payment_methods", 3600, function () {
+            return PaymentMethod::select('id', 'name')->get();
+        });
+
         return view('v2.user.expense.create', compact('categories', 'paymentMethods'));
     }
 
@@ -172,6 +192,13 @@ class UserFinanceController extends Controller
                 $file = $request->file('bukti_pembayaran')->store('assets/bukti_pembayaran', 'public');
                 $data->update(['bukti_pembayaran' => $file]);
             }
+
+            // Hapus cache
+            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
+            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
+            Cache::forget('laporan_tahunan_user_' . Auth::id());
 
             // Proses saldo & email
             $user = Auth::user();
@@ -211,10 +238,16 @@ class UserFinanceController extends Controller
     public function edit($id)
     {
         $data = Finance::findOrFail($id);
-        $categories = CategoryFinance::where('users_id', Auth::id())
-            ->get();
         $data->price = 'Rp. ' . number_format($data->price, 0, ',', '.');
-        $paymentMethods = PaymentMethod::select('id', 'name')->get();
+        
+        $categories = Cache::remember("user_categories_finance_" . Auth::id(), 3600, function () {
+            return CategoryFinance::where('users_id', Auth::id())->get();
+        });
+
+        $paymentMethods = Cache::remember("payment_methods", 3600, function () {
+            return PaymentMethod::select('id', 'name')->get();
+        });
+        
         return view('v2.user.expense.edit', compact('data', 'categories', 'paymentMethods'));
     }
 
@@ -252,6 +285,13 @@ class UserFinanceController extends Controller
                 $data->update(['bukti_pembayaran' => $file]);
             }
 
+            // Hapus cache
+            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
+            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
+            Cache::forget('laporan_tahunan_user_' . Auth::id());
+
             // Hitung ulang saldo user
             $user = Auth::user();
             $salary = Salary::where('users_id', $user->id)->sum('salary');
@@ -287,6 +327,13 @@ class UserFinanceController extends Controller
             $this->authorize('delete', $item);
 
             $item->delete();
+
+            // Hapus cache
+            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
+            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
+            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
+            Cache::forget('laporan_tahunan_user_' . Auth::id());
 
             return response()->json([
                 'code' => 200,

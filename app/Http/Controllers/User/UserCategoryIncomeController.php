@@ -10,6 +10,7 @@ use App\Http\Requests\StoreCategoryIncomeRequest;
 use App\Services\CategoryIncomeService;
 use App\Models\CategoryIncome;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class UserCategoryIncomeController extends Controller
@@ -100,6 +101,7 @@ class UserCategoryIncomeController extends Controller
         $data = CategoryIncome::find($request->id);
         $this->authorize('delete', $data);
         $data->delete();
+        Cache::forget('user_categories_income_' . Auth::id());
         return response()->json(
             [
                 'status' => true,

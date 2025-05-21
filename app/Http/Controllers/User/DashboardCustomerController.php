@@ -8,6 +8,7 @@ use App\Models\CategoryFinance;
 use App\Models\Finance;
 use App\Models\Portofolio;
 use App\Models\Salary;
+use App\Services\DashboardCacheService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,94 +18,40 @@ use Illuminate\Support\Facades\Log;
 class DashboardCustomerController extends Controller
 {
 
-    public function index()
+    public function index(DashboardCacheService $dashboard)
     {
+        $gajiBulanIni = $dashboard->gajiBulanIni();
+        $gajiBulanLalu = $dashboard->gajiBulanLalu();
+        $pengeluaranBulanIni = $dashboard->pengeluaranBulanIni();
+        $pengeluaranBulanLalu = $dashboard->pengeluaranBulanLalu();
+        $laporanBulananTahunIni = $dashboard->laporanBulananTahunIni();
+        $totalSaldo = $dashboard->totalSaldo();
+
+        // Yang real-time (mingguan/harian) bisa tanpa cache
         $userId = Auth::id();
-
-        // === Gaji (Income) ===
-        $gajiBulanIni = Salary::where('users_id', $userId)
-            ->whereMonth('date', Carbon::now()->month)
-            ->whereYear('date', Carbon::now()->year)
-            ->sum('salary');
-
-        $gajiBulanLalu = Salary::where('users_id', $userId)
-            ->whereMonth('date', Carbon::now()->subMonth()->month)
-            ->whereYear('date', Carbon::now()->subMonth()->year)
-            ->sum('salary');
-
-        // === Pengeluaran (Spending) ===
-        $pengeluaranBulanIni = Finance::where('users_id', $userId)
-            ->whereMonth('purchase_date', Carbon::now()->month)
-            ->whereYear('purchase_date', Carbon::now()->year)
+        $pengeluaranMingguIni = Finance::where('users_id', $userId)
+            ->whereBetween('purchase_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
             ->sum('price');
 
-        $pengeluaranBulanLalu = Finance::where('users_id', $userId)
-            ->whereMonth('purchase_date', Carbon::now()->subMonth()->month)
-            ->whereYear('purchase_date', Carbon::now()->subMonth()->year)
+        $pengeluaranMingguLalu = Finance::where('users_id', $userId)
+            ->whereBetween('purchase_date', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
             ->sum('price');
 
-        $laporanBulananTahunIni = Finance::where('users_id', Auth::id())
-            ->whereYear('purchase_date', Carbon::now()->year)
-            ->selectRaw('MONTH(purchase_date) as month, SUM(price) as total')
-            ->groupByRaw('MONTH(purchase_date)')
-            ->orderBy('month')
-            ->get();
-
-        $pengeluaranMingguLalu = Finance::where('users_id', Auth::id())
-            ->whereBetween('purchase_date', [
-                Carbon::now()->subWeek()->startOfWeek(),
-                Carbon::now()->subWeek()->endOfWeek()
-            ])
-            ->sum('price');
-
-        $pengeluaranMingguIni = Finance::where('users_id', Auth::id())
-            ->whereBetween('purchase_date', [
-                Carbon::now()->startOfWeek(),
-                Carbon::now()->endOfWeek()
-            ])
-            ->sum('price');
-
-        $pengeluaranKemarin = Finance::where('users_id', Auth::id())
+        $pengeluaranKemarin = Finance::where('users_id', $userId)
             ->whereDate('purchase_date', Carbon::yesterday())
             ->sum('price');
 
-        $pengeluaranHariIni = Finance::where('users_id', Auth::id())
+        $pengeluaranHariIni = Finance::where('users_id', $userId)
             ->whereDate('purchase_date', Carbon::today())
             ->sum('price');
 
-        // === Daily Change ===
-        $dailyChange = $pengeluaranKemarin > 0
-            ? (($pengeluaranHariIni - $pengeluaranKemarin) / $pengeluaranKemarin) * 100
-            : 0;
-
-        // === Weekly Change ===
-        $weeklyChange = $pengeluaranMingguLalu > 0
-            ? (($pengeluaranMingguIni - $pengeluaranMingguLalu) / $pengeluaranMingguLalu) * 100
-            : 0;
-
-        // === Saldo Bulanan ===
+        $dailyChange = $pengeluaranKemarin > 0 ? (($pengeluaranHariIni - $pengeluaranKemarin) / $pengeluaranKemarin) * 100 : 0;
+        $weeklyChange = $pengeluaranMingguLalu > 0 ? (($pengeluaranMingguIni - $pengeluaranMingguLalu) / $pengeluaranMingguLalu) * 100 : 0;
         $saldoBulanIni = $gajiBulanIni - $pengeluaranBulanIni;
         $saldoBulanLalu = $gajiBulanLalu - $pengeluaranBulanLalu;
-
-        // === Perubahan Persentase Income ===
-        $incomeChange = $gajiBulanLalu > 0
-            ? (($gajiBulanIni - $gajiBulanLalu) / $gajiBulanLalu) * 100
-            : 0;
-
-        // === Perubahan Persentase Spending ===
-        $spendingChange = $pengeluaranBulanLalu > 0
-            ? (($pengeluaranBulanIni - $pengeluaranBulanLalu) / $pengeluaranBulanLalu) * 100
-            : 0;
-
-        // === Perubahan Persentase Saldo ===
-        $balanceChange = $saldoBulanLalu > 0
-            ? (($saldoBulanIni - $saldoBulanLalu) / $saldoBulanLalu) * 100
-            : 0;
-
-        // === Total saldo akumulatif (lifetime) ===
-        $totalSalary = Salary::where('users_id', $userId)->sum('salary');
-        $totalSpending = Finance::where('users_id', $userId)->sum('price');
-        $totalSaldo = $totalSalary - $totalSpending;
+        $incomeChange = $gajiBulanLalu > 0 ? (($gajiBulanIni - $gajiBulanLalu) / $gajiBulanLalu) * 100 : 0;
+        $spendingChange = $pengeluaranBulanLalu > 0 ? (($pengeluaranBulanIni - $pengeluaranBulanLalu) / $pengeluaranBulanLalu) * 100 : 0;
+        $balanceChange = $saldoBulanLalu > 0 ? (($saldoBulanIni - $saldoBulanLalu) / $saldoBulanLalu) * 100 : 0;
 
         return view('v2.user.dashboard', compact(
             'gajiBulanIni',
@@ -125,6 +72,115 @@ class DashboardCustomerController extends Controller
             'totalSaldo'
         ));
     }
+
+    // public function index()
+    // {
+    //     $userId = Auth::id();
+
+    //     // === Gaji (Income) ===
+    //     $gajiBulanIni = Salary::where('users_id', $userId)
+    //         ->whereMonth('date', Carbon::now()->month)
+    //         ->whereYear('date', Carbon::now()->year)
+    //         ->sum('salary');
+
+    //     $gajiBulanLalu = Salary::where('users_id', $userId)
+    //         ->whereMonth('date', Carbon::now()->subMonth()->month)
+    //         ->whereYear('date', Carbon::now()->subMonth()->year)
+    //         ->sum('salary');
+
+    //     // === Pengeluaran (Spending) ===
+    //     $pengeluaranBulanIni = Finance::where('users_id', $userId)
+    //         ->whereMonth('purchase_date', Carbon::now()->month)
+    //         ->whereYear('purchase_date', Carbon::now()->year)
+    //         ->sum('price');
+
+    //     $pengeluaranBulanLalu = Finance::where('users_id', $userId)
+    //         ->whereMonth('purchase_date', Carbon::now()->subMonth()->month)
+    //         ->whereYear('purchase_date', Carbon::now()->subMonth()->year)
+    //         ->sum('price');
+
+    //     $laporanBulananTahunIni = Finance::where('users_id', Auth::id())
+    //         ->whereYear('purchase_date', Carbon::now()->year)
+    //         ->selectRaw('MONTH(purchase_date) as month, SUM(price) as total')
+    //         ->groupByRaw('MONTH(purchase_date)')
+    //         ->orderBy('month')
+    //         ->get();
+
+    //     $pengeluaranMingguLalu = Finance::where('users_id', Auth::id())
+    //         ->whereBetween('purchase_date', [
+    //             Carbon::now()->subWeek()->startOfWeek(),
+    //             Carbon::now()->subWeek()->endOfWeek()
+    //         ])
+    //         ->sum('price');
+
+    //     $pengeluaranMingguIni = Finance::where('users_id', Auth::id())
+    //         ->whereBetween('purchase_date', [
+    //             Carbon::now()->startOfWeek(),
+    //             Carbon::now()->endOfWeek()
+    //         ])
+    //         ->sum('price');
+
+    //     $pengeluaranKemarin = Finance::where('users_id', Auth::id())
+    //         ->whereDate('purchase_date', Carbon::yesterday())
+    //         ->sum('price');
+
+    //     $pengeluaranHariIni = Finance::where('users_id', Auth::id())
+    //         ->whereDate('purchase_date', Carbon::today())
+    //         ->sum('price');
+
+    //     // === Daily Change ===
+    //     $dailyChange = $pengeluaranKemarin > 0
+    //         ? (($pengeluaranHariIni - $pengeluaranKemarin) / $pengeluaranKemarin) * 100
+    //         : 0;
+
+    //     // === Weekly Change ===
+    //     $weeklyChange = $pengeluaranMingguLalu > 0
+    //         ? (($pengeluaranMingguIni - $pengeluaranMingguLalu) / $pengeluaranMingguLalu) * 100
+    //         : 0;
+
+    //     // === Saldo Bulanan ===
+    //     $saldoBulanIni = $gajiBulanIni - $pengeluaranBulanIni;
+    //     $saldoBulanLalu = $gajiBulanLalu - $pengeluaranBulanLalu;
+
+    //     // === Perubahan Persentase Income ===
+    //     $incomeChange = $gajiBulanLalu > 0
+    //         ? (($gajiBulanIni - $gajiBulanLalu) / $gajiBulanLalu) * 100
+    //         : 0;
+
+    //     // === Perubahan Persentase Spending ===
+    //     $spendingChange = $pengeluaranBulanLalu > 0
+    //         ? (($pengeluaranBulanIni - $pengeluaranBulanLalu) / $pengeluaranBulanLalu) * 100
+    //         : 0;
+
+    //     // === Perubahan Persentase Saldo ===
+    //     $balanceChange = $saldoBulanLalu > 0
+    //         ? (($saldoBulanIni - $saldoBulanLalu) / $saldoBulanLalu) * 100
+    //         : 0;
+
+    //     // === Total saldo akumulatif (lifetime) ===
+    //     $totalSalary = Salary::where('users_id', $userId)->sum('salary');
+    //     $totalSpending = Finance::where('users_id', $userId)->sum('price');
+    //     $totalSaldo = $totalSalary - $totalSpending;
+
+    //     return view('v2.user.dashboard', compact(
+    //         'gajiBulanIni',
+    //         'gajiBulanLalu',
+    //         'pengeluaranBulanIni',
+    //         'pengeluaranBulanLalu',
+    //         'laporanBulananTahunIni',
+    //         'pengeluaranMingguIni',
+    //         'pengeluaranHariIni',
+    //         'pengeluaranKemarin',
+    //         'pengeluaranMingguLalu',
+    //         'dailyChange',
+    //         'weeklyChange',
+    //         'saldoBulanIni',
+    //         'spendingChange',
+    //         'balanceChange',
+    //         'incomeChange',
+    //         'totalSaldo'
+    //     ));
+    // }
 
     // Old code
     // public function index()
