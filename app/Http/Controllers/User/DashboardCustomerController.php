@@ -3,17 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Bill;
-use App\Models\CategoryFinance;
 use App\Models\Finance;
-use App\Models\Portofolio;
-use App\Models\Salary;
 use App\Services\DashboardCacheService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class DashboardCustomerController extends Controller
 {

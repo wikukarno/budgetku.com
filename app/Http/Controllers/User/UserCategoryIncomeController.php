@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
-use App\Models\CategoryFinance;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryIncomeRequest;
 use App\Http\Requests\StoreCategoryIncomeRequest;
 use App\Services\CategoryIncomeService;
 use App\Models\CategoryIncome;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class UserCategoryIncomeController extends Controller
 {
