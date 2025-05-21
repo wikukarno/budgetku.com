@@ -37,7 +37,7 @@
                                 <span class="text-danger">*</span>
                                 Type
                             </label>
-                            <select class="form-select form-control" required name="tipe">
+                            <select class="form-select" required name="tipe" id="select2Types">
                                 <option selected>Select</option>
                                 @forelse ($categoryIncome as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_category_incomes }}</option>
@@ -74,6 +74,10 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+        $('#select2Types').select2({
+            placeholder: 'Select',
+        });
+
         $('#formdata').on('submit', function(e) {
             e.preventDefault();
 
