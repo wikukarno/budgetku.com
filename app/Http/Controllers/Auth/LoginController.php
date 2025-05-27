@@ -41,39 +41,72 @@ class LoginController extends Controller
 
     public function handlerProviderCallback(Request $request)
     {
-        $user = Socialite::driver('google')->user();
-        $findUser = User::where('email', $user->email)->first();
+        logger('📥 [Google Login] Callback HIT');
+
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            logger('✅ [Google Login] Data retrieved', [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'avatar' => $googleUser->avatar,
+            ]);
+        } catch (\Exception $e) {
+            logger()->error('❌ [Google Login] Failed to retrieve user data', [
+                'error' => $e->getMessage(),
+            ]);
+            return redirect('/login')->withErrors(['msg' => 'Google authentication failed.']);
+        }
+
+        $findUser = User::where('email', $googleUser->email)->first();
 
         if ($findUser) {
-            // Cek apakah avatar kosong atau bukan dari Google
+            logger('ℹ️ [Google Login] Existing user found', [
+                'id' => $findUser->id,
+                'uuid' => $findUser->uuid,
+            ]);
+
             if (empty($findUser->avatar) || !str_contains($findUser->avatar, 'googleusercontent.com')) {
-                $findUser->update([
-                    'avatar' => $user->avatar,
-                ]);
+                $findUser->update(['avatar' => $googleUser->avatar]);
+                logger('🖼️ [Google Login] Avatar updated');
             }
 
             Auth::login($findUser);
+            logger('✅ [Google Login] Existing user logged in', [
+                'auth_user' => Auth::user(),
+            ]);
+
             $findUser->notify(new UserLoginNotification());
 
             return $findUser->roles === 'Owner'
                 ? to_route('admin.dashboard')
                 : to_route('customer.dashboard');
-        } else {
-            $newUser = User::create([
-                'uuid'   => Str::uuid(),
-                'name'   => $user->name,
-                'email'  => $user->email,
-                'avatar' => $user->avatar,
-                'roles'  => 'Customer',
-            ]);
-
-            Auth::login($newUser);
-            $newUser->notify(new UserRegisteredNotification());
-
-            return $newUser->roles === 'Owner'
-                ? to_route('admin.dashboard')
-                : to_route('customer.dashboard');
         }
+
+        logger('🆕 [Google Login] No user found, creating new one');
+
+        $newUser = User::create([
+            'uuid'   => (string) Str::uuid(),
+            'name'   => $googleUser->name,
+            'email'  => $googleUser->email,
+            'avatar' => $googleUser->avatar,
+            'roles'  => 'Customer',
+        ]);
+
+        logger('✅ [Google Login] New user created', [
+            'id' => $newUser->id,
+            'uuid' => $newUser->uuid,
+        ]);
+
+        Auth::login($newUser);
+        logger('✅ [Google Login] New user logged in', [
+            'auth_user' => Auth::user(),
+        ]);
+
+        $newUser->notify(new UserRegisteredNotification());
+
+        return $newUser->roles === 'Owner'
+            ? to_route('admin.dashboard')
+            : to_route('customer.dashboard');
     }
 
     // send email login
