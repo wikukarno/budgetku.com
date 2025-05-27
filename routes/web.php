@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/terms-and-conditions', [HomeController::class, 'termsAndConditions'])->name('terms');
 
-Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
-Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
+Route::middleware(['web'])->group(function () {
+    Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
+    Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
+});
+
 
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
