@@ -194,6 +194,7 @@ class UserFinanceController extends Controller
             }
 
             // Hapus cache
+            Cache::forget('total_saldo_user_' . Auth::id());
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
@@ -286,6 +287,7 @@ class UserFinanceController extends Controller
             }
 
             // Hapus cache
+            Cache::forget('total_saldo_user_' . Auth::id());
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
@@ -329,6 +331,7 @@ class UserFinanceController extends Controller
             $item->delete();
 
             // Hapus cache
+            Cache::forget('total_saldo_user_' . Auth::id());
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
