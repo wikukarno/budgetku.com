@@ -8,14 +8,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        // 1. Hapus AUTO_INCREMENT dulu
+        // Drop auto_increment dari id
         DB::statement('ALTER TABLE salaries MODIFY id BIGINT UNSIGNED NULL;');
 
-        // 2. Drop primary key pakai raw SQL
-        DB::statement('ALTER TABLE salaries DROP PRIMARY KEY;');
+        // Drop primary key HANYA kalau masih ada
+        try {
+            DB::statement('ALTER TABLE salaries DROP PRIMARY KEY;');
+        } catch (\Throwable $e) {
+            echo "⚠️ PRIMARY KEY sudah tidak ada. Lanjut...\n";
+        }
 
-        // 3. Jadikan uuid sebagai primary key
-        DB::statement('ALTER TABLE salaries ADD PRIMARY KEY (uuid);');
+        // Jadikan uuid sebagai PRIMARY KEY (jika belum)
+        try {
+            DB::statement('ALTER TABLE salaries ADD PRIMARY KEY (uuid);');
+        } catch (\Throwable $e) {
+            echo "⚠️ UUID sudah jadi primary key. Lanjut...\n";
+        }
     }
 
 
