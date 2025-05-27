@@ -21,8 +21,15 @@ return new class extends Migration {
 
     public function down(): void
     {
-        DB::statement('ALTER TABLE salaries DROP PRIMARY KEY;');
+        // Rollback: kembalikan id sebagai primary key dan auto_increment
+        Schema::table('salaries', function (Blueprint $table) {
+            $table->dropPrimary(); // drop uuid as primary
+        });
+
         DB::statement('ALTER TABLE salaries MODIFY id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;');
-        DB::statement('ALTER TABLE salaries ADD PRIMARY KEY (id);');
+
+        Schema::table('salaries', function (Blueprint $table) {
+            $table->primary('id');
+        });
     }
 };
