@@ -18,9 +18,9 @@ class MigrateSalaryUuid extends Command
         Salary::with(['legacyUser', 'legacyCategoryIncome'])
             ->chunkById(100, function ($salaries) {
                 foreach ($salaries as $salary) {
-                    // Force replace UUID
-                    $salary->uuid = (string) Str::uuid();
-                    $this->line("✅ New UUID Salary: {$salary->uuid}");
+                // Force replace UUID
+                $salary->uuid = (string) \Ramsey\Uuid\Uuid::uuid4();
+                $this->line("✅ New UUID Salary: {$salary->uuid}");
 
                     // Replace users_uuid
                     if ($salary->legacyUser && $salary->legacyUser->uuid) {
