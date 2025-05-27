@@ -10,7 +10,7 @@ class Salary extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $primaryKey = 'uuid';
+    // protected $primaryKey = 'uuid';
 
     protected $keyType = 'string';
 
