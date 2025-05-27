@@ -27,7 +27,7 @@ class CategoryFinanceController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryFinance::where('users_id', Auth::id())->orderBy('created_at', 'DESC');
+            $query = CategoryFinance::where('users_uuid', Auth::id())->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
