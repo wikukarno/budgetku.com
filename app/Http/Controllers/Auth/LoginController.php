@@ -70,7 +70,7 @@ class LoginController extends Controller
             Auth::login($newUser);
             $newUser->notify(new UserRegisteredNotification());
 
-            return to_route('customer.dashboard');
+            return redirect()->route('customer.dashboard');
         }
     }
 
