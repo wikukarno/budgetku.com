@@ -10,12 +10,20 @@ class CategoryFinance extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $keyType = 'string';
+    
+    public $incrementing = false;
+
     protected $fillable = [
+        'uuid',
+        'users_uuid',
         'users_id',
         'name_category_finances',
     ];
 
     protected $casts = [
+        'uuid' => 'string',
+        'users_uuid' => 'string',
         'id' => 'integer',
         'users_id' => 'integer',
     ];
@@ -23,6 +31,25 @@ class CategoryFinance extends Model
 
     public function user()
     {
+        return $this->belongsTo(User::class, 'users_id', 'uuid');
+    }
+
+    public function legacyUser()
+    {
         return $this->belongsTo(User::class, 'users_id', 'id');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($category) {
+            if (empty($category->uuid)) {
+                $category->uuid = (string) \Illuminate\Support\Str::uuid();
+            }
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'uuid';
     }
 }
