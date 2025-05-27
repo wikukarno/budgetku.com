@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Carbon\Carbon;
-use App\Mail\Login;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Models\Finance;
-use App\Models\Salary;
 use App\Notifications\UserLoginNotification;
 use App\Notifications\UserRegisteredNotification;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -66,6 +60,7 @@ class LoginController extends Controller
                 : to_route('customer.dashboard');
         } else {
             $newUser = User::create([
+                'uuid'   => (string) Str::uuid(),
                 'name'   => $user->name,
                 'email'  => $user->email,
                 'avatar' => $user->avatar,
