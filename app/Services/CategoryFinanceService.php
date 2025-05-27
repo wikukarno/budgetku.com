@@ -20,7 +20,7 @@ class CategoryFinanceService
     {
         DB::beginTransaction();
         try {
-            $id = $validated['id'] ?? null;
+            $id = $validated['uuid'] ?? null;
 
             // Cek apakah data lama ada (update) atau baru (create)
             $category = $id
@@ -28,7 +28,7 @@ class CategoryFinanceService
                 : new \App\Models\CategoryFinance();
 
             // Set data
-            $category->users_id = Auth::id();
+            $category->users_uuid = Auth::id();
             $category->name_category_finances = $validated['name_category_finances'];
 
             $isNew = !$category->exists;
