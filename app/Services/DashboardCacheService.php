@@ -20,7 +20,7 @@ class DashboardCacheService
     public function gajiBulanIni()
     {
         return Cache::remember("gaji_bulan_ini_user_{$this->userId}", 3600, function () {
-            return Salary::where('users_id', $this->userId)
+            return Salary::where('users_uuid', $this->userId)
                 ->whereMonth('date', Carbon::now()->month)
                 ->whereYear('date', Carbon::now()->year)
                 ->sum('salary');
@@ -31,7 +31,7 @@ class DashboardCacheService
     {
         $lastMonth = Carbon::now()->subMonth();
         return Cache::remember("gaji_bulan_lalu_user_{$this->userId}", 3600, function () use ($lastMonth) {
-            return Salary::where('users_id', $this->userId)
+            return Salary::where('users_uuid', $this->userId)
                 ->whereMonth('date', $lastMonth->month)
                 ->whereYear('date', $lastMonth->year)
                 ->sum('salary');
@@ -41,7 +41,7 @@ class DashboardCacheService
     public function pengeluaranBulanIni()
     {
         return Cache::remember("pengeluaran_bulan_ini_user_{$this->userId}", 3600, function () {
-            return Finance::where('users_id', $this->userId)
+            return Finance::where('users_uuid', $this->userId)
                 ->whereMonth('purchase_date', Carbon::now()->month)
                 ->whereYear('purchase_date', Carbon::now()->year)
                 ->sum('price');
@@ -52,7 +52,7 @@ class DashboardCacheService
     {
         $lastMonth = Carbon::now()->subMonth();
         return Cache::remember("pengeluaran_bulan_lalu_user_{$this->userId}", 3600, function () use ($lastMonth) {
-            return Finance::where('users_id', $this->userId)
+            return Finance::where('users_uuid', $this->userId)
                 ->whereMonth('purchase_date', $lastMonth->month)
                 ->whereYear('purchase_date', $lastMonth->year)
                 ->sum('price');
@@ -62,7 +62,7 @@ class DashboardCacheService
     public function laporanBulananTahunIni()
     {
         return Cache::remember("laporan_tahunan_user_{$this->userId}", 3600, function () {
-            return Finance::where('users_id', $this->userId)
+            return Finance::where('users_uuid', $this->userId)
                 ->whereYear('purchase_date', Carbon::now()->year)
                 ->selectRaw('MONTH(purchase_date) as month, SUM(price) as total')
                 ->groupByRaw('MONTH(purchase_date)')
@@ -74,8 +74,8 @@ class DashboardCacheService
     public function totalSaldo()
     {
         return Cache::remember("total_saldo_user_{$this->userId}", 3600, function () {
-            $salary = Salary::where('users_id', $this->userId)->sum('salary');
-            $spending = Finance::where('users_id', $this->userId)->sum('price');
+            $salary = Salary::where('users_uuid', $this->userId)->sum('salary');
+            $spending = Finance::where('users_uuid', $this->userId)->sum('price');
             return $salary - $spending;
         });
     }

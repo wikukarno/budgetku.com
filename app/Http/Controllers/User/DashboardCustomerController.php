@@ -22,19 +22,19 @@ class DashboardCustomerController extends Controller
 
         // Yang real-time (mingguan/harian) bisa tanpa cache
         $userId = Auth::id();
-        $pengeluaranMingguIni = Finance::where('users_id', $userId)
+        $pengeluaranMingguIni = Finance::where('users_uuid', $userId)
             ->whereBetween('purchase_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
             ->sum('price');
 
-        $pengeluaranMingguLalu = Finance::where('users_id', $userId)
+        $pengeluaranMingguLalu = Finance::where('users_uuid', $userId)
             ->whereBetween('purchase_date', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
             ->sum('price');
 
-        $pengeluaranKemarin = Finance::where('users_id', $userId)
+        $pengeluaranKemarin = Finance::where('users_uuid', $userId)
             ->whereDate('purchase_date', Carbon::yesterday())
             ->sum('price');
 
-        $pengeluaranHariIni = Finance::where('users_id', $userId)
+        $pengeluaranHariIni = Finance::where('users_uuid', $userId)
             ->whereDate('purchase_date', Carbon::today())
             ->sum('price');
 
@@ -71,53 +71,53 @@ class DashboardCustomerController extends Controller
     //     $userId = Auth::id();
 
     //     // === Gaji (Income) ===
-    //     $gajiBulanIni = Salary::where('users_id', $userId)
+    //     $gajiBulanIni = Salary::where('users_uuid', $userId)
     //         ->whereMonth('date', Carbon::now()->month)
     //         ->whereYear('date', Carbon::now()->year)
     //         ->sum('salary');
 
-    //     $gajiBulanLalu = Salary::where('users_id', $userId)
+    //     $gajiBulanLalu = Salary::where('users_uuid', $userId)
     //         ->whereMonth('date', Carbon::now()->subMonth()->month)
     //         ->whereYear('date', Carbon::now()->subMonth()->year)
     //         ->sum('salary');
 
     //     // === Pengeluaran (Spending) ===
-    //     $pengeluaranBulanIni = Finance::where('users_id', $userId)
+    //     $pengeluaranBulanIni = Finance::where('users_uuid', $userId)
     //         ->whereMonth('purchase_date', Carbon::now()->month)
     //         ->whereYear('purchase_date', Carbon::now()->year)
     //         ->sum('price');
 
-    //     $pengeluaranBulanLalu = Finance::where('users_id', $userId)
+    //     $pengeluaranBulanLalu = Finance::where('users_uuid', $userId)
     //         ->whereMonth('purchase_date', Carbon::now()->subMonth()->month)
     //         ->whereYear('purchase_date', Carbon::now()->subMonth()->year)
     //         ->sum('price');
 
-    //     $laporanBulananTahunIni = Finance::where('users_id', Auth::id())
+    //     $laporanBulananTahunIni = Finance::where('users_uuid', Auth::id())
     //         ->whereYear('purchase_date', Carbon::now()->year)
     //         ->selectRaw('MONTH(purchase_date) as month, SUM(price) as total')
     //         ->groupByRaw('MONTH(purchase_date)')
     //         ->orderBy('month')
     //         ->get();
 
-    //     $pengeluaranMingguLalu = Finance::where('users_id', Auth::id())
+    //     $pengeluaranMingguLalu = Finance::where('users_uuid', Auth::id())
     //         ->whereBetween('purchase_date', [
     //             Carbon::now()->subWeek()->startOfWeek(),
     //             Carbon::now()->subWeek()->endOfWeek()
     //         ])
     //         ->sum('price');
 
-    //     $pengeluaranMingguIni = Finance::where('users_id', Auth::id())
+    //     $pengeluaranMingguIni = Finance::where('users_uuid', Auth::id())
     //         ->whereBetween('purchase_date', [
     //             Carbon::now()->startOfWeek(),
     //             Carbon::now()->endOfWeek()
     //         ])
     //         ->sum('price');
 
-    //     $pengeluaranKemarin = Finance::where('users_id', Auth::id())
+    //     $pengeluaranKemarin = Finance::where('users_uuid', Auth::id())
     //         ->whereDate('purchase_date', Carbon::yesterday())
     //         ->sum('price');
 
-    //     $pengeluaranHariIni = Finance::where('users_id', Auth::id())
+    //     $pengeluaranHariIni = Finance::where('users_uuid', Auth::id())
     //         ->whereDate('purchase_date', Carbon::today())
     //         ->sum('price');
 
@@ -151,8 +151,8 @@ class DashboardCustomerController extends Controller
     //         : 0;
 
     //     // === Total saldo akumulatif (lifetime) ===
-    //     $totalSalary = Salary::where('users_id', $userId)->sum('salary');
-    //     $totalSpending = Finance::where('users_id', $userId)->sum('price');
+    //     $totalSalary = Salary::where('users_uuid', $userId)->sum('salary');
+    //     $totalSpending = Finance::where('users_uuid', $userId)->sum('price');
     //     $totalSaldo = $totalSalary - $totalSpending;
 
     //     return view('v2.user.dashboard', compact(
@@ -180,47 +180,47 @@ class DashboardCustomerController extends Controller
     // {
     //     $userId = Auth::user()->id;
 
-    //     $salary = Salary::where('users_id', $userId)
+    //     $salary = Salary::where('users_uuid', $userId)
     //         ->sum('salary');
 
-    //     $pengeluaran = Finance::where('users_id', $userId)
+    //     $pengeluaran = Finance::where('users_uuid', $userId)
     //         ->sum('price');
 
-    //     $pengeluaran_bulan_berjalan = Finance::where('users_id', $userId)
+    //     $pengeluaran_bulan_berjalan = Finance::where('users_uuid', $userId)
     //         ->where('purchase_date', '>', Carbon::now()->subMonth()->format('Y-m-d'))
     //         ->sum('price');
 
     //     $saldo = $salary - $pengeluaran;
 
     //     // monthly report
-    //     $monthlyReport = Finance::where('users_id', Auth::user()->id)
+    //     $monthlyReport = Finance::where('users_uuid', Auth::user()->id)
     //         ->whereMonth('purchase_date', Carbon::now()->format('m'))
     //         ->sum('price');
 
     //     $categoryFinances = CategoryFinance::count();
 
-    //     $pengeluaranHariIni = Finance::where('users_id', Auth::user()->id)
+    //     $pengeluaranHariIni = Finance::where('users_uuid', Auth::user()->id)
     //         ->where('purchase_date', Carbon::now()->format('Y-m-d'))
     //         ->pluck('price')->toArray();
 
     //     $todayExpenditure = array_sum($pengeluaranHariIni);
 
-    //     $laporanMingguan = Finance::where('users_id', Auth::user()->id)
+    //     $laporanMingguan = Finance::where('users_uuid', Auth::user()->id)
     //         ->whereBetween('purchase_date', [Carbon::now()->startOfWeek()->format('Y-m-d'), Carbon::now()->endOfWeek()->format('Y-m-d')])
     //         ->pluck('price')->toArray();
 
     //     $weeklyReport = array_sum($laporanMingguan);
 
     //     // Pengeluaran tahun sebelumnya
-    //     $previeusYearReport = Finance::where('users_id', Auth::user()->id)
+    //     $previeusYearReport = Finance::where('users_uuid', Auth::user()->id)
     //         ->whereYear('purchase_date', Carbon::now()->subYear()->format('Y'))
     //         ->sum('price');
 
-    //     $laporanTahunan = Finance::where('users_id', Auth::user()->id)
+    //     $laporanTahunan = Finance::where('users_uuid', Auth::user()->id)
     //         ->whereYear('purchase_date', Carbon::now()->format('Y'))
     //         ->sum('price');
 
-    //     $anualReport = Finance::where('users_id', AUth::id())->whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
+    //     $anualReport = Finance::where('users_uuid', AUth::id())->whereYear('purchase_date', Carbon::now()->format('Y'))->sum('price');
 
     //     $keterangan = $saldo <= $monthlyReport ? 'Bulan ' . Carbon::now()->isoFormat('MMMM') . ' Boros Sekali ' . Auth::user()->name . ''  : 'Masih aman kok, jangan lupa investasi dan sedekah ya!';
 
@@ -229,7 +229,7 @@ class DashboardCustomerController extends Controller
     //     $yearlyBills = Bill::where('siklus_tagihan', 1)->sum('harga_tagihan');
 
 
-    //     $laporanBulananTahunIni = Finance::where('users_id', Auth::user()->id)
+    //     $laporanBulananTahunIni = Finance::where('users_uuid', Auth::user()->id)
     //     ->whereYear('purchase_date', Carbon::now()->format('Y'))
     //     ->select(DB::raw('MONTH(purchase_date) as month'), DB::raw('sum(price) as total'))
     //     ->groupBy(DB::raw('MONTH(purchase_date)'))
@@ -238,11 +238,11 @@ class DashboardCustomerController extends Controller
 
     //     $kategoriBucin = Finance::where('category_finances_id', 31)->sum('price');
 
-    //     $totalPreviousYear = Finance::where('users_id', Auth::id()) // Dapatkan data user saat ini
+    //     $totalPreviousYear = Finance::where('users_uuid', Auth::id()) // Dapatkan data user saat ini
     //     ->whereYear('purchase_date', Carbon::now()->subYear()->year) // Filter tahun sebelumnya
     //     ->sum('price'); // Hitung total pengeluaran
 
-    //     $pengeluaranBulanSebelumnya = Finance::where('users_id', $userId)
+    //     $pengeluaranBulanSebelumnya = Finance::where('users_uuid', $userId)
     //         ->whereMonth('purchase_date', Carbon::now()->subMonth()->format('m'))
     //         ->whereYear('purchase_date', Carbon::now()->subMonth()->format('Y'))
     //         ->sum('price');
