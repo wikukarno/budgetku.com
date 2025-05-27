@@ -79,7 +79,7 @@ class LoginController extends Controller
 
             return $findUser->roles === 'Owner'
                 ? to_route('admin.dashboard')
-                : to_route('customer.dashboard');
+                : redirect('/pages/customer/dashboard');
         }
 
         logger('🆕 [Google Login] No user found, creating new one');
@@ -106,7 +106,7 @@ class LoginController extends Controller
 
         return $newUser->roles === 'Owner'
             ? to_route('admin.dashboard')
-            : to_route('customer.dashboard');
+            : redirect('/pages/customer/dashboard');
     }
 
     // send email login
@@ -115,7 +115,7 @@ class LoginController extends Controller
         if($user->roles == 'Owner') {
             return to_route('admin.dashboard');
         } elseif($user->roles == 'Customer') {
-            return to_route('customer.dashboard');
+            return redirect('/pages/customer/dashboard');
         }
     }
 
