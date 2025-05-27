@@ -30,7 +30,7 @@ Route::prefix('/pages/admin')
         Route::get('/payment-method', [PaymentMethodController::class, 'index'])->name('admin.payment.method.index');
         Route::get('/payment-method/show', [PaymentMethodController::class, 'show'])->name('admin.payment.method.show');
         Route::post('/payment-method/store', [PaymentMethodController::class, 'store'])->name('admin.payment.method.store');
-        Route::put('/payment-method/update/{id}', [PaymentMethodController::class, 'update'])->name('admin.payment.method.update');
+        Route::put('/payment-method/update/{uuid}', [PaymentMethodController::class, 'update'])->name('admin.payment.method.update');
         Route::delete('/payment-method/delete', [PaymentMethodController::class, 'destroy'])->name('admin.payment.method.destroy');
         // End Route custom payment method
 
@@ -38,26 +38,26 @@ Route::prefix('/pages/admin')
         Route::get('/income', [SalaryController::class, 'index'])->name('admin.income.index');
         Route::get('/income/create', [SalaryController::class, 'create'])->name('admin.income.create');
         Route::get('/income/show', [SalaryController::class, 'show'])->name('admin.income.show');
-        Route::get('/income/edit/{id}', [SalaryController::class, 'edit'])->name('admin.income.edit');
+        Route::get('/income/edit/{uuid}', [SalaryController::class, 'edit'])->name('admin.income.edit');
         Route::post('/income/store', [SalaryController::class, 'store'])->name('admin.income.store');
-        Route::put('/income/update/{id}', [SalaryController::class, 'update'])->name('admin.income.update');
+        Route::put('/income/update/{uuid}', [SalaryController::class, 'update'])->name('admin.income.update');
         Route::delete('/income/delete', [SalaryController::class, 'destroy'])->name('admin.income.destroy');
         // End Route custom income
 
         // Expense
         Route::get('/expense', [FinanceController::class, 'index'])->name('admin.expense.index');
         Route::get('/expense/create', [FinanceController::class, 'create'])->name('admin.expense.create');
-        Route::get('/expense/edit/{id}', [FinanceController::class, 'edit'])->name('admin.expense.edit');
+        Route::get('/expense/edit/{uuid}', [FinanceController::class, 'edit'])->name('admin.expense.edit');
         Route::get('/expense/show', [FinanceController::class, 'show'])->name('admin.expense.show');
         Route::post('/expense/store', [FinanceController::class, 'store'])->name('admin.expense.store');
-        Route::put('/expense/update/{id}', [FinanceController::class, 'update'])->name('admin.expense.update');
+        Route::put('/expense/update/{uuid}', [FinanceController::class, 'update'])->name('admin.expense.update');
         Route::delete('/expense/delete', [FinanceController::class, 'destroy'])->name('admin.expense.destroy');
         // End Route custom expense
 
         // Account
         Route::get('/account', [AccountController::class, 'index'])->name('admin.account.index');
-        Route::get('/account/edit/{id}', [AccountController::class, 'edit'])->name('admin.account.edit');
-        Route::put('/account/update/{id}', [AccountController::class, 'update'])->name('admin.account.update');
+        Route::get('/account/edit/{uuid}', [AccountController::class, 'edit'])->name('admin.account.edit');
+        Route::put('/account/update/{uuid}', [AccountController::class, 'update'])->name('admin.account.update');
         Route::put('/account/password/update', [AccountController::class, 'updatePassword'])->name('admin.account.password.update');
         Route::delete('/account/delete', [AccountController::class, 'destroy'])->name('admin.account.delete');
         // End Route custom account

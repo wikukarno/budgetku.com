@@ -28,13 +28,14 @@ class SalaryController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('tipe', fn($item) => $item->category_income->name_category_incomes)
+                ->editColumn('category_incomes_uuid', fn($item) => $item->category_income->name_category_incomes)
                 ->editColumn('salary', fn($item) => 'Rp.' . number_format($item->salary, 0, ',', '.'))
                 ->editColumn('date', fn($item) => Carbon::parse($item->date)->isoFormat('D MMMM Y'))
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('admin.income.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">Edit</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(' . $item->id . ')">Delete</a>';
+                        <a href="' . route('admin.income.edit', $item->uuid) . '" class="btn btn-sm btn-warning text-white">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(\'' . $item->uuid . '\')">Delete</a>
+                    ';
                 })
                 ->rawColumns(['action', 'date', 'salary', 'tipe'])
                 ->make(true);
@@ -45,7 +46,7 @@ class SalaryController extends Controller
 
     public function create()
     {
-        $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        $categoryIncome = CategoryIncome::where('users_uuid', Auth::id())->get();
         return view('v2.admin.income.create', compact('categoryIncome'));
     }
 
@@ -54,7 +55,7 @@ class SalaryController extends Controller
         $request->validate([
             'salary' => 'required|string',
             'date' => 'required|date',
-            'tipe' => 'required|integer',
+            'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
         ]);
 
@@ -84,7 +85,7 @@ class SalaryController extends Controller
     public function edit($id)
     {
         $data = $this->salaryService->getByUser($id);
-        $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        $categoryIncome = CategoryIncome::where('users_uuid', Auth::id())->get();
         $data->salary = 'Rp. ' . number_format($data->salary, 0, ',', '.');
         return view('v2.admin.income.edit', compact('data', 'categoryIncome'));
     }
@@ -94,7 +95,7 @@ class SalaryController extends Controller
         $request->validate([
             'salary' => 'required|string',
             'date' => 'required|date',
-            'tipe' => 'required|integer',
+            'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
         ]);
 
@@ -114,11 +115,11 @@ class SalaryController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $salary = $this->salaryService->getById($request->id);
+            $salary = $this->salaryService->getById($request->uuid);
 
             $this->authorize('delete', $salary);
 
-            $this->salaryService->delete($salary->id);
+            $this->salaryService->delete($salary->uuid);
 
             return response()->json(['code' => 200, 'message' => 'Data berhasil dihapus']);
         } catch (\Throwable $th) {

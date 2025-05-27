@@ -9,7 +9,7 @@ class SalaryRepository
 {
     public function getDatesLastTwoMonths($userId)
     {
-        return Salary::where('users_id', $userId)
+        return Salary::where('users_uuid', $userId)
             ->whereBetween('date', [
                 now()->subMonth()->startOfMonth()->toDateString(),
                 now()->endOfMonth()->toDateString()
@@ -20,7 +20,7 @@ class SalaryRepository
 
     public function getTotalSalaryLastTwoMonths($userId)
     {
-        return Salary::where('users_id', $userId)
+        return Salary::where('users_uuid', $userId)
             ->whereBetween('date', [
                 now()->subMonth()->startOfMonth()->toDateString(),
                 now()->endOfMonth()->toDateString()
@@ -31,7 +31,7 @@ class SalaryRepository
     public function getByUserId($userId)
     {
         return Salary::with('category_income')
-            ->where('users_id', $userId)
+            ->where('users_uuid', $userId)
             ->orderByDesc('created_at');
     }
 
@@ -47,7 +47,7 @@ class SalaryRepository
 
     public function findOrFailByUser($id, $userId)
     {
-        return Salary::where('users_id', $userId)->findOrFail($id);
+        return Salary::where('users_uuid', $userId)->findOrFail($id);
     }
 
     public function update(Salary $salary, array $data)

@@ -20,7 +20,7 @@ class DashboardService
 
     public function getDashboardData($user)
     {
-        $userId = $user->id;
+        $userId = $user->uuid;
         $salaryDates = $this->salaryRepo->getDatesLastTwoMonths($userId);
         $salary = $this->salaryRepo->getTotalSalaryLastTwoMonths($userId);
         $pengeluaran = !empty($salaryDates) ? $this->financeRepo->getPengeluaran($userId, $salaryDates[0]) : 0;

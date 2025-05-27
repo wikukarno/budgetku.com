@@ -9,7 +9,7 @@ class PaymentMethodRepository
     // get all payment methods
     public function getAllPaymentMethods()
     {
-        return PaymentMethod::where('users_id', Auth::id())
+        return PaymentMethod::where('users_uuid', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -40,8 +40,8 @@ class PaymentMethodRepository
     // delete payment method
     public function deletePaymentMethod($id)
     {
-        $paymentMethod = PaymentMethod::where('id', $id)
-            ->where('users_id', Auth::id())
+        $paymentMethod = PaymentMethod::where('uuid', $id)
+            ->where('users_uuid', Auth::id())
             ->first();
         if ($paymentMethod) {
             return $paymentMethod->delete();

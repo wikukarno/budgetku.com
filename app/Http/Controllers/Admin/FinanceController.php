@@ -27,13 +27,13 @@ class FinanceController extends Controller
     {
         if (request()->ajax()) {
             $query = Finance::with(['category_finance'])
-                ->where('users_id', Auth::id())
+                ->where('users_uuid', Auth::id())
                 // ->whereYear('created_at', Carbon::now()->year)
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('category_finances_id', function ($item) {
+                ->editColumn('category_finances_uuid', function ($item) {
                     return $item->category_finance->name_category_finances;
                 })
                 ->editColumn('purchase_date', function ($item) {
@@ -44,10 +44,10 @@ class FinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('admin.expense.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
+                        <a href="' . route('admin.expense.edit', $item->uuid) . '" class="btn btn-sm btn-warning text-white">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteExpense(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteExpense(\'' . $item->uuid . '\')">
                             Delete
                         </a>
                     ';
@@ -56,9 +56,9 @@ class FinanceController extends Controller
                 ->make(true);
         }
 
-        $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        $categories = CategoryFinance::where('users_uuid', Auth::id())->get();
         $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
-            ->where('users_id', Auth::id())
+            ->where('users_uuid', Auth::id())
             ->groupBy('year')
             ->get();
         return view('v2.admin.expense.index', [
@@ -69,8 +69,8 @@ class FinanceController extends Controller
 
     public function create()
     {
-        $categories = CategoryFinance::where('users_id', Auth::id())->get();
-        $paymentMethods = PaymentMethod::select('id', 'name')->get();
+        $categories = CategoryFinance::where('users_uuid', Auth::id())->get();
+        $paymentMethods = PaymentMethod::select('uuid', 'name')->get();
         return view('v2.admin.expense.create', compact('categories', 'paymentMethods'));
     }
 
@@ -78,23 +78,24 @@ class FinanceController extends Controller
     {
         // Validasi dulu sebelum simpan
         $request->validate([
-            'category_finances_id' => 'required|exists:category_finances,id',
+            'category_finances_uuid' => 'required|exists:category_finances,id',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
             'purchase_date' => 'required|date',
-            'purchase_by' => 'required|string|max:255',
+            'payment_methods_uuid' => 'required|exists:payment_methods,uuid',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         try {
             // Simpan data utama tanpa file dulu
             $data = Finance::create([
-                'users_id' => Auth::id(),
-                'category_finances_id' => $request->category_finances_id,
+                'uuid' => (string) \Illuminate\Support\Str::uuid(),
+                'users_uuid' => Auth::id(),
+                'category_finances_uuid' => $request->category_finances_uuid,
                 'name_item' => $request->name_item,
                 'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date ?? Carbon::now(),
-                'purchase_by' => $request->purchase_by ?? 'Tunai',
+                'payment_methods_uuid' => $request->payment_methods_uuid,
                 'bukti_pembayaran' => null, // sementara null
             ]);
 
@@ -108,23 +109,23 @@ class FinanceController extends Controller
             $user = Auth::user();
 
             // Proses saldo & email
-            $userId = Auth::user()->id;
+            $userId = Auth::id();
             $lastMonth = Carbon::now()->subMonth();
 
             $pengeluaran = 0;
 
-            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_uuid', $userId)
                 ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
                 ->pluck('date')->toArray();
 
 
-            $salary = Salary::where('users_id', $userId)
+            $salary = Salary::where('users_uuid', $userId)
                 ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
                 ->sum('salary');
 
 
             if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
-                $pengeluaran = Finance::where('users_id', $userId)
+                $pengeluaran = Finance::where('users_uuid', $userId)
                     ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
                     ->sum('price');
             } else {
@@ -155,42 +156,42 @@ class FinanceController extends Controller
 
     public function show(Request $request)
     {
-        $data = Finance::findOrFail($request->id);
+        $data = Finance::findOrFail($request->uuid);
         return response()->json($data);
     }
 
     public function edit($id)
     {
-        $data = Finance::findOrFail($id);
-        $categories = CategoryFinance::where('users_id', Auth::id())
+        $data = Finance::where('users_uuid', Auth::id())->findOrFail($id);
+        $categories = CategoryFinance::where('users_uuid', Auth::id())
             ->get();
         $data->price = 'Rp. ' . number_format($data->price, 0, ',', '.');
-        $paymentMethods = PaymentMethod::select('id', 'name')->get();
+        $paymentMethods = PaymentMethod::select('uuid', 'name')->get();
         return view('v2.admin.expense.edit', compact('data', 'categories', 'paymentMethods'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category_finances_id' => 'required|exists:category_finances,id',
+            'category_finances_uuid' => 'required|exists:category_finances,uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
             'purchase_date' => 'required|date',
-            'purchase_by' => 'required|string|max:255',
+            'payment_methods_uuid' => 'required|exists:payment_methods,uuid',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // max 2MB
         ]);
 
         try {
+            
             $data = Finance::findOrFail($id);
             $this->authorize('update', $data);
-
             $updated = $data->update([
-                'users_id' => Auth::id(),
-                'category_finances_id' => $request->category_finances_id,
+                'users_uuid' => Auth::id(),
+                'category_finances_uuid' => $request->category_finances_uuid,
                 'name_item' => $request->name_item,
                 'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date,
-                'purchase_by' => $request->purchase_by,
+                'payment_methods_uuid' => $request->payment_methods_uuid,
             ]);
 
             if ($updated && $request->hasFile('bukti_pembayaran')) {
@@ -207,23 +208,23 @@ class FinanceController extends Controller
             $user = Auth::user();
 
             // Proses saldo & email
-            $userId = Auth::user()->id;
+            $userId = Auth::id();
             $lastMonth = Carbon::now()->subMonth();
 
             $pengeluaran = 0;
 
-            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_id', $userId)
+            $tanggalSemuaGajiBulanKemarinDanBulanIni = Salary::where('users_uuid', $userId)
                 ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
                 ->pluck('date')->toArray();
 
 
-            $salary = Salary::where('users_id', $userId)
+            $salary = Salary::where('users_uuid', $userId)
                 ->whereBetween('date', [$lastMonth->startOfMonth()->format('Y-m-d'), Carbon::now()->endOfMonth()->format('Y-m-d')])
                 ->sum('salary');
 
 
             if (!empty($tanggalSemuaGajiBulanKemarinDanBulanIni)) {
-                $pengeluaran = Finance::where('users_id', $userId)
+                $pengeluaran = Finance::where('users_uuid', $userId)
                     ->whereBetween('purchase_date', [$tanggalSemuaGajiBulanKemarinDanBulanIni[0], Carbon::now()->endOfMonth()->format('Y-m-d')])
                     ->sum('price');
             } else {
@@ -255,7 +256,7 @@ class FinanceController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $item = Finance::findOrFail($request->id);
+            $item = Finance::findOrFail($request->uuid);
             $this->authorize('delete', $item);
 
             $item->delete();

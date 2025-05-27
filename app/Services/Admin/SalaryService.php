@@ -23,7 +23,7 @@ class SalaryService
 
     public function create(array $request)
     {
-        $request['users_id'] = Auth::id();
+        $request['users_uuid'] = Auth::id();
 
         $salary = (int) preg_replace('/[^0-9]/', '', $request['salary']);
         if ($salary <= 0) {
@@ -61,7 +61,7 @@ class SalaryService
             throw new Exception('Salary must be greater than 0.');
         }
 
-        $request['users_id'] = Auth::id();
+        $request['users_uuid'] = Auth::id();
         $request['salary'] = $parsedSalary;
 
         $this->salaryRepo->update($salary, $request);

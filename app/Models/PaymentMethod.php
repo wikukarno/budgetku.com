@@ -9,8 +9,15 @@ class PaymentMethod extends Model
 {
     use SoftDeletes;
 
+    // protected $primaryKey = 'uuid';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
+        'uuid',
+        'users_uuid',
         'name',
         'users_id',
         'icon',
@@ -19,6 +26,20 @@ class PaymentMethod extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'users_id');
+    }
+
+    public function legacyUser()
+    {
+        return $this->belongsTo(User::class, 'users_id', 'id');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($paymentMethod) {
+            if (empty($paymentMethod->uuid)) {
+                $paymentMethod->uuid = (string) \Illuminate\Support\Str::uuid();
+            }
+        });
     }
 
     public function finances()

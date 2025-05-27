@@ -37,10 +37,10 @@
                                 <span class="text-danger">*</span>
                                 Type
                             </label>
-                            <select class="form-select form-control" required name="tipe">
+                            <select class="form-select form-control" required name="category_incomes_uuid">
                                 <option selected>Select</option>
                                 @forelse ($categoryIncome as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name_category_incomes }}</option>
+                                    <option value="{{ $item->uuid }}">{{ $item->name_category_incomes }}</option>
                                 @empty
                                     <option value="">No data available</option>
                                 @endforelse

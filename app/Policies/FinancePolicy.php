@@ -53,7 +53,7 @@ class FinancePolicy
      */
     public function update(User $user, Finance $finance)
     {
-        return $user->id == $finance->users_id;
+        return $user->uuid == $finance->users_uuid;
     }
 
     /**
@@ -65,7 +65,7 @@ class FinancePolicy
      */
     public function delete(User $user, Finance $finance)
     {
-        return $user->id == $finance->users_id;
+        return $user->uuid == $finance->users_uuid;
     }
 
     /**
@@ -89,6 +89,6 @@ class FinancePolicy
      */
     public function forceDelete(User $user, Finance $finance)
     {
-        return $user->id === $finance->users_id;
+        return $user->uuid === $finance->users_uuid;
     }
 }

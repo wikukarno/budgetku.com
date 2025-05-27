@@ -50,7 +50,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-        function deleteExpense(id){
+        function deleteExpense(uuid){
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Data will be deleted!",
@@ -67,7 +67,7 @@
                         url: "{{ route('admin.expense.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            id:id
+                            uuid:uuid
                         },
                         dataType: 'json',
                         beforeSend: function() {
@@ -92,8 +92,8 @@
                 url: "{!! url()->current() !!}",
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'id'},
-                { data: 'category_finances_id', name: 'category_finances_id'},
+                { data: 'DT_RowIndex', name: 'uuid'},
+                { data: 'category_finances_uuid', name: 'category_finances_uuid'},
                 { data: 'name_item', name: 'name_item'},
                 { data: 'price', name: 'price'},
                 { data: 'purchase_date', name: 'purchase_date'},
