@@ -12,7 +12,7 @@ class CategoryIncomeController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryIncome::where('users_id', Auth::id())->orderBy('created_at', 'DESC');
+            $query = CategoryIncome::where('users_uuid', Auth::id())->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
