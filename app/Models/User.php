@@ -61,6 +61,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function getAuthIdentifierName()
+    {
+        return 'uuid';
+    }
+
     public function finance()
     {
         return $this->hasMany(Finance::class, 'users_id', 'id');
