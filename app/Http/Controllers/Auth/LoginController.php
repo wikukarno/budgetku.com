@@ -70,7 +70,9 @@ class LoginController extends Controller
             Auth::login($newUser);
             $newUser->notify(new UserRegisteredNotification());
 
-            return to_route('customer.dashboard');
+            return $newUser->roles === 'Owner'
+                ? to_route('admin.dashboard')
+                : to_route('customer.dashboard');
         }
     }
 
