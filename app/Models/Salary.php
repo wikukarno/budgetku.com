@@ -29,7 +29,7 @@ class Salary extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'users_id', 'id');
+        return $this->belongsTo(User::class, 'users_uuid', 'uuid');
     }
 
     public function legacyUser()
@@ -39,7 +39,7 @@ class Salary extends Model
 
     public function category_income()
     {
-        return $this->belongsTo(CategoryIncome::class, 'tipe', 'id');
+        return $this->belongsTo(CategoryIncome::class, 'category_incomes_uuid', 'uuid');
     }
 
     public function legacyCategoryIncome()
