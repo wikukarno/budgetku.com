@@ -41,7 +41,7 @@ class LoginController extends Controller
 
     public function handlerProviderCallback(Request $request)
     {
-        $user = Socialite::driver('google')->stateless()->user();
+        $user = Socialite::driver('google')->user();
         $findUser = User::where('email', $user->email)->first();
 
         if ($findUser) {
@@ -60,7 +60,7 @@ class LoginController extends Controller
                 : to_route('customer.dashboard');
         } else {
             $newUser = User::create([
-                'uuid'   => (string) Str::uuid(),
+                'uuid'   => Str::uuid(),
                 'name'   => $user->name,
                 'email'  => $user->email,
                 'avatar' => $user->avatar,
