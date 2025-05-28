@@ -35,7 +35,10 @@ class HelpCenterController extends Controller
         ]);
 
         if (!($verify->json()['success'] ?? false)) {
-            return back()->with('error', 'CAPTCHA verification failed. Please try again.');
+            return response()->json([
+                'success' => false,
+                'message' => 'CAPTCHA verification failed. Please try again.',
+            ]);
         }
 
         try {
@@ -50,9 +53,10 @@ class HelpCenterController extends Controller
                 $message->replyTo($request->email, $request->name);
             });
 
-            return back()
-                ->with('success', 'Your message has been sent successfully!')
-                ->withFragment('contact');
+            return response()->json([
+                'success' => true,
+                'message' => 'Your message has been sent successfully!',
+            ]);
         } catch (\Throwable $e) {
             Log::error('Contact form error: ' . $e->getMessage());
             return back()->with('error', 'Something went wrong. Please try again later.');

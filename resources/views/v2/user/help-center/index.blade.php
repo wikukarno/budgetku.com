@@ -37,6 +37,7 @@
                     </div>
                 </div>
                 <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
+                <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
                 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
                 <div class="col-lg-12">
                     <div class="d-flex flex-wrap justify-content-end gap-3">
@@ -59,8 +60,20 @@
     document.getElementById('btnSend').addEventListener('click', function(event) {
         event.preventDefault();
         const form = document.getElementById('formdata');
-        const formData = new FormData(form);
         
+        const captchaValue = document.querySelector('[name="cf-turnstile-response"]').value;
+        if (!captchaValue) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please complete the CAPTCHA verification.',
+            });
+            return;
+        }
+
+        const formData = new FormData(form);
+        formData.set('cf-turnstile-response', captchaValue); // ensure it's included
+
         fetch("{{ route('customer.help.center.send') }}", {
             method: 'POST',
             body: formData,
