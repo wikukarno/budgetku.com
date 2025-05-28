@@ -158,8 +158,8 @@
                 </li>
             @endif
 
-            <li class="menu-item">
-                <a href="mailto:dev@budgetku.com" target="_blank" class="menu-link">
+            <li class="menu-item {{ request()->is('pages/customer/help-center') ? 'open' : '' }}">
+                <a href="{{ route('customer.help.center.index') }}"class="menu-link {{ request()->is('pages/customer/help-center') ? 'active' : '' }}">
                     <span class="material-symbols-outlined menu-icon">
                         email
                     </span>

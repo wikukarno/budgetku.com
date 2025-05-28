@@ -5,6 +5,7 @@ use App\Http\Controllers\User\UserIncomeController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserFinanceController;
 use App\Http\Controllers\User\DashboardCustomerController;
+use App\Http\Controllers\User\HelpCenterController;
 use App\Http\Controllers\User\UserCategoryIncomeController;
 use App\Http\Controllers\User\UserCategoryFinancesController;
 
@@ -52,6 +53,10 @@ Route::prefix('/pages/customer')
         Route::get('/expense/searching', [UserFinanceController::class, 'searching'])->name('expense.searching');
         Route::get('/expense/export', [UserFinanceController::class, 'exportExpense'])->name('expense.export');
         // End Route custom expense
+
+        // Route help center
+        Route::get('/help-center', [HelpCenterController::class, 'index'])->name('help.center.index');
+        Route::post('/help-center/send', [HelpCenterController::class, 'send'])->name('help.center.send');
 
         // Route custom account
         Route::get('/account', [UserAccountController::class, 'index'])->name('account.index');
