@@ -35,10 +35,9 @@
                     </div>
                 </div>
 
-                <!-- Turnstile CAPTCHA -->
+                <!-- Cloudflare Turnstile -->
                 <div class="cf-turnstile mb-3" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
                 <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
-                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
                 <div class="col-lg-12">
                     <div class="d-flex flex-wrap justify-content-end gap-3">
@@ -58,7 +57,8 @@
 
 @push('after-scripts')
 <script>
-    window.turnstileCallback = function () {
+    // Render CAPTCHA dan isi token ke hidden input
+    window.onloadTurnstileCallback = function () {
         turnstile.render('.cf-turnstile', {
             sitekey: "{{ env('TURNSTILE_SITE') }}",
             callback: function(token) {
@@ -66,7 +66,10 @@
             }
         });
     };
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
 
+<script>
     document.getElementById('btnSend').addEventListener('click', function(event) {
         event.preventDefault();
         const form = document.getElementById('formdata');

@@ -17,7 +17,6 @@ class HelpCenterController extends Controller
 
     public function send(Request $request)
     {
-        // Validasi input + captcha field
         $request->validate([
             'name' => 'required|max:100',
             'email' => 'required|email|max:100',
@@ -25,7 +24,6 @@ class HelpCenterController extends Controller
             'cf-turnstile-response' => 'required',
         ]);
 
-        // Verifikasi CAPTCHA
         $captchaResponse = $request->input('cf-turnstile-response');
 
         $verify = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
@@ -33,6 +31,8 @@ class HelpCenterController extends Controller
             'response' => $captchaResponse,
             'remoteip' => $request->ip(),
         ]);
+
+        Log::info('Turnstile response:', $verify->json());
 
         if (!($verify->json()['success'] ?? false)) {
             return response()->json([
@@ -59,7 +59,10 @@ class HelpCenterController extends Controller
             ]);
         } catch (\Throwable $e) {
             Log::error('Contact form error: ' . $e->getMessage());
-            return back()->with('error', 'Something went wrong. Please try again later.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again later.',
+            ]);
         }
     }
 }
