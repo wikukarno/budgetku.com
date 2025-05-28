@@ -37,7 +37,7 @@ class HelpCenterMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.email.help-email-center',
+            view: 'view.mail.help-email-center',
         );
     }
 
