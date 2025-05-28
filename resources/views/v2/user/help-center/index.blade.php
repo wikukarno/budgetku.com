@@ -11,7 +11,7 @@
             </h3>
         </div>
 
-        <form class="needs-validation" method="POST" action="{{ route('customer.help.center.send') }}" novalidate>
+        <form method="POST" id="formdata">
             @csrf
             <div class="row">
                 <div class="col-lg-6 col-sm-6">
@@ -36,10 +36,12 @@
                         <textarea rows="5" class="form-control" style="height: 170px;" name="message" placeholder="Type your message here..." required></textarea>
                     </div>
                 </div>
+                <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
+                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
                 <div class="col-lg-12">
                     <div class="d-flex flex-wrap justify-content-end gap-3">
                         <a href="{{ route('customer.dashboard') }}" class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
-                        <button type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16"> 
+                        <button id="btnSend" class="btn btn-primary py-2 px-4 fw-medium fs-16"> 
                             <i class="ri-send-plane-2-line text-white fw-medium"></i>
                             Send Now
                             </button>
@@ -47,9 +49,6 @@
                 </div>
             </div>
         </form>
-
-        <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     </div>
 </div>
 
@@ -57,6 +56,44 @@
 
 @push('after-scripts')
 <script>
-    
+    document.getElementById('btnSend').addEventListener('click', function(event) {
+        event.preventDefault();
+        const form = document.getElementById('formdata');
+        const formData = new FormData(form);
+        
+        fetch("{{ route('customer.help.center.send') }}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message,
+                }).then(() => {
+                    window.location.href = "{{ route('customer.dashboard') }}";
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message,
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while sending your message.',
+            });
+        });
+    });
 </script>
 @endpush

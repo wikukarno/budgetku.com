@@ -39,10 +39,10 @@ class HelpCenterController extends Controller
         }
 
         try {
-            Mail::send('mail.contact', [
+            Mail::send('email.help-email-center', [
                 'name' => $request->name,
                 'email' => $request->email,
-                'message' => $request->message,
+                'bodyMessage' => $request->message,
             ], function ($message) use ($request) {
                 $message->from(env('MAIL_FROM_ADDRESS'), 'BudgetKu Website');
                 $message->to('dev@budgetku.com');
