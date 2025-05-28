@@ -51,7 +51,7 @@ class HelpCenterController extends Controller
                 $message->to('dev@budgetku.com');
                 $message->subject('New Contact Form Submission');
                 $message->replyTo($request->email, $request->name);
-            });
+            ]);
 
             return response()->json([
                 'success' => true,
