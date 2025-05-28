@@ -29,7 +29,7 @@ class CategoryIncomeService
 
             // Set data
             $category->users_uuid = Auth::id();
-            $category->name_category_Incomes = $validated['name_category_Incomes'];
+            $category->name_category_Incomes = $validated['name_category_incomes'];
 
             $isNew = !$category->exists;
             $wasChanged = $category->isDirty(); // Cek apakah ada perubahan

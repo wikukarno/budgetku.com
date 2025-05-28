@@ -14,7 +14,7 @@ class CategoryIncomePolicy
     public function view(User $user, CategoryIncome $categoryIncome)
     {
         // Periksa apakah pengguna adalah pemilik category finance
-        return $user->id === $categoryIncome->users_id
+        return $user->uuid === $categoryIncome->users_uuid
             ? Response::allow()
             : Response::deny('You do not own this category income');
     }
@@ -22,7 +22,7 @@ class CategoryIncomePolicy
     public function updateOrCreate(User $user, CategoryIncome $categoryIncome)
     {
         // Periksa apakah pengguna adalah pemilik category finance untuk update
-        return $user->id === $categoryIncome->users_id
+        return $user->uuid === $categoryIncome->users_uuid
             ? Response::allow()
             : Response::deny('You do not have access to update this data');
     }
@@ -30,7 +30,7 @@ class CategoryIncomePolicy
     public function delete(User $user, CategoryIncome $categoryIncome)
     {
         // Periksa apakah pengguna adalah pemilik category finance untuk delete
-        return $user->id === $categoryIncome->users_id
+        return $user->uuid === $categoryIncome->users_uuid
             ? Response::allow()
             : Response::deny('You do not have access to delete this data');
     }

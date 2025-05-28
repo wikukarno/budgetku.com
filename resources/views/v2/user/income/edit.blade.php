@@ -40,10 +40,10 @@
                                 <span class="text-danger">*</span>
                                 Type
                             </label>
-                            <select class="form-select form-control" required name="tipe" id="select2Types">
+                            <select class="form-select form-control" required name="category_incomes_uuid" id="select2Types">
                                 <option selected>Select</option>
                                 @forelse ($categoryIncome as $item)
-                                    <option value="{{ $item->id }}" {{ $data->tipe == $item->id ? 'selected' : '' }}>{{ $item->name_category_incomes }}</option>
+                                    <option value="{{ $item->uuid }}" {{ $data->category_incomes_uuid == $item->uuid ? 'selected' : '' }}>{{ $item->name_category_incomes }}</option>
                                 @empty
                                     <option value="">No data available</option>
                                 @endforelse
@@ -119,7 +119,7 @@
             submitButton.prop('disabled', true);
             submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
 
-            axios.post("{{ route('customer.income.update', $data->id) }}", formData)
+            axios.post("{{ route('customer.income.update', $data->uuid) }}", formData)
                 .then(function(response) {
                     if (response.data.status === true) {
                         showCustomAlert('success', response.data.message);

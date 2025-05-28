@@ -19,8 +19,6 @@ class Salary extends Model
     protected $fillable = [
         'uuid',
         'users_uuid',
-        'users_id',
-        'tipe',
         'category_incomes_uuid',
         'salary',
         'date',

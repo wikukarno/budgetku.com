@@ -29,7 +29,7 @@ class UserCategoryFinancesController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryFinance::where('users_id', Auth::id());
+            $query = CategoryFinance::where('users_uuid', Auth::id());
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -41,11 +41,11 @@ class UserCategoryFinancesController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriFinance(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriFinance(\'' . $item->uuid . '\')">
                             Edit
                         </a>
                         
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriFinance(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriFinance(\'' . $item->uuid . '\')">
                             Hapus
                         </a>
                     ';
@@ -58,8 +58,7 @@ class UserCategoryFinancesController extends Controller
 
     public function store(StoreCategoryFinanceRequest $request)
     {
-        $categoryFinance = CategoryFinance::find($request->id);
-
+        $categoryFinance = CategoryFinance::find($request->uuid);
         if ($categoryFinance) {
             $this->authorize('updateOrCreate', $categoryFinance);
         }
@@ -76,12 +75,12 @@ class UserCategoryFinancesController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryFinance::where('id', $request->id)
-            ->where('users_id', Auth::id())
+        $data = CategoryFinance::where('uuid', $request->uuid)
+            ->where('users_uuid', Auth::id())
             ->firstOrFail();
 
         $this->authorize('view', $data);
-
+        
         return response()->json($data);
     }
 
@@ -93,8 +92,8 @@ class UserCategoryFinancesController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryFinance::where('id', $request->id)
-            ->where('users_id', Auth::id())
+        $data = CategoryFinance::where('uuid', $request->uuid)
+            ->where('users_uuid', Auth::id())
             ->firstOrFail();
 
         $this->authorize('delete', $data);

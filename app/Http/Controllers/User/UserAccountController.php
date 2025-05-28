@@ -18,7 +18,7 @@ class UserAccountController extends Controller
      */
     public function index()
     {
-        $user = User::where('id', Auth::user()->id)->first();
+        $user = User::where('uuid', Auth::id())->first();
         return view('v2.user.account', compact('user'));
     }
 
@@ -75,9 +75,15 @@ class UserAccountController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::where('uuid', $id)->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 404);
+            }
 
-            if (Auth::id() !== $user->id) {
+            if (Auth::id() !== $user->uuid) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Unauthorized'
@@ -126,7 +132,7 @@ class UserAccountController extends Controller
 
     public function ubahProfile(Request $request)
     {
-        $user = User::findOrfail(Auth::user()->id);
+        $user = User::findOrfail(Auth::id());
         $user->avatar = $request->file('avatar')->store('assets/avatar', 'public');
         $user->save();
         return back();

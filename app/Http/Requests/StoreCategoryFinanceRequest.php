@@ -22,9 +22,13 @@ class StoreCategoryFinanceRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->input('id');
+        $id = $this->input('uuid');
         return [
-            'id' => ['nullable', 'integer'],
+            'uuid' => [
+                'required',
+                'string',
+                'max:36',
+            ],
             'name_category_finances' => [
                 'required',
                 'string',

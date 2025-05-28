@@ -231,7 +231,7 @@
     
             let formData = new FormData(this);
     
-            axios.post("{{ route('customer.account.update', Auth::user()->id) }}", formData, {
+            axios.post("{{ route('customer.account.update', Auth::id()) }}", formData, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
                     'Content-Type': 'multipart/form-data',

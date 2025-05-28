@@ -22,10 +22,10 @@
                                 <span class="text-danger">*</span>
                                 Category Name
                             </label>
-                            <select class="form-select form-control" name="category_finances_id" required id="select2Categories">
+                            <select class="form-select form-control" name="category_finances_uuid" required id="select2Categories">
                                 <option selected>Select</option>
                                 @forelse ($categories as $item)
-                                    <option value="{{ $item->id }}" {{ $data->category_finances_id == $item->id ? 'selected' : '' }}>{{ $item->name_category_finances }}</option>
+                                    <option value="{{ $item->uuid }}" {{ $data->category_finances_uuid == $item->uuid ? 'selected' : '' }}>{{ $item->name_category_finances }}</option>
                                 @empty
                                     <option value="">No data available</option>
                                 @endforelse
@@ -67,10 +67,10 @@
                                 <span class="text-danger">*</span>
                                 Payment Method
                             </label>
-                            <select class="form-select form-control" required name="purchase_by" id="select2Payment">
+                            <select class="form-select form-control" required name="payment_methods_uuid" id="select2Payment">
                                 <option selected>Select</option>
                                 @forelse ($paymentMethods as $item)
-                                    <option value="{{ $item->id }}" {{ $data->purchase_by == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                    <option value="{{ $item->uuid }}" {{ $data->payment_methods_uuid == $item->uuid ? 'selected' : '' }}>{{ $item->name }}</option>
                                 @empty
                                 <option value="">No data available</option>
                                 @endforelse
@@ -151,7 +151,7 @@
             }
 
             const formData = new FormData(this);
-            const url = "{{ route('customer.expense.update', $data->id) }}";
+            const url = "{{ route('customer.expense.update', $data->uuid) }}";
             const submitButton = $(this).find('button[type="submit"]');
             const originalText = submitButton.html();
 

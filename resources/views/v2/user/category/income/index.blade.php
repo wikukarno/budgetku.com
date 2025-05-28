@@ -48,7 +48,7 @@
                 <form id="form-tambah-kategori-income" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="id" id="id_category_income">
+                        <input type="hidden" name="uuid" id="id_category_income">
                         <div class="form-group">
                             <label for="name">
                                 Name
@@ -84,11 +84,11 @@
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
         }
 
-        function updateKategoriIncome(id){
+        function updateKategoriIncome(uuid){
             $('#form-tambah-kategori-income').trigger('reset');
             $('#categoryIncomeModal').modal('show');
             $('#categoryIncomeModalLabel').html('Edit Income Category');
-            $('#id_category_income').val(id);
+            $('#id_category_income').val(uuid);
             $('#btnSaveKategoriKeuangan').html('Simpan Perubahan');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
             
@@ -97,14 +97,14 @@
                 url: "{{ route('customer.category.income.show') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    id:id
+                    uuid:uuid
                 },
                 dataType: 'json',
                 beforeSend: function() {
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_kategori_income').val(res.id);
+                    $('#id_kategori_income').val(res.uuid);
                     $('#name_category_incomes').val(res.name_category_incomes);
                 },
                 complete: function(){
@@ -113,7 +113,7 @@
             });
         }
 
-        function deleteKategoriIncome(id){
+        function deleteKategoriIncome(uuid){
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Data will be deleted!",
@@ -130,7 +130,7 @@
                         url: "{{ route('customer.category.income.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            id:id
+                            uuid:uuid
                         },
                         dataType: 'json',
                         beforeSend: function() {
@@ -187,7 +187,7 @@
                 url: "{!! url()->current() !!}",
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'id'},
+                { data: 'DT_RowIndex', name: 'uuid'},
                 { data: 'name_category_incomes', name: 'name_category_incomes'},
                 { data: 'created_at', name: 'created_at'},
                 { data: 'updated_at', name: 'updated_at'},

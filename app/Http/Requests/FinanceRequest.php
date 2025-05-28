@@ -24,11 +24,11 @@ class FinanceRequest extends FormRequest
     public function rules()
     {
         return [
-            'users_id' => 'integer',
-            'category_finances_id' => 'required|integer',
+            'users_uuid' => 'required|string|uuid',
+            'category_finances_uuid' => 'required|string|uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
-            'purchase_date' => 'required|date',
+            'payment_methods_uuid' => 'required|string|uuid',
             'purchase_by' => 'required|string|max:255',
         ];
     }

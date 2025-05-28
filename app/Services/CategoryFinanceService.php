@@ -24,7 +24,7 @@ class CategoryFinanceService
 
             // Cek apakah data lama ada (update) atau baru (create)
             $category = $id
-                ? $this->categoryFinanceRepository->find($id)
+                ? $this->categoryFinanceRepository->find((string)$id)
                 : new \App\Models\CategoryFinance();
 
             // Set data

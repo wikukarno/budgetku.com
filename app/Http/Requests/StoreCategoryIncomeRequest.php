@@ -22,9 +22,13 @@ class StoreCategoryIncomeRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('id');
+        $id = $this->route('uuid');
         return [
-            'id' => ['nullable', 'integer'],
+            'uuid' => [
+                'required',
+                'string',
+                'max:36',
+            ],
             'name_category_incomes' => [
                 'required',
                 'string',

@@ -54,7 +54,7 @@ class SalaryPolicy
      */
     public function update(User $user, Salary $salary)
     {
-        return $user->id == $salary->users_id;
+        return $user->uuid == $salary->users_uuid;
     }
 
     /**
@@ -66,7 +66,7 @@ class SalaryPolicy
      */
     public function delete(User $user, Salary $salary)
     {
-        return $user->id == $salary->users_id;
+        return $user->uuid == $salary->users_uuid;
     }
 
     /**

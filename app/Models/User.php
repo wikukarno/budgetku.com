@@ -68,12 +68,12 @@ class User extends Authenticatable
 
     public function finance()
     {
-        return $this->hasMany(Finance::class, 'users_id', 'id');
+        return $this->hasMany(Finance::class, 'users_uuid', 'id');
     }
 
     public function salary()
     {
-        return $this->hasMany(Salary::class, 'users_id', 'id');
+        return $this->hasMany(Salary::class, 'users_uuid', 'id');
     }
 
     protected static function booted()

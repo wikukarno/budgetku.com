@@ -14,7 +14,7 @@ class CategoryFinancePolicy
     public function view(User $user, CategoryFinance $categoryFinance)
     {
         // Periksa apakah pengguna adalah pemilik category finance
-        return $user->id === $categoryFinance->users_id
+        return $user->uuid === $categoryFinance->users_uuid
             ? Response::allow()
             : Response::deny('You do not own this category finance');
     }
@@ -22,7 +22,7 @@ class CategoryFinancePolicy
     public function updateOrCreate(User $user, CategoryFinance $categoryFinance)
     {
         // Periksa apakah pengguna adalah pemilik category finance untuk update
-        return $user->id === $categoryFinance->users_id
+        return $user->uuid === $categoryFinance->users_uuid
             ? Response::allow()
             : Response::deny('You do not have access to update this data');
     }
@@ -30,7 +30,7 @@ class CategoryFinancePolicy
     public function delete(User $user, CategoryFinance $categoryFinance)
     {
         // Periksa apakah pengguna adalah pemilik category finance untuk delete
-        return $user->id === $categoryFinance->users_id
+        return $user->uuid === $categoryFinance->users_uuid
             ? Response::allow()
             : Response::deny('You do not have access to delete this data');
     }

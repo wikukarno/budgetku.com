@@ -74,6 +74,7 @@
                             $(".preloader").fadeIn();
                         },
                         success: function(res){
+                            console.log(res);
                             $('#expenseTable').DataTable().ajax.reload();
                             showCustomAlert('success', res.message);
                         },

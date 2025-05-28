@@ -10,6 +10,8 @@ class CategoryFinance extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $primaryKey = 'uuid';
+
     protected $keyType = 'string';
     
     public $incrementing = false;
@@ -24,14 +26,12 @@ class CategoryFinance extends Model
     protected $casts = [
         'uuid' => 'string',
         'users_uuid' => 'string',
-        'id' => 'integer',
-        'users_id' => 'integer',
     ];
 
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'users_id', 'uuid');
+        return $this->belongsTo(User::class, 'users_uuid', 'uuid');
     }
 
     public function legacyUser()

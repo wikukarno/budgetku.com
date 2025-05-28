@@ -29,7 +29,7 @@ class UserCategoryIncomeController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = CategoryIncome::where('users_id', Auth::id());
+            $query = CategoryIncome::where('users_uuid', Auth::id());
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -41,11 +41,11 @@ class UserCategoryIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(\'' . $item->uuid . '\')">
                             Edit
                         </a>
                         
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(\'' . $item->uuid . '\')">
                             Delete
                         </a>
                     ';
@@ -64,7 +64,7 @@ class UserCategoryIncomeController extends Controller
      */
     public function store(StoreCategoryIncomeRequest $request)
     {
-        $categoryIncome = CategoryIncome::find($request->id);
+        $categoryIncome = CategoryIncome::find($request->uuid);
 
         if($categoryIncome){
             $this->authorize('updateOrCreate', $categoryIncome);
@@ -83,7 +83,7 @@ class UserCategoryIncomeController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryIncome::findOrFail($request->id);
+        $data = CategoryIncome::findOrFail($request->uuid);
         return response()->json($data);
     }
 
@@ -95,7 +95,7 @@ class UserCategoryIncomeController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryIncome::find($request->id);
+        $data = CategoryIncome::find($request->uuid);
         $this->authorize('delete', $data);
         $data->delete();
         Cache::forget('user_categories_income_' . Auth::id());

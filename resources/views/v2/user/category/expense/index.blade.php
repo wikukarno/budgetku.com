@@ -48,7 +48,7 @@
                 <form id="form-tambah-kategori-finance" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="id" id="id_category_finance">
+                        <input type="hidden" name="uuid" id="id_category_finance">
                         <div class="form-group">
                             <label for="name">
                                 Name
@@ -79,11 +79,11 @@
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
         }
 
-        function updateKategoriFinance(id){
+        function updateKategoriFinance(uuid){
             $('#form-tambah-kategori-finance').trigger('reset');
             $('#categoryExpenseModal').modal('show');
             $('#categoryExpenseModalLabel').html('Edit Expense Category');
-            $('#id_category_finance').val(id);
+            $('#id_category_finance').val(uuid);
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
             
@@ -91,14 +91,14 @@
                 type:"GET",
                 url: "{{ route('customer.category.expense.show') }}",
                 data: {
-                    id:id
+                    uuid:uuid
                 },
                 dataType: 'json',
                 beforeSend: function() {
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_kategori_finance').val(res.id);
+                    $('#id_kategori_finance').val(res.uuid);
                     $('#name_category_finances').val(res.name_category_finances);
                 },
                 complete: function(){
@@ -107,7 +107,7 @@
             });
         }
 
-        function deleteKategoriFinance(id){
+        function deleteKategoriFinance(uuid){
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Data will be deleted!",
@@ -124,13 +124,14 @@
                         url: "{{ route('customer.category.expense.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            id:id
+                            uuid:uuid
                         },
                         dataType: 'json',
                         beforeSend: function() {
                             $(".preloader").fadeIn();
                         },
                         success: function(res){
+                            console.log(res);
                             $('#categoryExpenseTable').DataTable().ajax.reload();
                             showCustomAlert('success', res.message);
                         },
@@ -184,7 +185,7 @@
                 url: "{!! url()->current() !!}",
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'id'},
+                { data: 'DT_RowIndex', name: 'uuid'},
                 { data: 'name_category_finances', name: 'name_category_finances'},
                 { data: 'created_at', name: 'created_at'},
                 { data: 'updated_at', name: 'updated_at'},

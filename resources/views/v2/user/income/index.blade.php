@@ -43,7 +43,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-        function deleteIncome(id){
+        function deleteIncome(uuid){
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Data will be deleted!",
@@ -60,7 +60,7 @@
                         url: "{{ route('customer.income.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            id:id
+                            uuid:uuid
                         },
                         dataType: 'json',
                         beforeSend: function() {
@@ -85,9 +85,9 @@
                 url: "{!! url()->current() !!}",
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'id'},
+                { data: 'DT_RowIndex', name: 'uuid'},
                 { data: 'salary', name: 'salary'},
-                { data: 'tipe', name: 'tipe'},
+                { data: 'category_incomes_uuid', name: 'category_incomes_uuid'},
                 { data: 'date', name: 'date'},
                 {
                     data: 'action',

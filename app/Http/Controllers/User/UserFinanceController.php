@@ -24,13 +24,13 @@ class UserFinanceController extends Controller
     {
         if (request()->ajax()) {
             $query = Finance::with(['category_finance'])
-                ->where('users_id', Auth::id())
+                ->where('users_uuid', Auth::id())
                 // ->whereYear('created_at', Carbon::now()->year)
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('category_finances_id', function ($item) {
+                ->editColumn('category_finances_uuid', function ($item) {
                     return $item->category_finance->name_category_finances;
                 })
                 ->editColumn('purchase_date', function ($item) {
@@ -41,10 +41,10 @@ class UserFinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('customer.expense.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
+                        <a href="' . route('customer.expense.edit', $item->uuid) . '" class="btn btn-sm btn-warning text-white">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteExpense(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteExpense(\'' . $item->uuid . '\')">
                             Delete
                         </a>
                     ';
@@ -53,19 +53,19 @@ class UserFinanceController extends Controller
                 ->make(true);
         }
 
-        // $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        // $categories = CategoryFinance::where('users_uuid', Auth::id())->get();
         // $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
-        //     ->where('users_id', Auth::id())
+        //     ->where('users_uuid', Auth::id())
         //     ->groupBy('year')
         //     ->get();
 
         $categories = Cache::remember("user_categories_finance_" . Auth::id(), 3600, function () {
-            return CategoryFinance::where('users_id', Auth::id())->get();
+            return CategoryFinance::where('users_uuid', Auth::id())->get();
         });
 
         $filterByYear = Cache::remember("finance_years_" . Auth::id(), 3600, function () {
             return Finance::select(DB::raw('YEAR(created_at) as year'))
-                ->where('users_id', Auth::id())
+                ->where('users_uuid', Auth::id())
                 ->groupBy('year')
                 ->get();
         });
@@ -80,7 +80,7 @@ class UserFinanceController extends Controller
     {
         if (request()->ajax()) {
             $query = Finance::with(['category_finance'])
-                ->where('users_id', Auth::id())
+                ->where('users_uuid', Auth::id())
                 ->whereYear('created_at', $request->year)
                 ->orderBy('created_at', 'DESC');
 
@@ -109,9 +109,9 @@ class UserFinanceController extends Controller
                 ->make(true);
         }
 
-        $categories = CategoryFinance::where('users_id', Auth::id())->get();
+        $categories = CategoryFinance::where('users_uuid', Auth::id())->get();
         $filterByYear = Finance::select(DB::raw('YEAR(created_at) as year'))
-            ->where('users_id', Auth::id())
+            ->where('users_uuid', Auth::id())
             ->groupBy('year')
             ->get();
         return view('v2.user.expense.index', [
@@ -126,7 +126,7 @@ class UserFinanceController extends Controller
         $user = User::findOrFail($userId);
 
         // Ambil transaksi minggu sebelumnya
-        $transactions = Finance::where('users_id', $user->id)
+        $transactions = Finance::where('users_uuid', $user->uuid)
             ->whereBetween('purchase_date', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
             ->get();
 
@@ -153,11 +153,11 @@ class UserFinanceController extends Controller
     public function create()
     {
         $categories = Cache::remember("user_categories_finance_" . Auth::id(), 3600, function () {
-            return CategoryFinance::where('users_id', Auth::id())->get();
+            return CategoryFinance::where('users_uuid', Auth::id())->get();
         });
 
         $paymentMethods = Cache::remember("payment_methods", 3600, function () {
-            return PaymentMethod::select('id', 'name')->get();
+            return PaymentMethod::select('uuid', 'name')->get();
         });
 
         return view('v2.user.expense.create', compact('categories', 'paymentMethods'));
@@ -167,23 +167,23 @@ class UserFinanceController extends Controller
     {
         // Validasi dulu sebelum simpan
         $request->validate([
-            'category_finances_id' => 'required|exists:category_finances,id',
+            'category_finances_uuid' => 'required|exists:category_finances,uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
             'purchase_date' => 'required|date',
-            'purchase_by' => 'required|string|max:255',
+            'payment_methods_uuid' => 'required|exists:payment_methods,uuid',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         try {
             // Simpan data utama tanpa file dulu
             $data = Finance::create([
-                'users_id' => Auth::id(),
-                'category_finances_id' => $request->category_finances_id,
+                'users_uuid' => Auth::id(),
+                'category_finances_uuid' => $request->category_finances_uuid,
                 'name_item' => $request->name_item,
                 'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date ?? Carbon::now(),
-                'purchase_by' => $request->purchase_by ?? 'Tunai',
+                'payment_methods_uuid' => $request->payment_methods_uuid,
                 'bukti_pembayaran' => null, // sementara null
             ]);
 
@@ -204,8 +204,8 @@ class UserFinanceController extends Controller
             // Proses saldo & email
             $user = Auth::user();
 
-            $salary = Salary::where('users_id', $user->id)->sum('salary');
-            $pengeluaran = Finance::where('users_id', $user->id)->sum('price');
+            $salary = Salary::where('users_uuid', $user->uuid)->sum('salary');
+            $pengeluaran = Finance::where('users_uuid', $user->uuid)->sum('price');
             $saldo = $salary - $pengeluaran;
 
             $sendEmail = [
@@ -232,7 +232,7 @@ class UserFinanceController extends Controller
 
     public function show(Request $request)
     {
-        $data = Finance::findOrFail($request->id);
+        $data = Finance::findOrFail($request->uuid);
         return response()->json($data);
     }
 
@@ -242,11 +242,11 @@ class UserFinanceController extends Controller
         $data->price = 'Rp. ' . number_format($data->price, 0, ',', '.');
         
         $categories = Cache::remember("user_categories_finance_" . Auth::id(), 3600, function () {
-            return CategoryFinance::where('users_id', Auth::id())->get();
+            return CategoryFinance::where('users_uuid', Auth::id())->get();
         });
 
         $paymentMethods = Cache::remember("payment_methods", 3600, function () {
-            return PaymentMethod::select('id', 'name')->get();
+            return PaymentMethod::select('uuid', 'name')->get();
         });
         
         return view('v2.user.expense.edit', compact('data', 'categories', 'paymentMethods'));
@@ -255,11 +255,11 @@ class UserFinanceController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category_finances_id' => 'required|exists:category_finances,id',
+            'category_finances_uuid' => 'required|exists:category_finances,uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
             'purchase_date' => 'required|date',
-            'purchase_by' => 'required|string|max:255',
+            'payment_methods_uuid' => 'required|exists:payment_methods,uuid',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // max 2MB
         ]);
 
@@ -268,12 +268,12 @@ class UserFinanceController extends Controller
             $this->authorize('update', $data);
 
             $updated = $data->update([
-                'users_id' => Auth::id(),
-                'category_finances_id' => $request->category_finances_id,
+                'users_uuid' => Auth::id(),
+                'category_finances_uuid' => $request->category_finances_uuid,
                 'name_item' => $request->name_item,
                 'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date,
-                'purchase_by' => $request->purchase_by,
+                'payment_methods_uuid' => $request->payment_methods_uuid,
             ]);
 
             if ($updated && $request->hasFile('bukti_pembayaran')) {
@@ -296,8 +296,8 @@ class UserFinanceController extends Controller
 
             // Hitung ulang saldo user
             $user = Auth::user();
-            $salary = Salary::where('users_id', $user->id)->sum('salary');
-            $pengeluaran = Finance::where('users_id', $user->id)->sum('price');
+            $salary = Salary::where('users_uuid', $user->uuid)->sum('salary');
+            $pengeluaran = Finance::where('users_uuid', $user->uuid)->sum('price');
             $saldo = $salary - $pengeluaran;
 
             $sendEmail = [
@@ -325,7 +325,7 @@ class UserFinanceController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $item = Finance::findOrFail($request->id);
+            $item = Finance::findOrFail($request->uuid);
             $this->authorize('delete', $item);
 
             $item->delete();

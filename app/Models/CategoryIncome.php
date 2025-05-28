@@ -11,6 +11,7 @@ class CategoryIncome extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $primaryKey = 'uuid';
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -21,16 +22,9 @@ class CategoryIncome extends Model
         'name_category_incomes',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'uuid' => 'string',
-        'users_uuid' => 'string',
-        'users_id' => 'integer',
-    ];
-
     public function user()
     {
-        return $this->belongsTo(User::class, 'users_id', 'uuid');
+        return $this->belongsTo(User::class, 'users_uuid', 'uuid');
     }
 
     public function legacyUser()

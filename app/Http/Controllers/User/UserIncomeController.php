@@ -24,12 +24,12 @@ class UserIncomeController extends Controller
     {
         if (request()->ajax()) {
             $query = Salary::with('category_income')
-                ->where('users_id', Auth::id())
+                ->where('users_uuid', Auth::id())
                 ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
-                ->editColumn('tipe', function ($item) {
+                ->editColumn('category_incomes_uuid', function ($item) {
                     return $item->category_income->name_category_incomes;
                 })
                 ->editColumn('salary', function ($item) {
@@ -40,10 +40,10 @@ class UserIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="' . route('customer.income.edit', $item->id) . '" class="btn btn-sm btn-warning text-white">
+                        <a href="' . route('customer.income.edit', $item->uuid) . '" class="btn btn-sm btn-warning text-white">
                             Edit
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(\'' . $item->uuid . '\')">
                             Delete
                         </a>
                     ';
@@ -62,9 +62,9 @@ class UserIncomeController extends Controller
      */
     public function create()
     {
-        // $categoryIncome = CategoryIncome::where('users_id', Auth::id())->get();
+        // $categoryIncome = CategoryIncome::where('users_uuid', Auth::id())->get();
         $categoryIncome = Cache::remember('user_categories_income_' . Auth::id(), 3600, function () {
-            return CategoryIncome::where('users_id', Auth::id())->get();
+            return CategoryIncome::where('users_uuid', Auth::id())->get();
         });
 
         return view('v2.user.income.create', compact('categoryIncome'));
@@ -81,20 +81,20 @@ class UserIncomeController extends Controller
         $request->validate([
             'salary' => 'required|string',
             'date' => 'required|date',
-            'tipe' => 'required|string',
+            'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
         ]);
 
         try {
             $data = Salary::create([
-                'users_id' => Auth::id(),
+                'users_uuid' => Auth::id(),
                 'salary' => str_replace(
                     ['Rp. ', '.'],
                     ['', ''],
                     $request->salary
                 ),
                 'date' => $request->date,
-                'tipe' => $request->tipe,
+                'category_incomes_uuid' => $request->category_incomes_uuid,
                 'description' => $request->description,
             ]);
 
@@ -137,7 +137,7 @@ class UserIncomeController extends Controller
      */
     public function show(Request $request)
     {
-        $data = Salary::find($request->id);
+        $data = Salary::find($request->uuid);
         return response()->json($data);
     }
 
@@ -149,10 +149,10 @@ class UserIncomeController extends Controller
      */
     public function edit($id)
     {
-        $data = Salary::where('users_id', Auth::id())->findOrFail($id);
+        $data = Salary::where('users_uuid', Auth::id())->findOrFail($id);
 
         $categoryIncome = Cache::remember('user_categories_income_' . Auth::id(), 3600, function () {
-            return CategoryIncome::where('users_id', Auth::id())->get();
+            return CategoryIncome::where('users_uuid', Auth::id())->get();
         });
 
         $data->salary = 'Rp. ' . number_format($data->salary, 0, ',', '.');
@@ -171,7 +171,7 @@ class UserIncomeController extends Controller
         $request->validate([
             'salary' => 'required|string',
             'date' => 'required|date',
-            'tipe' => 'required|string',
+            'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
         ]);
 
@@ -186,14 +186,14 @@ class UserIncomeController extends Controller
             }
 
             // Update fields
-            $data->users_id = Auth::user()->id;
+            $data->users_uuid = Auth::id();
             $data->salary = str_replace(
                 ['Rp.', '.'],
                 ['', ''],
                 $request->salary
             );
             $data->date = $request->date;
-            $data->tipe = $request->tipe;
+            $data->category_incomes_uuid = $request->category_incomes_uuid;
             $data->description = $request->description;
             $data->save();
 
@@ -226,7 +226,7 @@ class UserIncomeController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $data = Salary::find($request->id);
+            $data = Salary::find($request->uuid);
             $this->authorize('delete', $data);
             $data->delete();
 

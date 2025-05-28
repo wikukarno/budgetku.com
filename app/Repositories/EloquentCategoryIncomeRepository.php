@@ -7,7 +7,7 @@ use App\Models\CategoryIncome;
 class EloquentCategoryIncomeRepository implements CategoryIncomeRepositoryInterface
 {
 
-    public function find(int $id): ?CategoryIncome
+    public function find(string $id): ?CategoryIncome
     {
         return CategoryIncome::find($id);
     }

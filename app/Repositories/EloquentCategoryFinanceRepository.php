@@ -6,7 +6,7 @@ use App\Models\CategoryFinance;
 
 class EloquentCategoryFinanceRepository implements CategoryFinanceRepositoryInterface
 {
-    public function find(int $id): ?CategoryFinance
+    public function find(string $id): ?CategoryFinance
     {
         return CategoryFinance::find($id);
     }
