@@ -78,7 +78,7 @@ class FinanceController extends Controller
     {
         // Validasi dulu sebelum simpan
         $request->validate([
-            'category_finances_uuid' => 'required|exists:category_finances,id',
+            'category_finances_uuid' => 'required|exists:category_finances,uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
             'purchase_date' => 'required|date',

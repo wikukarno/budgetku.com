@@ -78,7 +78,7 @@ class SalaryController extends Controller
 
     public function show(Request $request)
     {
-        $data = $this->salaryService->getById($request->id);
+        $data = $this->salaryService->getById($request->uuid);
         return response()->json($data);
     }
 
