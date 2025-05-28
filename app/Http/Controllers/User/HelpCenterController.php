@@ -42,7 +42,7 @@ class HelpCenterController extends Controller
         }
 
         try {
-            Mail::send('email.help-email-center', [
+            Mail::send('mail.help-email-center', [
                 'name' => $request->name,
                 'email' => $request->email,
                 'bodyMessage' => $request->message,
