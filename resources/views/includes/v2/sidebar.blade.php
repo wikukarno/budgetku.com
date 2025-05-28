@@ -159,6 +159,17 @@
             @endif
 
             <li class="menu-item">
+                <a href="mailto:dev@budgetku.com" target="_blank" class="menu-link">
+                    <span class="material-symbols-outlined menu-icon">
+                        email
+                    </span>
+                    <span class="title">
+                        Help Center
+                    </span>
+                </a>
+            </li>
+
+            <li class="menu-item">
                 <a href="javascript:void()" onclick="logout()" class="menu-link">
                     <span class="material-symbols-outlined menu-icon">logout</span>
                     <span class="title">Sign Out</span>
