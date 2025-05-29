@@ -10,8 +10,10 @@ class FinanceRepository
 {
     public function getPengeluaran($userId, $startDate)
     {
+        $endDate = now()->copy()->endOfMonth()->toDateString();
+
         return Finance::where('users_uuid', $userId)
-            ->whereBetween('purchase_date', [$startDate, now()->endOfMonth()->toDateString()])
+            ->whereBetween('purchase_date', [$startDate, $endDate])
             ->sum('price');
     }
 
