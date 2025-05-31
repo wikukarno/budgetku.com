@@ -86,42 +86,36 @@ class UserIncomeController extends Controller
         ]);
 
         try {
-            $data = Salary::create([
+            $salary = Salary::create([
                 'users_uuid' => Auth::id(),
-                'salary' => str_replace(
-                    ['Rp. ', '.'],
-                    ['', ''],
-                    $request->salary
-                ),
+                'salary' => str_replace(['Rp. ', '.'], ['', ''], $request->salary),
                 'date' => $request->date,
                 'category_incomes_uuid' => $request->category_incomes_uuid,
                 'description' => $request->description,
             ]);
 
-            // Delete cache
+            // Clear cache
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
             Cache::forget('laporan_tahunan_user_' . Auth::id());
 
-            $email = User::where('email', Auth::user()->email)->first();
-
+            // Send email
+            $user = Auth::user(); // already available
             $data = [
-                'salary' => $data,
-                'user' => $email
+                'salary' => $salary,
+                'user' => $user
             ];
 
-            ProcessUangMasukEmail::dispatch(
-                $data
-            );
+            ProcessUangMasukEmail::dispatch($data);
 
             return response()->json([
                 'status' => true,
                 'message' => 'Data Created Successfully',
             ]);
-        }catch (\Exception $exception){
-            Log::error('Error creating data: ' . $exception->getMessage());
+        } catch (\Exception $exception) {
+            Log::error('Error during salary submission: ' . $exception->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => 'Data Failed to Create',

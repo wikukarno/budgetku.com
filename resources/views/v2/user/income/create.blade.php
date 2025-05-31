@@ -116,6 +116,7 @@
 
             axios.post('{{ route('customer.income.store') }}', formData)
                 .then(function(response) {
+                    console.log(response.data);
                     if (response.data.status == true) {
                         showCustomAlert('success', response.data.message);
                         setTimeout(function() {

@@ -339,12 +339,12 @@ class UserFinanceController extends Controller
             Cache::forget('laporan_tahunan_user_' . Auth::id());
 
             return response()->json([
-                'code' => 200,
+                'status' => true,
                 'message' => 'Data deleted successfully'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'code' => 500,
+                'status' => false,
                 'message' => 'Data failed to delete'
             ]);
         }
