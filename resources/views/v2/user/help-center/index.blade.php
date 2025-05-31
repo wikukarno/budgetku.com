@@ -35,9 +35,11 @@
                     </div>
                 </div>
 
-                <!-- Cloudflare Turnstile -->
+                <!-- Cloudflare Turnstile CAPTCHA -->
                 <div class="col-lg-12 mb-3">
-                    <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
+                    <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE') }}"
+                        data-callback="turnstileCallback">
+                    </div>
                     <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
                 </div>
 
@@ -58,21 +60,17 @@
 @endsection
 
 @push('after-scripts')
-<script>
-    window.onloadTurnstileCallback = function () {
-        turnstile.render('.cf-turnstile', {
-            sitekey: "{{ env('TURNSTILE_SITE') }}",
-            callback: function (token) {
-                document.getElementById('cf-turnstile-response').value = token;
-            }
-        });
-    };
-</script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
+    // Auto-fill hidden input when CAPTCHA is verified
+    function turnstileCallback(token) {
+        document.getElementById('cf-turnstile-response').value = token;
+    }
+
     document.getElementById('btnSend').addEventListener('click', function (e) {
         e.preventDefault();
+
         const form = document.getElementById('formdata');
         const token = document.getElementById('cf-turnstile-response').value;
 
