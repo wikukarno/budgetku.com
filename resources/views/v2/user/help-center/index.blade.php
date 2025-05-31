@@ -47,9 +47,11 @@
                     <div class="d-flex flex-wrap justify-content-end gap-3">
                         <a href="{{ route('customer.dashboard') }}"
                             class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
-                        <button id="btnSend" type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16">
-                            <i class="ri-send-plane-2-line text-white fw-medium"></i>
-                            Send Now
+                        <!-- Submit Button with Spinner -->
+                        <button id="btnSend" type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16 d-flex align-items-center gap-2">
+                            <span id="btnText">Send Now</span>
+                            <span id="btnLoading" class="spinner-border spinner-border-sm text-white d-none" role="status"
+                                aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>
@@ -63,7 +65,6 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
-    // Auto-fill hidden input when CAPTCHA is verified
     function turnstileCallback(token) {
         document.getElementById('cf-turnstile-response').value = token;
     }
@@ -82,6 +83,15 @@
             });
             return;
         }
+
+        // Disable button and show spinner
+        const btnSend = document.getElementById('btnSend');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+
+        btnSend.disabled = true;
+        btnText.textContent = 'Sending...';
+        btnLoading.classList.remove('d-none');
 
         const formData = new FormData(form);
 
@@ -110,6 +120,12 @@
                 title: 'Error',
                 text: 'An error occurred. Please try again.'
             });
+        })
+        .finally(() => {
+            // Re-enable button after response
+            btnSend.disabled = false;
+            btnText.textContent = 'Send Now';
+            btnLoading.classList.add('d-none');
         });
     });
 </script>
