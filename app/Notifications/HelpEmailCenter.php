@@ -11,12 +11,18 @@ class HelpEmailCenter extends Notification
 {
     use Queueable;
 
+    public string $name;
+    public string $email;
+    public string $bodyMessage;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(string $name, string $email, string $bodyMessage)
     {
-        //
+        $this->name = $name;
+        $this->email = $email;
+        $this->bodyMessage = $bodyMessage;
     }
 
     /**
@@ -34,7 +40,14 @@ class HelpEmailCenter extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.help-email-center');
+        return (new MailMessage)
+            ->subject('📬 Help Center Request from ' . $this->name)
+            ->replyTo($this->email, $this->name)
+            ->markdown('mail.help-email-center', [
+                'name' => $this->name,
+                'email' => $this->email,
+                'bodyMessage' => $this->bodyMessage,
+            ]);
     }
 
     /**
