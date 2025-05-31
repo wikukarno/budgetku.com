@@ -41,7 +41,7 @@ class HelpEmailCenter extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('📬 Help Center Request from ' . $this->name)
+            ->subject('Help Center Request from ' . $this->name)
             ->replyTo($this->email, $this->name)
             ->markdown('mail.help-email-center', [
                 'name' => $this->name,
