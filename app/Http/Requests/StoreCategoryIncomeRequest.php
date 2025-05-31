@@ -25,8 +25,6 @@ class StoreCategoryIncomeRequest extends FormRequest
         $id = $this->route('uuid');
         return [
             'uuid' => [
-                'required',
-                'string',
                 'max:36',
             ],
             'name_category_incomes' => [

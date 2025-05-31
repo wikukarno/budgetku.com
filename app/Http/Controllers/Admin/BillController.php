@@ -150,6 +150,6 @@ class BillController extends Controller
         $data = Bill::find($request->id);
         $data->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus']);
+        return response()->json(['message' => 'Data successfully deleted'], 200);
     }
 }

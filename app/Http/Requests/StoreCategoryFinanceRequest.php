@@ -25,8 +25,6 @@ class StoreCategoryFinanceRequest extends FormRequest
         $id = $this->input('uuid');
         return [
             'uuid' => [
-                'required',
-                'string',
                 'max:36',
             ],
             'name_category_finances' => [

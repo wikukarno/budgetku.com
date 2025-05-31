@@ -98,7 +98,7 @@ class UserIncomeController extends Controller
                 'description' => $request->description,
             ]);
 
-            // Hapus cache
+            // Delete cache
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
@@ -197,7 +197,7 @@ class UserIncomeController extends Controller
             $data->description = $request->description;
             $data->save();
 
-            // Hapus cache
+            // Delete cache
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
@@ -230,7 +230,7 @@ class UserIncomeController extends Controller
             $this->authorize('delete', $data);
             $data->delete();
 
-            // Hapus cache
+            // Delete cache
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
             Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
             Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
@@ -240,7 +240,7 @@ class UserIncomeController extends Controller
 
             return response()->json([
                 'code' => 200,
-                'message' => 'Data Deleted Successfully',
+                'message' => 'Data successfully deleted',
             ]);
         } catch (\Throwable $th) {
             Log::error('Error deleting data: ' . $th->getMessage());

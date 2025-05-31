@@ -77,13 +77,13 @@
         $('#formdata').on('submit', function(e) {
             e.preventDefault();
 
-            // 🔁 Hapus semua error sebelumnya
+            // Delete any existing validation error messages
             $('.text-danger.validation-error').remove();
             $(this).find('.is-invalid').removeClass('is-invalid');
 
             let isValid = true;
 
-            // 🔍 Cek setiap input/select/textarea yang required
+            // Check each required field
             $(this).find('[required]').each(function () {
                 const isSelect = $(this).is('select');
                 const value = $(this).val();
@@ -102,7 +102,7 @@
                 return;
             }
 
-            // ✅ Jika valid, lanjut submit
+            // If all fields are valid, proceed with form submission
             let formData = new FormData(this);
             let submitButton = $(this).find('button[type="submit"]');
             let originalText = submitButton.html();

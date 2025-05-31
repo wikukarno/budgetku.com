@@ -46,7 +46,7 @@ class UserCategoryFinancesController extends Controller
                         </a>
                         
                         <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriFinance(\'' . $item->uuid . '\')">
-                            Hapus
+                            Delete
                         </a>
                     ';
                 })
@@ -98,7 +98,7 @@ class UserCategoryFinancesController extends Controller
 
         $this->authorize('delete', $data);
         $data->delete();
-        // Hapus cache
+        // Delete cache
         Cache::forget('user_categories_finance_' . Auth::id());
         return response()->json(
             [

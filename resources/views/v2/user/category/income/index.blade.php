@@ -89,7 +89,7 @@
             $('#categoryIncomeModal').modal('show');
             $('#categoryIncomeModalLabel').html('Edit Income Category');
             $('#id_category_income').val(uuid);
-            $('#btnSaveKategoriKeuangan').html('Simpan Perubahan');
+            $('#btnSaveKategoriKeuangan').html('Update');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
             
             $.ajax({

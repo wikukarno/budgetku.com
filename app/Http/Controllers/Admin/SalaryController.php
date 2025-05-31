@@ -121,10 +121,10 @@ class SalaryController extends Controller
 
             $this->salaryService->delete($salary->uuid);
 
-            return response()->json(['code' => 200, 'message' => 'Data berhasil dihapus']);
+            return response()->json(['code' => 200, 'message' => 'Data successfully deleted']);
         } catch (\Throwable $th) {
             Log::error($th);
-            return response()->json(['code' => 500, 'message' => 'Data gagal dihapus']);
+            return response()->json(['code' => 500, 'message' => 'Data failed to delete']);
         }
     }
 }

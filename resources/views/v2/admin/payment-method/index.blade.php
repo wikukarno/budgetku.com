@@ -89,7 +89,7 @@
             $('#paymentMethodModal').modal('show');
             $('#paymentMethodModalLabel').html('Edit Payment Method');
             $('#id_payment_method').val(id);
-            $('#btnSavePaymentMethod').html('Simpan Perubahan');
+            $('#btnSavePaymentMethod').html('Update');
             $('#btnSavePaymentMethod').attr('disabled', false);
             
             $.ajax({

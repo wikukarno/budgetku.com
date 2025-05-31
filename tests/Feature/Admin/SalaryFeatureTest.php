@@ -92,7 +92,7 @@ describe('Salary Feature Test', function () {
 
         $response->assertStatus(200)->assertJson([
             'code' => 200,
-            'message' => 'Data berhasil dihapus'
+            'message' => 'Data successfully deleted'
         ]);
 
         $this->assertSoftDeleted('salaries', [
