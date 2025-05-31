@@ -29,21 +29,23 @@
 
                 <div class="col-lg-12">
                     <div class="form-group mb-4">
-                        <label class="label text-secondary fs-14">Message</label>
-                        <textarea rows="5" class="form-control" style="height: 170px;" name="message"
-                            placeholder="Type your message here..." required></textarea>
+                        <label class="label text-secondary">Message</label>
+                        <textarea class="form-control" name="message" rows="5" placeholder="Type your message here..."
+                            required></textarea>
                     </div>
                 </div>
 
                 <!-- Cloudflare Turnstile -->
-                <div class="cf-turnstile mb-3" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
-                <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
+                <div class="col-lg-12 mb-3">
+                    <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE') }}"></div>
+                    <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
+                </div>
 
                 <div class="col-lg-12">
                     <div class="d-flex flex-wrap justify-content-end gap-3">
                         <a href="{{ route('customer.dashboard') }}"
                             class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
-                        <button id="btnSend" class="btn btn-primary py-2 px-4 fw-medium fs-16" type="submit">
+                        <button id="btnSend" type="submit" class="btn btn-primary py-2 px-4 fw-medium fs-16">
                             <i class="ri-send-plane-2-line text-white fw-medium"></i>
                             Send Now
                         </button>
@@ -57,11 +59,10 @@
 
 @push('after-scripts')
 <script>
-    // Render CAPTCHA dan isi token ke hidden input
     window.onloadTurnstileCallback = function () {
         turnstile.render('.cf-turnstile', {
             sitekey: "{{ env('TURNSTILE_SITE') }}",
-            callback: function(token) {
+            callback: function (token) {
                 document.getElementById('cf-turnstile-response').value = token;
             }
         });
@@ -70,12 +71,12 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
 
 <script>
-    document.getElementById('btnSend').addEventListener('click', function(event) {
-        event.preventDefault();
+    document.getElementById('btnSend').addEventListener('click', function (e) {
+        e.preventDefault();
         const form = document.getElementById('formdata');
-        const captchaValue = document.getElementById('cf-turnstile-response').value;
+        const token = document.getElementById('cf-turnstile-response').value;
 
-        if (!captchaValue) {
+        if (!token) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Validation Error',
@@ -85,39 +86,31 @@
         }
 
         const formData = new FormData(form);
-        formData.set('cf-turnstile-response', captchaValue);
 
         fetch("{{ route('customer.help.center.send') }}", {
             method: 'POST',
-            body: formData,
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
+            },
+            body: formData
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: data.message,
-                }).then(() => {
+            Swal.fire({
+                icon: data.success ? 'success' : 'error',
+                title: data.success ? 'Success' : 'Error',
+                text: data.message
+            }).then(() => {
+                if (data.success) {
                     window.location.href = "{{ route('customer.dashboard') }}";
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message,
-                });
-            }
+                }
+            });
         })
-        .catch(error => {
-            console.error('Error:', error);
+        .catch(() => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'An error occurred while sending your message.',
+                text: 'An error occurred. Please try again.'
             });
         });
     });

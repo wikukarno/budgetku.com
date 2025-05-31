@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>New Contact Message</title>
+    <title>
+        New message from {{ $name }} - Contact Form
+    </title>
 </head>
 
 <body

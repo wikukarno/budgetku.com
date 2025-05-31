@@ -1,122 +1,42 @@
-@extends('layouts.v2.app')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title', 'Help Center')
+<head>
+    <meta charset="UTF-8">
+    <title>
+        New message from {{ $name }} - Contact Form
+    </title>
+</head>
 
-@section('content')
-<div class="card bg-white border-0 rounded-3 mb-4">
-    <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-            <h3 class="mb-0">Help Center</h3>
-        </div>
-
-        <form method="POST" id="formdata">
-            @csrf
-            <div class="row">
-                <div class="col-lg-6 col-sm-6">
-                    <div class="form-group mb-4">
-                        <label class="label text-secondary">Name</label>
-                        <input type="text" class="form-control h-55" name="name" value="{{ Auth::user()->name }}"
-                            placeholder="Enter name" required>
-                    </div>
+<body
+    style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; padding: 30px; color: #0f172a;">
+    <table width="100%" cellpadding="0" cellspacing="0"
+        style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <tr>
+            <td style="background-color: #06b6d4; padding: 20px 30px;">
+                <h2 style="margin: 0; color: #ffffff; font-size: 24px;">📬 New Contact Message</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px;">
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Name:</strong> {{ $name }}</p>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Email:</strong> <a href="mailto:{{ $email }}"
+                        style="color: #06b6d4;">{{ $email }}</a></p>
+                <p style="font-size: 16px; margin-top: 30px; margin-bottom: 5px;"><strong>Message:</strong></p>
+                <div
+                    style="padding: 15px; background-color: #f1f5f9; border-left: 4px solid #06b6d4; font-size: 16px; line-height: 1.6; white-space: pre-line;">
+                    {{ $bodyMessage }}
                 </div>
-                <div class="col-lg-6 col-sm-6">
-                    <div class="form-group mb-4">
-                        <label class="label text-secondary">Email</label>
-                        <input type="email" class="form-control h-55" name="email" value="{{ Auth::user()->email }}"
-                            placeholder="Enter email" required>
-                    </div>
-                </div>
+            </td>
+        </tr>
+        <tr>
+            <td
+                style="padding: 20px 30px; text-align: center; background-color: #f8fafc; font-size: 13px; color: #64748b;">
+                This message was sent from the contact form on <a href="{{ url('/') }}"
+                    style="color: #06b6d4; text-decoration: none;">wikukarno.com</a>
+            </td>
+        </tr>
+    </table>
+</body>
 
-                <div class="col-lg-12">
-                    <div class="form-group mb-4">
-                        <label class="label text-secondary fs-14">Message</label>
-                        <textarea rows="5" class="form-control" style="height: 170px;" name="message"
-                            placeholder="Type your message here..." required></textarea>
-                    </div>
-                </div>
-
-                <!-- ✅ Turnstile CAPTCHA: Auto-rendered with callback -->
-                <div class="cf-turnstile mb-3" data-sitekey="{{ env('TURNSTILE_SITE') }}"
-                    data-callback="onTurnstileSuccess"></div>
-                <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
-
-                <div class="col-lg-12">
-                    <div class="d-flex flex-wrap justify-content-end gap-3">
-                        <a href="{{ route('customer.dashboard') }}"
-                            class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white">Cancel</a>
-                        <button id="btnSend" class="btn btn-primary py-2 px-4 fw-medium fs-16" type="submit">
-                            <i class="ri-send-plane-2-line text-white fw-medium"></i>
-                            Send Now
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-
-@push('after-scripts')
-<!-- ✅ Cloudflare Turnstile Script -->
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-<script>
-    // ✅ Called by Turnstile when user is validated
-    function onTurnstileSuccess(token) {
-        document.getElementById('cf-turnstile-response').value = token;
-    }
-
-    // ✅ Handle Submit
-    document.getElementById('btnSend').addEventListener('click', function(event) {
-        event.preventDefault();
-        const form = document.getElementById('formdata');
-        const captchaValue = document.getElementById('cf-turnstile-response').value;
-
-        if (!captchaValue) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Validation Error',
-                text: 'Please complete the CAPTCHA verification.',
-            });
-            return;
-        }
-
-        const formData = new FormData(form);
-        formData.set('cf-turnstile-response', captchaValue);
-
-        fetch("{{ route('customer.help.center.send') }}", {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: data.message,
-                }).then(() => {
-                    window.location.href = "{{ route('customer.dashboard') }}";
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message,
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while sending your message.',
-            });
-        });
-    });
-</script>
-@endpush
+</html>

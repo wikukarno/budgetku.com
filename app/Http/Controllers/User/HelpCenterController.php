@@ -18,10 +18,10 @@ class HelpCenterController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:100',
+            'name' => 'required|string|max:100',
             'email' => 'required|email|max:100',
-            'message' => 'required|max:1000',
-            'cf-turnstile-response' => 'required',
+            'message' => 'required|string|max:1000',
+            'cf-turnstile-response' => 'required|string',
         ]);
 
         $captchaResponse = $request->input('cf-turnstile-response');
@@ -32,7 +32,7 @@ class HelpCenterController extends Controller
             'remoteip' => $request->ip(),
         ]);
 
-        Log::info('Turnstile response:', $verify->json());
+        Log::info('Turnstile response', $verify->json());
 
         if (!($verify->json()['success'] ?? false)) {
             return response()->json([
@@ -58,7 +58,7 @@ class HelpCenterController extends Controller
                 'message' => 'Your message has been sent successfully!',
             ]);
         } catch (\Throwable $e) {
-            Log::error('Contact form error: ' . $e->getMessage());
+            Log::error('Mail error:', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong. Please try again later.',
