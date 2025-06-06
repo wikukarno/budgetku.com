@@ -48,7 +48,7 @@ class HelpCenterController extends Controller
                 'bodyMessage' => $request->message,
             ], function ($message) use ($request) {
                 $message->from(env('MAIL_FROM_ADDRESS'), 'BudgetKu Website');
-                $message->to('dev@budgetku.com');
+                $message->to('hi@wikukarno.com');
                 $message->subject('New Contact Form Submission');
                 $message->replyTo($request->email, $request->name);
             });
