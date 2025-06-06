@@ -156,18 +156,19 @@
                         <span class="title">Profile</span>
                     </a>
                 </li>
-            @endif
 
-            <li class="menu-item {{ request()->is('pages/customer/help-center') ? 'open' : '' }}">
-                <a href="{{ route('customer.help.center.index') }}"class="menu-link {{ request()->is('pages/customer/help-center') ? 'active' : '' }}">
-                    <span class="material-symbols-outlined menu-icon">
-                        email
-                    </span>
-                    <span class="title">
-                        Help Center
-                    </span>
-                </a>
-            </li>
+                <li class="menu-item {{ request()->is('pages/customer/help-center') ? 'open' : '' }}">
+                    <a href="{{ route('customer.help.center.index') }}"
+                        class="menu-link {{ request()->is('pages/customer/help-center') ? 'active' : '' }}">
+                        <span class="material-symbols-outlined menu-icon">
+                            email
+                        </span>
+                        <span class="title">
+                            Help Center
+                        </span>
+                    </a>
+                </li>
+            @endif
 
             <li class="menu-item">
                 <a href="javascript:void()" onclick="logout()" class="menu-link">
