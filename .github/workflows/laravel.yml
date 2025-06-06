@@ -8,7 +8,7 @@ on:
 
 jobs:
   # Step 1: Setup and Test Laravel Application
-  wikukarnocom:
+  budgetku:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,7 +40,7 @@ jobs:
 
   # Step 2: Deploy to VPS
   deploy:
-    needs: wikukarnocom
+    needs: budgetku
     runs-on: ubuntu-latest
 
     steps:
