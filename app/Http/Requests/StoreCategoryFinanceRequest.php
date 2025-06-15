@@ -31,7 +31,6 @@ class StoreCategoryFinanceRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('category_finances', 'name_category_finances')->ignore($id),
             ],
         ];
     }

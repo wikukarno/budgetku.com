@@ -31,7 +31,6 @@ class StoreCategoryIncomeRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('category_incomes', 'name_category_incomes')->ignore($id),
             ],
         ];
     }
