@@ -11,7 +11,7 @@ use App\Http\Controllers\User\UserCategoryFinancesController;
 
 Route::prefix('/pages/customer')
     ->name('customer.')
-    ->middleware(['auth', 'user'])
+    ->middleware(['auth', 'user', '2fa-verify'])
     ->group(function () {
         Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('dashboard');
 

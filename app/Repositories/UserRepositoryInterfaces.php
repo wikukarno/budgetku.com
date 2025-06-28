@@ -8,4 +8,5 @@ interface UserRepositoryInterface
 {
     public function find($id);
     public function create(array $attributes): User;
+    public function update($id, array $data);
 }

@@ -7,7 +7,9 @@ use App\Repositories\CategoryIncomeRepositoryInterface;
 use App\Repositories\EloquentCategoryFinanceRepository;
 use App\Repositories\EloquentCategoryIncomeRepository;
 use App\Repositories\EloquentUserRepository;
+use App\Repositories\TwoFactorRepository;
 use App\Repositories\UserRepositoryInterface;
+use App\Services\TwoFactorService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, EloquentUserRepository::class);
         $this->app->bind(CategoryFinanceRepositoryInterface::class, EloquentCategoryFinanceRepository::class);
         $this->app->bind(CategoryIncomeRepositoryInterface::class, EloquentCategoryIncomeRepository::class);
-        
+        $this->app->bind(TwoFactorRepository::class);
     }
 
     /**

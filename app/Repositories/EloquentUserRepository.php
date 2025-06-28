@@ -15,4 +15,9 @@ class EloquentUserRepository implements UserRepositoryInterface
     {
         return User::create($attributes);
     }
+
+    public function update($id, array $data)
+    {
+        return User::findOrFail($id)->update($data);
+    }
 }

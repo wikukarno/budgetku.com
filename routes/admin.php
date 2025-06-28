@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\PaymentMethodController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/pages/admin')
-    ->middleware(['auth', 'owner'])
+    ->middleware(['auth', 'owner', '2fa-verify'])
     ->group(function () {
         Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
 

@@ -117,6 +117,11 @@
                                         data-bs-target="#password" type="button" role="tab">Change Password</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="twofa-tab" data-bs-toggle="tab" data-bs-target="#twofa" type="button" role="tab">
+                                        Two-Factor Authentication
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete"
                                         type="button" role="tab">Delete Account</button>
                                 </li>
@@ -196,6 +201,30 @@
                                         <button type="submit" class="btn btn-primary">Update Password</button>
                                     </form>
                                 </div>
+
+                                {{-- Two-Factor Authentication --}}
+                                <div class="tab-pane fade" id="twofa" role="tabpanel">
+                                    <div class="mb-4">
+                                        <h4 class="fs-20 mb-1">Two-Factor Authentication</h4>
+                                        <p class="fs-15 text-muted">Add an extra layer of security to your account using Google Authenticator.</p>
+                                    </div>
+                                
+                                    {{-- Enable 2FA --}}
+                                    <button class="btn btn-primary" id="btn-enable-2fa" @if(Auth::user()->two_factor_enabled) hidden @endif
+                                        onclick="showModalTwoFA()">
+                                        <i class="bi bi-shield-lock"></i> Enable Two-Factor Authentication
+                                    </button>
+                                    
+                                    {{-- Disable 2FA --}}
+                                    <div id="disable-2fa-section" @if(!Auth::user()->two_factor_enabled) hidden @endif>
+                                        <form id="disable-2fa-form">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-x-circle"></i> Disable Two-Factor Authentication
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
     
                                 {{-- Delete Account --}}
                                 <div class="tab-pane fade" id="delete" role="tabpanel">
@@ -222,16 +251,103 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal for Two-Factor Authentication -->
+    <div class="modal fade" id="enableTwoFactor" tabindex="-1" aria-labelledby="enableTwoFactorLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="enableTwoFactorLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="enable-2fa-form" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <!-- Optional setup section (hidden later) -->
+                        <div id="enable-2fa-section">
+                            <!-- your setup form here -->
+                        </div>
+                
+                        <!-- QR Code section (initially hidden) -->
+                        <div id="qr-section" hidden>
+                            <div class="text-center mb-3">
+                                <img id="qr-code-img" src="" alt="QR Code" class="img-fluid" />
+                            </div>
+                            <p class="text-center">Secret Key: <strong id="secret-key"></strong></p>
+                        </div>
+                
+                        <!-- OTP Input Section -->
+                        <div id="otp-section" hidden>
+                            <div class="mb-3">
+                                <label for="otp-code" class="form-label">Enter the 6-digit code from your Authenticator App</label>
+                                <input type="text" class="form-control text-center" id="otp-code" maxlength="6" placeholder="123456"
+                                    required>
+                            </div>
+                        </div>
+
+                        <!-- Recovery Code Section -->
+                        <div id="recovery-section" hidden>
+                            <hr>
+                            <h6 class="text-center mb-2">Recovery Codes</h6>
+                            <p class="text-muted text-center">Please save these recovery codes securely.</p>
+                            <ul id="recovery-codes" class="list-group mb-3 text-center">
+                                <!-- akan diisi JS -->
+                            </ul>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary btn-sm mb-2" onclick="downloadRecoveryCodes()">
+                                    Download Codes
+                                </button><br>
+                                <small class="text-muted">You can close this modal after saving.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger text-white" onclick="cancelTwoFA()">
+                            Cancel
+                        </button>
+                        <button type="button" id="btnNext2FA" onclick="btnNextOtp()" class="btn btn-primary">
+                            Next
+                        </button>
+                        <button type="button" id="btnVerify2FA" onclick="btnVerifyOtp()" class="btn btn-success text-white" hidden>
+                            Verify and Enable 2FA
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('after-scripts')
     <script>
+
+        // Buka tab berdasarkan URL hash saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function () {
+            const hash = window.location.hash;
+            if (hash) {
+                const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+                if (tabTrigger) {
+                    new bootstrap.Tab(tabTrigger).show();
+                }
+            }
+
+            // Update hash di URL saat tab berubah
+            const tabButtons = document.querySelectorAll('#settingsTab button[data-bs-toggle="tab"]');
+            tabButtons.forEach(button => {
+                button.addEventListener('shown.bs.tab', function (e) {
+                    const target = e.target.getAttribute('data-bs-target');
+                    history.replaceState(null, null, target); // ganti hash di URL
+                });
+            });
+        });
+
         document.getElementById('account-form').addEventListener('submit', function(e) {
             e.preventDefault();
     
             let formData = new FormData(this);
     
-            axios.post("{{ route('customer.account.update', Auth::user()->id) }}", formData, {
+            axios.post("{{ route('admin.account.update', Auth::id() }}", formData, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
                     'Content-Type': 'multipart/form-data',
@@ -258,7 +374,7 @@
 
             let formData = new FormData(this);
 
-            axios.post("{{ route('customer.account.password.update') }}", formData, {
+            axios.post("{{ route('admin.account.password.update') }}", formData, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
                     'Content-Type': 'multipart/form-data',
@@ -279,47 +395,237 @@
             });
         });
 
-        document.getElementById('delete-account-form').addEventListener('submit', function (e) {
-        e.preventDefault();
+        function showModalTwoFA() {
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'Your account will be permanently deleted!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axios.post("{{ route('customer.account.delete') }}", null, {
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    params: {
-                        _method: 'DELETE'
-                    }
-                }).then(response => {
-                    if (response.data.status) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Deleted!',
-                            text: response.data.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.href = "{{ route('login') }}";
-                        });
-                    } else {
-                        Swal.fire('Error', response.data.message, 'error');
-                    }
-                }).catch(() => {
-                    Swal.fire('Error', 'Something went wrong!', 'error');
-                });
+            document.getElementById('qr-code-img').src = '';
+            document.getElementById('secret-key').textContent = '';
+            document.getElementById('otp-code').value = '';
+            document.getElementById('recovery-codes').innerHTML = '';
+            document.getElementById('recovery-section').setAttribute('hidden', 'true');
+            document.getElementById('otp-section').setAttribute('hidden', 'true');
+            document.getElementById('qr-section').setAttribute('hidden', 'true');
+
+            $('#enableTwoFactorLabel').text('Enable Two-Factor Authentication');
+            $('#enableTwoFactor').modal('show');
+
+            const form = document.getElementById('enable-2fa-form');
+            const formData = new FormData(form);
+
+            axios.post("{{ route('2fa.setup') }}", formData, {
+                headers: {
+                    'X-CSRF-TOKEN': formData.get('_token'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(res => {
+                showCustomAlert('success', 'QR Code generated. Please scan and verify!');
+
+                // Show QR code and reset others
+                document.getElementById('qr-code-img').src = res.data.qr_code;
+                document.getElementById('secret-key').textContent = res.data.secret;
+
+                document.getElementById('enable-2fa-section')?.setAttribute('hidden', 'true');
+                document.getElementById('qr-section')?.removeAttribute('hidden');
+                document.getElementById('otp-section')?.setAttribute('hidden', 'true');
+
+                document.getElementById('btnVerify2FA')?.setAttribute('hidden', 'true');
+                document.getElementById('btnNext2FA')?.removeAttribute('hidden');
+            }).catch(err => {
+                console.error(err);
+                showCustomAlert('danger', 'Failed to enable 2FA');
+            });
+        }
+
+        function btnNextOtp() {
+            document.getElementById('qr-section')?.setAttribute('hidden', 'true');
+            document.getElementById('otp-section')?.removeAttribute('hidden');
+
+            document.getElementById('btnVerify2FA')?.removeAttribute('hidden');
+            document.getElementById('btnNext2FA')?.setAttribute('hidden', 'true');
+        }
+
+        function btnVerifyOtp() {
+            const code = document.getElementById('otp-code').value;
+            const form = document.getElementById('enable-2fa-form');
+            const formData = new FormData(form);
+            formData.append('code', code);
+
+            if (code.trim().length !== 6) {
+                showCustomAlert('danger', 'OTP code must be 6 digits');
+                return;
             }
+
+            axios.post("{{ route('2fa.verify') }}", formData, {
+                headers: {
+                    'X-CSRF-TOKEN': formData.get('_token'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(res => {
+                showCustomAlert('success', 'Two-Factor Authentication enabled!');
+
+                // Sembunyikan tombol next & verify
+                document.getElementById('btnNext2FA')?.setAttribute('hidden', 'true');
+                document.getElementById('btnVerify2FA')?.setAttribute('hidden', 'true');
+
+                // Tampilkan recovery section
+                document.getElementById('recovery-section')?.removeAttribute('hidden');
+
+                // Populate recovery codes
+                const list = document.getElementById('recovery-codes');
+                list.innerHTML = '';
+                res.data.recovery_codes?.forEach(code => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = code;
+                    list.appendChild(li);
+                });
+
+                // Sembunyikan tombol enable
+                const enableBtn = document.getElementById('btn-enable-2fa');
+                if (enableBtn) enableBtn.setAttribute('hidden', 'true');
+
+                // Tampilkan tombol disable
+                const disableSection = document.getElementById('disable-2fa-section');
+                if (disableSection) {
+                    disableSection.removeAttribute('hidden');
+                } else {
+                    // Render manual kalau belum ada
+                    const container = document.querySelector('#twofa');
+                    const html = `
+                        <div id="disable-2fa-section">
+                            <form id="disable-2fa-form">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-circle"></i> Disable Two-Factor Authentication
+                                </button>
+                            </form>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', html);
+                    bindDisableForm(); // function ini harus ada di bawah
+                }
+
+            }).catch(err => {
+                console.error(err);
+                showCustomAlert('danger', err.response?.data?.message || 'Invalid OTP code!');
+            });
+        }
+
+        function cancelTwoFA() {
+            document.getElementById('enable-2fa-section')?.removeAttribute('hidden');
+            document.getElementById('qr-section')?.setAttribute('hidden', 'true');
+            document.getElementById('otp-section')?.setAttribute('hidden', 'true');
+
+            document.getElementById('qr-code-img').src = '';
+            document.getElementById('secret-key').textContent = '';
+            document.getElementById('otp-code').value = '';
+
+            document.getElementById('btnVerify2FA')?.setAttribute('hidden', 'true');
+            document.getElementById('btnNext2FA')?.removeAttribute('hidden');
+
+            $('#enableTwoFactor').modal('hide');
+        }
+
+        function downloadRecoveryCodes() {
+            const listItems = document.querySelectorAll('#recovery-codes li');
+            if (!listItems.length) {
+                showCustomAlert('danger', 'No recovery codes to download');
+                return;
+            }
+
+            const codes = Array.from(listItems).map(li => li.textContent);
+            const blob = new Blob([codes.join('\n')], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'recovery-codes.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showCustomAlert('success', 'Recovery codes downloaded.');
+
+            // Optional: tandai ke backend
+            axios.post("{{ route('2fa.mark.downloaded') }}", null, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+        }
+
+
+        // Disable 2FA
+        document.getElementById('disable-2fa-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This will disable 2FA on your account.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, disable it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData(this);
+
+                    axios.post("{{ route('2fa.disable') }}", formData, {
+                        headers: {
+                            'X-CSRF-TOKEN': formData.get('_token'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).then(res => {
+                        showCustomAlert('success', 'Two-Factor Authentication disabled.');
+                        document.getElementById('disable-2fa-section')?.setAttribute('hidden', 'true');
+                        document.getElementById('btn-enable-2fa')?.removeAttribute('hidden');
+                    }).catch(() => {
+                        showCustomAlert('danger', 'Failed to disable 2FA');
+                    });
+                }
+            });
         });
-    });
+
+
+        document.getElementById('delete-account-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Your account will be permanently deleted!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post("{{ route('admin.account.delete') }}", null, {
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        params: {
+                            _method: 'DELETE'
+                        }
+                    }).then(response => {
+                        if (response.data.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: response.data.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = "{{ route('login') }}";
+                            });
+                        } else {
+                            Swal.fire('Error', response.data.message, 'error');
+                        }
+                    }).catch(() => {
+                        Swal.fire('Error', 'Something went wrong!', 'error');
+                    });
+                }
+            });
+        });
 
     </script>
 @endpush

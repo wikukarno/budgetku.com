@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use PragmaRX\Google2FAQRCode\Google2FA;
 
 class AccountController extends Controller
 {
@@ -17,7 +19,22 @@ class AccountController extends Controller
     public function index()
     {
         $user = User::where('id', Auth::user()->id)->first();
-        return view('v2.admin.account', compact('user'));
+        $qrCode = null;
+        $secret = null;
+
+        if ($user->two_factor_secret) {
+            $google2fa = new Google2FA();
+            $secret = Crypt::decrypt($user->two_factor_secret);
+
+            $svg = $google2fa->getQRCodeInline(
+                'budgetku.com',
+                $user->email,
+                $secret
+            );
+
+            $qrCode = 'data:image/svg+xml;base64,' . base64_encode($svg);
+        }
+        return view('v2.admin.account', compact('user', 'qrCode', 'secret'));
     }
 
     /**

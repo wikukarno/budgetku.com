@@ -5,7 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    @stack('before-styles')
     @include('includes.v2.styles')
+    @stack('after-styles')
     
     <!-- Title -->
     <title>
@@ -25,7 +27,9 @@
     </div>
     <!-- Start Main Content Area -->
 
+    @stack('before-scripts')
     @include('includes.v2.scripts')
+    @stack('after-scripts')
 </body>
 
 </html>
