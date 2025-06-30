@@ -22,7 +22,11 @@ Route::get('/terms-and-conditions', [HomeController::class, 'termsAndConditions'
 Route::get('/auth/callback', [LoginController::class, 'handlerProviderCallback']);
 Route::get('/auth/redirect', [LoginController::class, 'redirectToProvider']);
 
-Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
+// Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
+
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/2fa/prompt', [TwoFactorController::class, 'prompt'])->name('2fa.prompt');
 Route::post('/2fa/verify/login', [TwoFactorController::class, 'verifyLogin'])->name('2fa.verify.login');
