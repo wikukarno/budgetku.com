@@ -237,22 +237,15 @@
             confirmButtonText: 'Yes, logout!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('logout') }}",
-                    data: {
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        showCustomAlert('success', 'Logout successful!');
-                        setTimeout(function() {
-                            window.location.href = "{{ route('login') }}";
-                        }, 1000);
-                    },
-                    error: function(xhr, status, error) {
-                        showCustomAlert('danger', 'Logout failed! Please try again.');
-                    }
-                });
+                if (window.axios) {
+                    window.axios.post("{{ route('logout') }}", {}, { headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(() => { showCustomAlert('success', 'Logout successful!'); setTimeout(()=> window.location.href='{{ route('login') }}', 300); })
+                        .catch(()=> showCustomAlert('danger', 'Logout failed! Please try again.'));
+                } else {
+                    $.ajax({ type: 'POST', url: "{{ route('logout') }}", data: { _token: "{{ csrf_token() }}" } })
+                        .done(()=> { showCustomAlert('success','Logout successful!'); setTimeout(()=> window.location.href='{{ route('login') }}',300); })
+                        .fail(()=> showCustomAlert('danger','Logout failed! Please try again.'));
+                }
             }
         })
     }

@@ -33,16 +33,17 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{ route('login') }}" method="POST">
+            <form id="login-form" action="{{ route('login') }}" method="POST">
                 @csrf
-                <div class="form-group mb-4">
+                <div class="form-group mb-2">
                     <label class="label text-secondary">Email Address</label>
                     <input type="email" name="email" class="form-control h-55" placeholder="example@budgetku.com" required>
                 </div>
-                <div class="form-group mb-4">
+                <div class="form-group mb-3">
                     <label class="label text-secondary">Password</label>
                     <input type="password" name="password" class="form-control h-55" placeholder="Type password" required>
                 </div>
+                {{-- Remember device via biometric disabled. Keys are shared via session-only SharedWorker cache. --}}
                 <div class="form-group mb-4">
                     <button type="submit" class="btn btn-primary fw-medium py-2 px-3 w-100">
                         <div class="d-flex align-items-center justify-content-center py-1">
@@ -50,8 +51,17 @@
                             <span>Login</span>
                         </div>
                     </button>
+                    <div class="d-inline-flex align-items-center text-success mt-2">
+                        <i class="ri-shield-keyhole-line me-2"></i>
+                        <small class="fw-medium">End-to-end encrypted</small>
+                    </div>
                 </div>
             </form>
+            
+            <div class="text-center mt-2">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="{{ route('register') }}" class="fw-medium">Register</a>
+            </div>
         </div>
     </div>
 </div>

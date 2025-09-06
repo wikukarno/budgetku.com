@@ -6,3 +6,18 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+// Profile (Account) page polish: light/dark friendly
+.account-page {
+  .card { background-color: var(--bs-card-bg); color: var(--bs-body-color); }
+  .btn-toolbar .btn { border-color: var(--bs-border-color); }
+  .btn-toolbar .btn:hover { filter: brightness(0.98); }
+  .welcome-box { overflow: hidden; }
+  .welcome-box .card-body { background: transparent; }
+  .nav-tabs .nav-link { color: var(--bs-body-color); }
+  .nav-tabs .nav-link.active { color: var(--bs-primary); }
+}
+
+@media (max-width: 576px) {
+  .account-page .btn-toolbar .btn { width: 100%; justify-content: center; }
+}

@@ -93,9 +93,23 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'uuid'},
-                { data: 'category_finances_uuid', name: 'category_finances_uuid'},
+                { data: 'category_finances_uuid', name: 'category_finances_uuid', render: function(data, type, row){
+                    if (type === 'filter' || type === 'sort') return data || '';
+                    if (data === '[encrypted]' && row.category_name_pgp) {
+                        const pgp = encodeURIComponent(row.category_name_pgp);
+                        return `<span class=\"enc-cat\" data-pgp=\"${pgp}\"><span class=\"spinner-border spinner-border-sm me-1\"></span>Decrypting...</span>`;
+                    }
+                    return data ?? '';
+                }},
                 { data: 'name_item', name: 'name_item'},
-                { data: 'price', name: 'price'},
+                { data: 'price', name: 'price', render: function(data, type, row){
+                    if (type === 'filter' || type === 'sort') return data || '';
+                    if (data === '[encrypted]' && row.price_pgp) {
+                        const pgp = encodeURIComponent(row.price_pgp);
+                        return `<span class=\"enc-price\" data-pgp=\"${pgp}\"><span class=\"spinner-border spinner-border-sm me-1\"></span>Decrypting...</span>`;
+                    }
+                    return data ?? '';
+                }},
                 { data: 'purchase_date', name: 'purchase_date'},
                 {
                     data: 'action',
@@ -114,6 +128,30 @@
                     next: "Next"
                 }
             },
+            drawCallback: function(){
+                try {
+                    const api = $('#expenseTable').DataTable();
+                    api.rows({ page: 'current' }).every(function(){
+                        const tr = this.node();
+                        const tdCat = $('td', tr).eq(1);
+                        const encCat = tdCat.find('.enc-cat');
+                        if (encCat.length && encCat.data('dec') !== 1) {
+                            const armored = encCat.attr('data-pgp');
+                            decryptArmor(decodeURIComponent(armored)).then(txt => { tdCat.text(txt); encCat.data('dec',1); }).catch(()=>{});
+                        }
+                        const tdPrice = $('td', tr).eq(3);
+                        const encPrice = tdPrice.find('.enc-price');
+                        if (encPrice.length && encPrice.data('dec') !== 1) {
+                            const armored = encPrice.attr('data-pgp');
+                            decryptArmor(decodeURIComponent(armored)).then(val => {
+                                const n = Number(String(val).replace(/[^\d]/g,'')) || 0;
+                                const formatted = 'Rp.' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                tdPrice.text(formatted); encPrice.data('dec',1);
+                            }).catch(()=>{});
+                        }
+                    });
+                } catch(e) {}
+            },
             initComplete: function () {
                 const lengthEl = $('.dataTables_length');
                 const filterEl = $('.dataTables_filter');
@@ -126,5 +164,26 @@
 
             }
         });
+
+        // ---- E2EE decrypt helpers ----
+        async function getPriv(){
+            try {
+                if (getPriv.cache) return getPriv.cache;
+                const store = window.E2EESession;
+                const keys = store?.userKeys?.value || null;
+                if (!keys?.pgp_private_key_armor) throw new Error('No key');
+                let R = store?.Rb64?.value || null; try { if (!R) R = sessionStorage.getItem('e2ee_R_b64') || null; } catch{}
+                if (!R) throw new Error('Locked');
+                const priv = await window.openpgp.readPrivateKey({ armoredKey: keys.pgp_private_key_armor });
+                const dec = await window.openpgp.decryptKey({ privateKey: priv, passphrase: R });
+                getPriv.cache = dec; return dec;
+            } catch(e) { throw e; }
+        }
+        async function decryptArmor(armor){
+            const msg = await window.openpgp.readMessage({ armoredMessage: armor });
+            const priv = await getPriv();
+            const { data } = await window.openpgp.decrypt({ message: msg, decryptionKeys: priv });
+            return data;
+        }
 </script>
 @endpush

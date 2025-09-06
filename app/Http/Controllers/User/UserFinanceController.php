@@ -30,14 +30,21 @@ class UserFinanceController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->addColumn('category_name_pgp', function ($item) {
+                    $cat = $item->category_finance ?: $item->legacyCategoryFinance;
+                    return optional($cat)->name_category_finances_pgp;
+                })
                 ->editColumn('category_finances_uuid', function ($item) {
-                    return $item->category_finance->name_category_finances;
+                    $cat = $item->category_finance ?: $item->legacyCategoryFinance;
+                    return optional($cat)->name_category_finances;
                 })
                 ->editColumn('purchase_date', function ($item) {
                     return Carbon::parse($item->purchase_date)->isoFormat('D MMMM Y');
                 })
+                ->addColumn('price_pgp', function ($item) { return $item->price_pgp; })
                 ->editColumn('price', function ($item) {
-                    return 'Rp.' . number_format($item->price, 0, ',', '.');
+                    if ($item->price === '[encrypted]') return $item->price;
+                    return 'Rp.' . number_format((int)$item->price, 0, ',', '.');
                 })
                 ->editColumn('action', function ($item) {
                     return '
@@ -170,22 +177,31 @@ class UserFinanceController extends Controller
             'category_finances_uuid' => 'required|exists:category_finances,uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
+            'price_pgp' => 'nullable|string',
             'purchase_date' => 'required|date',
             'payment_methods_uuid' => 'required|exists:payment_methods,uuid',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         try {
-            // Simpan data utama tanpa file dulu
-            $data = Finance::create([
+            // Siapkan payload
+            $payload = [
                 'users_uuid' => Auth::id(),
                 'category_finances_uuid' => $request->category_finances_uuid,
                 'name_item' => $request->name_item,
                 'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date ?? Carbon::now(),
                 'payment_methods_uuid' => $request->payment_methods_uuid,
-                'bukti_pembayaran' => null, // sementara null
-            ]);
+                'bukti_pembayaran' => null,
+            ];
+            if ($request->filled('price_pgp')) {
+                $payload['price'] = '[encrypted]';
+                $payload['price_pgp'] = $request->price_pgp;
+                $payload['content_key_version'] = optional(Auth::user())->key_version ?? 1;
+            }
+
+            // Simpan data utama tanpa file dulu
+            $data = Finance::create($payload);
 
             // Kalau ada file, baru simpan ke storage dan update data
             if ($request->hasFile('bukti_pembayaran')) {
@@ -236,6 +252,37 @@ class UserFinanceController extends Controller
         return response()->json($data);
     }
 
+    public function listPaymentMethods()
+    {
+        $items = \App\Models\PaymentMethod::select('uuid','name')->orderBy('name')->get();
+        return response()->json($items);
+    }
+
+    public function listAll()
+    {
+        $items = Finance::with(['category_finance','legacyCategoryFinance'])
+            ->where('users_uuid', Auth::id())
+            ->orderBy('purchase_date','DESC')
+            ->get()
+            ->map(function($item){
+                $cat = $item->category_finance ?: $item->legacyCategoryFinance;
+                return [
+                    'uuid' => $item->uuid,
+                    'category_finances_uuid' => $item->category_finances_uuid ?: ($cat ? $cat->uuid : null),
+                    'category_name' => optional($cat)->name_category_finances,
+                    'category_name_pgp' => optional($cat)->name_category_finances_pgp,
+                    'name_item' => $item->name_item,
+                    'price' => $item->price,
+                    'price_pgp' => $item->price_pgp,
+                    'purchase_date' => optional($item->purchase_date) ? Carbon::parse($item->purchase_date)->format('Y-m-d') : Carbon::parse($item->created_at)->format('Y-m-d'),
+                    'purchase_date_human' => optional($item->purchase_date ? \Carbon\Carbon::parse($item->purchase_date) : null)->isoFormat('D MMMM Y'),
+                    'action' => '<a href="/pages/customer/expense/edit/' . $item->uuid . '" class="btn btn-sm btn-warning text-white">Edit</a> '
+                        . '<a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteExpense(\'' . $item->uuid . '\')">Delete</a>',
+                ];
+            });
+        return response()->json($items);
+    }
+
     public function edit($id)
     {
         $data = Finance::findOrFail($id);
@@ -258,6 +305,7 @@ class UserFinanceController extends Controller
             'category_finances_uuid' => 'required|exists:category_finances,uuid',
             'name_item' => 'required|string|max:255',
             'price' => 'required|string',
+            'price_pgp' => 'nullable|string',
             'purchase_date' => 'required|date',
             'payment_methods_uuid' => 'required|exists:payment_methods,uuid',
             'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // max 2MB
@@ -267,14 +315,22 @@ class UserFinanceController extends Controller
             $data = Finance::findOrFail($id);
             $this->authorize('update', $data);
 
-            $updated = $data->update([
+            $updatePayload = [
                 'users_uuid' => Auth::id(),
                 'category_finances_uuid' => $request->category_finances_uuid,
                 'name_item' => $request->name_item,
-                'price' => str_replace(['Rp. ', '.'], ['', ''], $request->price),
                 'purchase_date' => $request->purchase_date,
                 'payment_methods_uuid' => $request->payment_methods_uuid,
-            ]);
+            ];
+            if ($request->filled('price_pgp')) {
+                $updatePayload['price'] = '[encrypted]';
+                $updatePayload['price_pgp'] = $request->price_pgp;
+                $updatePayload['content_key_version'] = optional(Auth::user())->key_version ?? 1;
+            } else {
+                $updatePayload['price'] = str_replace(['Rp. ', '.'], ['', ''], $request->price);
+            }
+
+            $updated = $data->update($updatePayload);
 
             if ($updated && $request->hasFile('bukti_pembayaran')) {
                 if ($data->bukti_pembayaran && Storage::disk('public')->exists($data->bukti_pembayaran)) {

@@ -32,6 +32,10 @@ class StoreCategoryIncomeRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'name_category_incomes_pgp' => [
+                'nullable',
+                'string',
+            ],
         ];
     }
 

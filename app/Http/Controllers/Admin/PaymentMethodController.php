@@ -25,25 +25,41 @@ class PaymentMethodController extends Controller
      */
     public function index()
     {
-        
-        if (request()->ajax()) {
+        if (request()->has('draw')) {
             $query = $this->paymentMethodService->getAllPaymentMethods();
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->addColumn('name_pgp', fn($item) => $item->name_pgp)
                 ->editColumn('name', fn($item) => $item->name)
                 ->editColumn('created_at', fn($item) => Carbon::parse($item->created_at)->isoFormat('D MMMM Y'))
                 ->editColumn('updated_at', fn($item) => Carbon::parse($item->updated_at)->isoFormat('D MMMM Y'))
                 ->editColumn('action', function ($item) {
-                    return '
-                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="btnEditPaymentMethod(' . $item->id . ')">Edit</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="btnDeletePaymentMethod(' . $item->id . ')">Delete</a>';
+                    $uuid = addslashes($item->uuid);
+                    return "\n                        <button class=\"btn btn-sm btn-warning text-white\" onclick=\"btnEditPaymentMethod('{$uuid}')\">Edit</button>\n                        <button class=\"btn btn-sm btn-danger text-white\" onclick=\"btnDeletePaymentMethod('{$uuid}')\">Delete</button>";
                 })
                 ->rawColumns(['action', 'created_at', 'updated_at'])
                 ->make(true);
         }
 
         return view('v2.admin.payment-method.index');
+    }
+
+    public function listAll()
+    {
+        $items = PaymentMethod::where('users_uuid', auth()->id())->orderBy('created_at', 'DESC')->get();
+        $data = collect($items)->map(function ($item) {
+            return [
+                'uuid' => $item->uuid ?? null,
+                'name' => $item->name,
+                'name_pgp' => $item->name_pgp,
+                'content_key_version' => $item->content_key_version,
+                'created_at' => optional($item->created_at)->isoFormat('D MMMM Y'),
+                'updated_at' => optional($item->updated_at)->isoFormat('D MMMM Y'),
+                'action' => "\n                        <button class=\"btn btn-sm btn-warning text-white\" onclick=\"btnEditPaymentMethod('" . ($item->uuid ?? '') . "')\">Edit</button>\n                        <button class=\"btn btn-sm btn-danger text-white\" onclick=\"btnDeletePaymentMethod('" . ($item->uuid ?? '') . "')\">Delete</button>"
+            ];
+        });
+        return response()->json($data);
     }
 
     /**
@@ -60,37 +76,30 @@ class PaymentMethodController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'uuid' => 'nullable|string',
+            'name' => 'nullable|string|max:255',
+            'name_pgp' => 'nullable|string',
         ]);
 
-        try {
-            if ($request->id) {
-                $paymentMethod = $this->paymentMethodService->getPaymentMethodById($request->id);
-
-                // Authorize update
-                $this->authorize('updateOrCreate', $paymentMethod);
-            } else {
-                // Authorize create
-                $this->authorize('create', PaymentMethod::class);
-            }
-
-            $data = $this->paymentMethodService->createPaymentMethod(
-                $request->all(),
-                $request->id ?? null
-            );
-
-            Cache::forget('payment_methods');
-
-            return response()->json([
-                'status' => true,
-                'message' => $request->id
-                    ? 'Payment method updated successfully.'
-                    : 'Payment method created successfully.'
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Payment method creation failed: ' . $e->getMessage());
-            return response()->json(['status' => false, 'message' => 'Failed to create payment method.']);
+        $payload = [
+            'users_uuid' => auth()->id(),
+            'users_id' => optional(auth()->user())->id,
+            'name' => $request->name,
+        ];
+        if ($request->filled('name_pgp')) {
+            $payload['name_pgp'] = $request->name_pgp;
+            $payload['content_key_version'] = optional(auth()->user())->key_version ?? 1;
+            $payload['name'] = $request->name ?: '[encrypted]';
         }
+
+        if ($request->filled('uuid')) {
+            $pm = PaymentMethod::updateOrCreate(['uuid' => $request->uuid], $payload);
+        } else {
+            $pm = PaymentMethod::create($payload);
+        }
+
+        Cache::forget('payment_methods');
+        return response()->json(['status' => true, 'message' => 'Saved']);
     }
 
     /**
@@ -98,15 +107,18 @@ class PaymentMethodController extends Controller
      */
     public function show(Request $request)
     {
-        $request->validate([
-            'id' => 'required|integer|exists:payment_methods,id',
-        ]);
-        $paymentMethod = $this->paymentMethodService->getPaymentMethodById($request->id);
-        if ($paymentMethod) {
-            return response()->json(['status' => true, 'data' => $paymentMethod]);
-        } else {
-            return response()->json(['status' => false, 'message' => 'Payment method not found.']);
+        $pm = null;
+        if ($request->filled('uuid')) {
+            $pm = PaymentMethod::where('uuid', $request->uuid)->where('users_uuid', auth()->id())->first();
+        } elseif ($request->filled('id')) {
+            $pm = PaymentMethod::where('id', $request->id)->where(function($q){
+                $q->where('users_uuid', auth()->id())->orWhere('users_id', auth()->user()->id ?? 0);
+            })->first();
         }
+        if ($pm) {
+            return response()->json(['status' => true, 'data' => $pm]);
+        }
+        return response()->json(['status' => false, 'message' => 'Payment method not found.']);
     }
 
     /**
@@ -115,9 +127,19 @@ class PaymentMethodController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $paymentMethod = $this->paymentMethodService->getPaymentMethodById($request->id);
-            $this->authorize('delete', $paymentMethod);
-            $this->paymentMethodService->deletePaymentMethod($request->id);
+            $pm = null;
+            if ($request->filled('uuid')) {
+                $pm = PaymentMethod::where('uuid', $request->uuid)->where('users_uuid', auth()->id())->firstOrFail();
+            } elseif ($request->filled('id')) {
+                $pm = PaymentMethod::where('id', $request->id)->where(function($q){
+                    $q->where('users_uuid', auth()->id())->orWhere('users_id', auth()->user()->id ?? 0);
+                })->firstOrFail();
+            } else {
+                return response()->json(['status' => false, 'message' => 'Invalid identifier.'], 422);
+            }
+
+            // Admin area already gated by 'owner' middleware; skip policy check to match category controllers
+            $pm->delete();
             Cache::forget('payment_methods');
             return response()->json(['status' => true, 'message' => 'Payment method deleted successfully.']);
         } catch (\Exception $e) {

@@ -5,6 +5,10 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if (app()->environment('production'))
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'">
+    @endif
 
     @stack('before-styles')
     @include('includes.v2.styles')
@@ -13,6 +17,7 @@
     <title>
         @yield('title')
     </title>
+    @vite(['resources/js/app.js'])
 </head>
 
 <body class="boxed-size">
@@ -58,6 +63,7 @@
     <!-- Link Of JS File -->
     @stack('before-scripts')
     @include('includes.v2.scripts')
+    @include('components.modal-logout')
     @stack('after-scripts')
 </body>
 

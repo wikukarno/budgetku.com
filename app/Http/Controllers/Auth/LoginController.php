@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request as HttpRequest;
 
 class LoginController extends Controller
 {
@@ -102,5 +103,36 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function sendLoginResponse(HttpRequest $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        $user = Auth::user();
+        $redirect = ($user && $user->roles === 'Owner') ? route('admin.dashboard') : route('customer.dashboard');
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => true,
+                'redirect' => $redirect,
+            ]);
+        }
+
+        return redirect()->intended($redirect);
+    }
+
+    protected function sendFailedLoginResponse(HttpRequest $request)
+    {
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => false,
+                'message' => __('auth.failed'),
+            ], 422);
+        }
+
+        return parent::sendFailedLoginResponse($request);
     }
 }

@@ -27,9 +27,14 @@ class PaymentMethodService
 
     public function createPaymentMethod(array $data, $id): PaymentMethod
     {
-        $data['users_id'] = Auth::id();
+        $data['users_id'] = Auth::user()->id ?? null;
+        $data['users_uuid'] = Auth::id();
         $data['icon'] = $data['icon'] ?? null;
         $data['name'] = $data['name'] ?? null;
+        // When name is encrypted client-side, store armor and tag content version
+        if (!empty($data['name_pgp'])) {
+            $data['content_key_version'] = Auth::user()->key_version ?? 1;
+        }
 
         // if id is provided, update the existing payment method
         if ($id) {
@@ -59,8 +64,11 @@ class PaymentMethodService
             $data['name'] = $data['name'];
         }
 
-        if ($data['users_id'] ?? null) {
-            $data['users_id'] = Auth::id();
+        // Always ensure ownership fields are consistent
+        $data['users_id'] = Auth::user()->id ?? $paymentMethod->users_id;
+        $data['users_uuid'] = Auth::id();
+        if (!empty($data['name_pgp'])) {
+            $data['content_key_version'] = Auth::user()->key_version ?? ($paymentMethod->content_key_version ?? 1);
         }
 
         return $this->paymentMethodRepository->updatePaymentMethod($id, $data);

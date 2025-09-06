@@ -44,6 +44,37 @@ class SalaryController extends Controller
         return view('v2.admin.income.index');
     }
 
+    public function listAll()
+    {
+        $items = \App\Models\Salary::with(['category_income', 'legacyCategoryIncome'])
+            ->where('users_uuid', Auth::id())
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->map(function ($item) {
+                $cat = $item->category_income ?: $item->legacyCategoryIncome;
+                return [
+                    'uuid' => $item->uuid,
+                    'category_incomes_uuid' => $item->category_incomes_uuid ?: ($cat ? $cat->uuid : null),
+                    'category_name' => optional($cat)->name_category_incomes,
+                    'category_name_pgp' => optional($cat)->name_category_incomes_pgp,
+                    'category_key_version' => optional($cat)->content_key_version,
+                    'salary' => $item->salary,
+                    'salary_pgp' => $item->salary_pgp,
+                    'salary_fmt' => $item->salary === '[encrypted]' ? '[encrypted]' : ('Rp. ' . number_format((int)$item->salary, 0, ',', '.')),
+                    // Ensure date field is always a parseable string
+                    'date' => optional($item->date) ? Carbon::parse($item->date)->format('Y-m-d') : null,
+                    'date_human' => optional($item->date ? Carbon::parse($item->date) : null)->isoFormat('D MMMM Y'),
+                    'description' => $item->description,
+                    'description_pgp' => $item->description_pgp,
+                    'content_key_version' => $item->content_key_version,
+                    'action' => '<a href="/pages/admin/income/edit/' . $item->uuid . '" class="btn btn-sm btn-warning text-white">Edit</a> '
+                        . '<a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(\'' . $item->uuid . '\')">Delete</a>',
+                ];
+            });
+
+        return response()->json($items);
+    }
+
     public function create()
     {
         $categoryIncome = CategoryIncome::where('users_uuid', Auth::id())->get();
@@ -54,15 +85,33 @@ class SalaryController extends Controller
     {
         $request->validate([
             'salary' => 'required|string',
+            'salary_pgp' => 'nullable|string',
             'date' => 'required|date',
             'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
+            'description_pgp' => 'nullable|string',
         ]);
 
         try {
-            Log::info('Request received:', $request->all());
-            $salary = $this->salaryService->create($request->all());
-            Log::info('Request received:', $request->all());
+            $payload = [
+                'users_uuid' => Auth::id(),
+                'salary' => str_replace(['Rp. ', '.'], ['', ''], $request->salary),
+                'date' => $request->date,
+                'category_incomes_uuid' => $request->category_incomes_uuid,
+                'description' => $request->description,
+            ];
+            if ($request->filled('salary_pgp')) {
+                $payload['salary'] = '[encrypted]';
+                $payload['salary_pgp'] = $request->salary_pgp;
+                $payload['content_key_version'] = optional(Auth::user())->key_version ?? 1;
+            }
+            if ($request->filled('description_pgp')) {
+                $payload['description'] = '[encrypted]';
+                $payload['description_pgp'] = $request->description_pgp;
+                $payload['content_key_version'] = optional(Auth::user())->key_version ?? 1;
+            }
+
+            $salary = \App\Models\Salary::create($payload);
 
             ProcessUangMasukEmail::dispatch([
                 'salary' => $salary,
@@ -94,16 +143,42 @@ class SalaryController extends Controller
     {
         $request->validate([
             'salary' => 'required|string',
+            'salary_pgp' => 'nullable|string',
             'date' => 'required|date',
             'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
+            'description_pgp' => 'nullable|string',
         ]);
 
         try {
-            $salary = $this->salaryService->getById($id);
-            $this->authorize('update', $salary);
+            // Update by UUID from route param
+            $data = \App\Models\Salary::where('uuid', $id)->firstOrFail();
+            $this->authorize('update', $data);
 
-            $this->salaryService->update($id, $request->all());
+            if ($request->date > Carbon::now()->format('Y-m-d')) {
+                Log::error('Tanggal tidak boleh melebihi tanggal sekarang');
+                return response()->json(['status' => false, 'message' => 'Invalid date'], 422);
+            }
+
+            $data->users_uuid = Auth::id();
+            if ($request->filled('salary_pgp')) {
+                $data->salary = '[encrypted]';
+                $data->salary_pgp = $request->salary_pgp;
+                $data->content_key_version = optional(Auth::user())->key_version ?? 1;
+            } else {
+                // Normalize currency string (handle 'Rp.' and 'Rp. ')
+                $data->salary = str_replace(['Rp. ', 'Rp.', '.', ','], ['', '', '', ''], $request->salary);
+            }
+            $data->date = $request->date;
+            $data->category_incomes_uuid = $request->category_incomes_uuid;
+            if ($request->filled('description_pgp')) {
+                $data->description = '[encrypted]';
+                $data->description_pgp = $request->description_pgp;
+                $data->content_key_version = optional(Auth::user())->key_version ?? 1;
+            } else {
+                $data->description = $request->description;
+            }
+            $data->save();
 
             return response()->json(['status' => true, 'message' => 'Data Updated Successfully']);
         } catch (\Throwable $th) {

@@ -7,6 +7,7 @@ use App\Models\Bill;
 use App\Services\Admin\DashboardService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DashboardAdminController extends Controller
 {
@@ -19,8 +20,23 @@ class DashboardAdminController extends Controller
 
     public function index()
     {
-        if (request()->ajax()) {
-            $query = Bill::where('siklus_tagihan', 0);
+        // Hanya layani JSON untuk DataTables ketika parameter 'draw' ada,
+        // supaya request Inertia (yang juga XHR) tetap merender halaman Inertia.
+        if (request()->has('draw')) {
+            $query = Bill::query();
+
+            // Optional filters
+            $from = request('from');
+            $to = request('to');
+            if ($from && $to) {
+                $query->whereBetween('jatuh_tempo_tagihan', [$from, $to]);
+            }
+            if ($cycle = request('cycle')) { // 0 bulanan, 1 tahunan
+                $query->where('siklus_tagihan', $cycle);
+            }
+            if ($q = request('q')) {
+                $query->where('nama_tagihan', 'LIKE', "%{$q}%");
+            }
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -28,10 +44,10 @@ class DashboardAdminController extends Controller
                     return 'Rp.' . number_format($item->harga_tagihan, 0, ',', '.');
                 })
                 ->editColumn('siklus_tagihan', function ($item) {
-                    return $item->siklus_tagihan == 0 ? 'Bulanan' : 'Tahunan';
+                    return (int)$item->siklus_tagihan === 0 ? 'Bulanan' : 'Tahunan';
                 })
                 ->editColumn('metode_pembayaran', function ($item) {
-                    return $item->metode_pembayaran == 0 ? 'Cash' : 'Transfer';
+                    return (int)$item->metode_pembayaran === 0 ? 'Cash' : 'Transfer';
                 })
                 ->editColumn('jatuh_tempo_tagihan', function ($item) {
                     return Carbon::parse($item->jatuh_tempo_tagihan)->isoFormat('D MMMM');
@@ -50,8 +66,7 @@ class DashboardAdminController extends Controller
         }
 
         $data = $this->dashboardService->getDashboardData(Auth::user());
-
-        return view('v2.admin.dashboard', $data);
+        return Inertia::render('Admin/Dashboard', $data);
     }
 
 

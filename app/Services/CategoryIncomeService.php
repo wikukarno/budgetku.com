@@ -30,6 +30,15 @@ class CategoryIncomeService
             // Set data
             $category->users_uuid = Auth::id();
             $category->name_category_Incomes = $validated['name_category_incomes'];
+            if (!empty($validated['name_category_incomes_pgp'])) {
+                $category->name_category_incomes_pgp = $validated['name_category_incomes_pgp'];
+                // Tag content with user's current key version for lazy re-encryption later
+                if (Auth::user() && isset(Auth::user()->key_version)) {
+                    $category->content_key_version = Auth::user()->key_version;
+                } else {
+                    $category->content_key_version = 1;
+                }
+            }
 
             $isNew = !$category->exists;
             $wasChanged = $category->isDirty(); // Cek apakah ada perubahan

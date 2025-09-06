@@ -55,6 +55,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'pgp_private_key_armor',
+        'e2ee_pass_wrap',
+        'e2ee_pass_salt',
+        'e2ee_rec_wrap',
+        'e2ee_rec_salt',
+        'e2ee_kdf_params',
+        'e2ee_acc_wrap',
+        'e2ee_acc_salt',
     ];
 
     /**
@@ -64,6 +74,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'key_version' => 'integer',
     ];
 
     public function getAuthIdentifierName()

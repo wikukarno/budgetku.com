@@ -7,6 +7,7 @@ use App\Models\Finance;
 use App\Services\DashboardCacheService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DashboardCustomerController extends Controller
 {
@@ -46,7 +47,7 @@ class DashboardCustomerController extends Controller
         $spendingChange = $pengeluaranBulanLalu > 0 ? (($pengeluaranBulanIni - $pengeluaranBulanLalu) / $pengeluaranBulanLalu) * 100 : 0;
         $balanceChange = $saldoBulanLalu > 0 ? (($saldoBulanIni - $saldoBulanLalu) / $saldoBulanLalu) * 100 : 0;
 
-        return view('v2.user.dashboard', compact(
+        return Inertia::render('Customer/Dashboard', compact(
             'gajiBulanIni',
             'gajiBulanLalu',
             'pengeluaranBulanIni',

@@ -40,9 +40,15 @@ class PaymentMethodRepository
     // delete payment method
     public function deletePaymentMethod($id)
     {
-        $paymentMethod = PaymentMethod::where('uuid', $id)
-            ->where('users_uuid', Auth::id())
-            ->first();
+        $query = PaymentMethod::query();
+        if (is_numeric($id)) {
+            $query->where('id', $id);
+        } else {
+            $query->where('uuid', $id);
+        }
+        $paymentMethod = $query->where(function($q){
+            $q->where('users_uuid', Auth::id())->orWhere('users_id', Auth::user()->id ?? 0);
+        })->first();
         if ($paymentMethod) {
             return $paymentMethod->delete();
         }

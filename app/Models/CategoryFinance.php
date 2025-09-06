@@ -21,6 +21,8 @@ class CategoryFinance extends Model
         'users_uuid',
         'users_id',
         'name_category_finances',
+        'name_category_finances_pgp',
+        'content_key_version',
     ];
 
     protected $casts = [

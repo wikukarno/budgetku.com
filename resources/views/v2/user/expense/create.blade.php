@@ -146,22 +146,39 @@
         submitButton.prop('disabled', true);
         submitButton.html('<i class="ri-loader-4-line spin me-2"></i>Processing...');
 
-        axios.post("{{ route('customer.expense.store') }}", formData)
-            .then(function(response) {
+        ;(async () => {
+            try {
+                // Encrypt price (raw digits) if E2EE available
+                const priceDigits = (formData.get('price') || '').toString().replace(/[^\d]/g,'');
+                if (priceDigits) {
+                    try {
+                        const store = window.E2EESession;
+                        const pub = (store?.userKeys?.value || {}).pgp_public_key;
+                        if (pub && window.openpgp) {
+                            const key = await window.openpgp.readKey({ armoredKey: pub });
+                            const msg = await window.openpgp.createMessage({ text: priceDigits });
+                            const armor = await window.openpgp.encrypt({ message: msg, encryptionKeys: key });
+                            formData.set('price', '[encrypted]');
+                            formData.append('price_pgp', armor);
+                        } else {
+                            formData.set('price', priceDigits);
+                        }
+                    } catch { formData.set('price', priceDigits); }
+                }
+                const resp = await axios.post("{{ route('customer.expense.store') }}", formData);
+                const response = resp;
                 if (response.data.status === true) {
                     showCustomAlert('success', response.data.message);
-                    setTimeout(() => {
-                        window.location.href = "{{ route('customer.expense.index') }}";
-                    }, 2000);
+                    setTimeout(() => { window.location.href = "{{ route('customer.expense.index') }}"; }, 1200);
                 } else {
                     showCustomAlert('danger', response.data.message);
                     submitButton.prop('disabled', false).html(originalText);
                 }
-            })
-            .catch(function(error) {
+            } catch (error) {
                 showCustomAlert('danger', error.response?.data?.message || 'An error occurred. Please try again.');
                 submitButton.prop('disabled', false).html(originalText);
-            });
+            }
+        })();
     });
 </script>
 @endpush

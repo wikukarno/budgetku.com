@@ -23,10 +23,13 @@ class Finance extends Model
         'users_id',
         'category_finances_id',
         'name_item',
+        'name_item_pgp',
         'price',
+        'price_pgp',
         'purchase_date',
         'payment_methods_uuid',
         'bukti_pembayaran',
+        'content_key_version',
     ];
 
     public function user()

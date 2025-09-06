@@ -87,15 +87,27 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $uuid)
     {
-        if (Auth::user()->id) {
-            $user = User::where('id', Auth::user()->id)->first();
+        try {
+            $user = User::where('uuid', $uuid)->first();
+            if (!$user) {
+                return response()->json(['status' => false, 'message' => 'User not found'], 404);
+            }
+            if (Auth::id() !== $user->uuid) {
+                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+            }
+
             $user->name = $request->name;
-            $user->email_parrent = $request->email_parrent;
-            $user->notifications = $request->notifications;
+            $user->email_parrent = $request->email_parrent ?? null;
+            if ($request->has('notifications')) {
+                $user->notifications = $request->notifications;
+            }
             $user->save();
-            return back();
+
+            return response()->json(['status' => true, 'message' => 'Profile updated successfully']);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => false, 'message' => 'Failed to update profile'], 500);
         }
     }
 
@@ -105,9 +117,35 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $user = Auth::user();
+            Auth::logout();
+            $user->delete();
+            return response()->json(['status' => true, 'message' => 'Your account has been deleted successfully.']);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'message' => 'Failed to delete account']);
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed'
+        ]);
+
+        $user = Auth::user();
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            return response()->json(['status' => false, 'message' => 'Current password is incorrect']);
+        }
+
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['status' => true, 'message' => 'Password updated successfully']);
     }
 
     public function ubahProfile(Request $request)

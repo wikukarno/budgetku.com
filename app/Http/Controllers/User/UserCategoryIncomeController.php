@@ -33,6 +33,12 @@ class UserCategoryIncomeController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->addColumn('name_category_incomes_pgp', function ($item) {
+                    return $item->name_category_incomes_pgp;
+                })
+                ->addColumn('content_key_version', function ($item) {
+                    return $item->content_key_version;
+                })
                 ->editColumn('created_at', function ($item) {
                     return $item->created_at->isoFormat('D MMMM Y');
                 })
@@ -54,6 +60,29 @@ class UserCategoryIncomeController extends Controller
                 ->make(true);
         }
         return view('v2.user.category.income.index');
+    }
+
+    public function listAll()
+    {
+        $items = CategoryIncome::where('users_uuid', Auth::id())
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'uuid' => $item->uuid ?? null,
+                    'name_category_incomes' => $item->name_category_incomes,
+                    'name_category_incomes_pgp' => $item->name_category_incomes_pgp,
+                    'content_key_version' => $item->content_key_version,
+                    'created_at' => optional($item->created_at)->isoFormat('D MMMM Y'),
+                    'updated_at' => optional($item->updated_at)->isoFormat('D MMMM Y'),
+                    'action' => '
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(\'' . ($item->uuid ?? $item->id) . '\')">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(\'' . ($item->uuid ?? $item->id) . '\')">Delete</a>'
+                ];
+            });
+
+        return response()->json($items);
     }
 
     /**

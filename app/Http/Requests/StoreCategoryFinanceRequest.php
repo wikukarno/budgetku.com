@@ -32,6 +32,10 @@ class StoreCategoryFinanceRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'name_category_finances_pgp' => [
+                'nullable',
+                'string',
+            ],
         ];
     }
 

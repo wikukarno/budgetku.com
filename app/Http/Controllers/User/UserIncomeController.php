@@ -83,16 +83,30 @@ class UserIncomeController extends Controller
             'date' => 'required|date',
             'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
+            'description_pgp' => 'nullable|string',
+            'salary_pgp' => 'nullable|string',
         ]);
 
         try {
-            $salary = Salary::create([
+            $payload = [
                 'users_uuid' => Auth::id(),
                 'salary' => str_replace(['Rp. ', '.'], ['', ''], $request->salary),
                 'date' => $request->date,
                 'category_incomes_uuid' => $request->category_incomes_uuid,
                 'description' => $request->description,
-            ]);
+            ];
+            if ($request->filled('salary_pgp')) {
+                $payload['salary'] = '[encrypted]';
+                $payload['salary_pgp'] = $request->salary_pgp;
+                $payload['content_key_version'] = optional(Auth::user())->key_version ?? 1;
+            }
+            if ($request->filled('description_pgp')) {
+                $payload['description'] = '[encrypted]';
+                $payload['description_pgp'] = $request->description_pgp;
+                $payload['content_key_version'] = optional(Auth::user())->key_version ?? 1;
+            }
+
+            $salary = Salary::create($payload);
 
             // Clear cache
             Cache::forget('gaji_bulan_ini_user_' . Auth::id());
@@ -132,7 +146,46 @@ class UserIncomeController extends Controller
     public function show(Request $request)
     {
         $data = Salary::find($request->uuid);
+        if (!$data) return response()->json(null, 404);
+        // Fallback legacy mapping: if category_incomes_uuid empty, try from legacy 'tipe' (points to CategoryIncome id)
+        if (empty($data->category_incomes_uuid) && !empty($data->tipe)) {
+            $legacy = \App\Models\CategoryIncome::find($data->tipe);
+            if ($legacy && $legacy->uuid) {
+                // Do not persist; only expose for edit form compatibility
+                $data->setAttribute('category_incomes_uuid', $legacy->uuid);
+            }
+        }
         return response()->json($data);
+    }
+
+    public function listAll()
+    {
+        $items = Salary::with(['category_income', 'legacyCategoryIncome'])
+            ->where('users_uuid', Auth::id())
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->map(function ($item) {
+                $cat = $item->category_income ?: $item->legacyCategoryIncome;
+                return [
+                    'uuid' => $item->uuid,
+                    'category_incomes_uuid' => $item->category_incomes_uuid ?: ($cat ? $cat->uuid : null),
+                    'category_name' => optional($cat)->name_category_incomes,
+                    'category_name_pgp' => optional($cat)->name_category_incomes_pgp,
+                    'category_key_version' => optional($cat)->content_key_version,
+                    'salary' => $item->salary,
+                    'salary_pgp' => $item->salary_pgp,
+                    'salary_fmt' => $item->salary === '[encrypted]' ? '[encrypted]' : ('Rp. ' . number_format((int)$item->salary, 0, ',', '.')),
+                    'date' => optional($item->date) ? Carbon::parse($item->date)->format('Y-m-d') : Carbon::parse($item->created_at)->format('Y-m-d'),
+                    'date_human' => optional($item->date ? \Carbon\Carbon::parse($item->date) : null)->isoFormat('D MMMM Y'),
+                    'description' => $item->description,
+                    'description_pgp' => $item->description_pgp,
+                    'content_key_version' => $item->content_key_version,
+                    'action' => '<a href="/pages/customer/income/edit/' . $item->uuid . '" class="btn btn-sm btn-warning text-white">Edit</a> '
+                        . '<a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteIncome(\'' . $item->uuid . '\')">Delete</a>',
+                ];
+            });
+
+        return response()->json($items);
     }
 
     /**
@@ -167,6 +220,7 @@ class UserIncomeController extends Controller
             'date' => 'required|date',
             'category_incomes_uuid' => 'required|exists:category_incomes,uuid',
             'description' => 'required|string',
+            'description_pgp' => 'nullable|string',
         ]);
 
         try {
@@ -181,14 +235,22 @@ class UserIncomeController extends Controller
 
             // Update fields
             $data->users_uuid = Auth::id();
-            $data->salary = str_replace(
-                ['Rp.', '.'],
-                ['', ''],
-                $request->salary
-            );
+            if ($request->filled('salary_pgp')) {
+                $data->salary = '[encrypted]';
+                $data->salary_pgp = $request->salary_pgp;
+                $data->content_key_version = optional(Auth::user())->key_version ?? 1;
+            } else {
+                $data->salary = str_replace(['Rp.', '.'], ['', ''], $request->salary);
+            }
             $data->date = $request->date;
             $data->category_incomes_uuid = $request->category_incomes_uuid;
-            $data->description = $request->description;
+            if ($request->filled('description_pgp')) {
+                $data->description = '[encrypted]';
+                $data->description_pgp = $request->description_pgp;
+                $data->content_key_version = optional(Auth::user())->key_version ?? 1;
+            } else {
+                $data->description = $request->description;
+            }
             $data->save();
 
             // Delete cache

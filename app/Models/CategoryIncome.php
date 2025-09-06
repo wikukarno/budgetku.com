@@ -20,6 +20,8 @@ class CategoryIncome extends Model
         'users_uuid',
         'users_id',
         'name_category_incomes',
+        'name_category_incomes_pgp',
+        'content_key_version',
     ];
 
     public function user()

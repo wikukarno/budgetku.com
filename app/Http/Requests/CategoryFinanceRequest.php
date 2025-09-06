@@ -25,7 +25,9 @@ class CategoryFinanceRequest extends FormRequest
     {
         return [
             'id' => 'nullable|integer',
+            'uuid' => 'nullable|string',
             'name_category_finances' => 'required|string|max:255',
+            'name_category_finances_pgp' => 'nullable|string',
         ];
     }
 }

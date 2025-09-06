@@ -26,7 +26,8 @@ class CategoryFinanceController extends Controller
      */
     public function index()
     {
-        if (request()->ajax()) {
+        // Serve JSON only for DataTables server-side requests (legacy)
+        if (request()->has('draw')) {
             $query = CategoryFinance::where('users_uuid', Auth::id())->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
@@ -51,7 +52,31 @@ class CategoryFinanceController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
+        // Render legacy Blade if accessed directly without Inertia
         return view('v2.admin.category.expense.index');
+    }
+
+    public function listAll()
+    {
+        $items = CategoryFinance::where('users_uuid', Auth::id())
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'uuid' => $item->uuid ?? null,
+                    'name_category_finances' => $item->name_category_finances,
+                    'name_category_finances_pgp' => $item->name_category_finances_pgp,
+                    'content_key_version' => $item->content_key_version,
+                    'created_at' => optional($item->created_at)->isoFormat('D MMMM Y'),
+                    'updated_at' => optional($item->updated_at)->isoFormat('D MMMM Y'),
+                    'action' => '
+                        <button class="btn btn-sm btn-warning text-white" onclick="updateKategoriFinance(\'' . ($item->uuid ?? '') . '\')">Edit</button>
+                        <button class="btn btn-sm btn-danger text-white" onclick="deleteKategoriFinance(\'' . ($item->uuid ?? '') . '\')">Delete</button>'
+                ];
+            });
+
+        return response()->json($items);
     }
 
     /**
@@ -62,7 +87,12 @@ class CategoryFinanceController extends Controller
      */
     public function store(CategoryFinanceRequest $request)
     {
-        $categoryFinance = CategoryFinance::find($request->id);
+        $categoryFinance = null;
+        if ($request->filled('uuid')) {
+            $categoryFinance = CategoryFinance::where('uuid', $request->uuid)->first();
+        } elseif ($request->filled('id')) {
+            $categoryFinance = CategoryFinance::find($request->id);
+        }
 
         if ($categoryFinance) {
             $this->authorize('updateOrCreate', $categoryFinance);
@@ -80,12 +110,17 @@ class CategoryFinanceController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryFinance::where('id', $request->id)
-            ->where('users_id', Auth::id())
-            ->firstOrFail();
+        $query = CategoryFinance::query();
+        if ($request->filled('uuid')) {
+            $query->where('uuid', $request->uuid);
+        } elseif ($request->filled('id')) {
+            $query->where('id', $request->id);
+        } else {
+            return response()->json(['message' => 'Bad request'], 422);
+        }
+        $data = $query->where(function($q){ $q->where('users_uuid', Auth::id())->orWhere('users_id', Auth::user()->id ?? 0); })->firstOrFail();
 
         $this->authorize('view', $data);
-
         return response()->json($data);
     }
 
@@ -97,17 +132,19 @@ class CategoryFinanceController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryFinance::where('id', $request->id)
-            ->where('users_id', Auth::id())
-            ->firstOrFail();
+        $query = CategoryFinance::query();
+        if ($request->filled('uuid')) {
+            $query->where('uuid', $request->uuid);
+        } elseif ($request->filled('id')) {
+            $query->where('id', $request->id);
+        }
+        $data = $query->where(function($q){ $q->where('users_uuid', Auth::id())->orWhere('users_id', Auth::user()->id ?? 0); })->firstOrFail();
 
         $this->authorize('delete', $data);
         $data->delete();
-        return response()->json(
-            [
-                'status' => true,
-                'message' => 'Data deleted successfully'
-            ]
-        );
+        return response()->json([
+            'status' => true,
+            'message' => 'Data deleted successfully'
+        ]);
     }
 }

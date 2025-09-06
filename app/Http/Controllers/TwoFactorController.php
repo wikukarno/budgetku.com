@@ -25,6 +25,9 @@ class TwoFactorController extends Controller
                 default => to_route('home'),
             };
         }
+        if (request()->header('X-Inertia')) {
+            return \Inertia\Inertia::render('Auth/TwoFAPrompt');
+        }
         return view('auth.prompt-twofa');
     }
 
@@ -41,15 +44,12 @@ class TwoFactorController extends Controller
         $isValid = $this->twoFactor->verifyLoginCode($user, $request->code);
 
         if (!$isValid) {
-            if ($request->input('source') === 'recovery') {
-                // Jika berasal dari recovery modal, kirim JSON error (untuk ditangani JS)
+            if ($request->input('source') === 'recovery' || $request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Invalid recovery code. Please try again.',
+                    'message' => 'Invalid code. Please try again.',
                 ], 422);
             }
-
-            // Jika dari OTP biasa
             return back()->withErrors(['code' => 'Invalid code. Please try again.']);
         }
 
@@ -63,12 +63,8 @@ class TwoFactorController extends Controller
             default => route('home'),
         };
 
-        if ($request->input('source') === 'recovery') {
-            // Jika sukses dari recovery code, kirim redirect JSON ke JS
-            return response()->json([
-                'status' => true,
-                'redirect' => $redirect,
-            ]);
+        if ($request->input('source') === 'recovery' || $request->expectsJson() || $request->ajax()) {
+            return response()->json(['status' => true, 'redirect' => $redirect]);
         }
 
         // Jika sukses dari OTP biasa

@@ -33,6 +33,8 @@ class UserCategoryFinancesController extends Controller
 
             return datatables()->of($query)
                 ->addIndexColumn()
+                ->addColumn('name_category_finances_pgp', function ($item) { return $item->name_category_finances_pgp; })
+                ->addColumn('content_key_version', function ($item) { return $item->content_key_version; })
                 ->editColumn('created_at', function ($item) {
                     return $item->created_at->isoFormat('D MMMM Y');
                 })
@@ -54,6 +56,27 @@ class UserCategoryFinancesController extends Controller
                 ->make(true);
         }
         return view('v2.user.category.expense.index');
+    }
+
+    public function listAll()
+    {
+        $items = CategoryFinance::where('users_uuid', Auth::id())
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'uuid' => $item->uuid ?? null,
+                    'name_category_finances' => $item->name_category_finances,
+                    'name_category_finances_pgp' => $item->name_category_finances_pgp,
+                    'content_key_version' => $item->content_key_version,
+                    'created_at' => optional($item->created_at)->isoFormat('D MMMM Y'),
+                    'updated_at' => optional($item->updated_at)->isoFormat('D MMMM Y'),
+                    'action' => '<a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriFinance(\'' . ($item->uuid ?? $item->id) . '\')">Edit</a> <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriFinance(\'' . ($item->uuid ?? $item->id) . '\')">Delete</a>'
+                ];
+            });
+
+        return response()->json($items);
     }
 
     public function store(StoreCategoryFinanceRequest $request)

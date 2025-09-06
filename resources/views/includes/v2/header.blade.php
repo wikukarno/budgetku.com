@@ -33,8 +33,8 @@
 
                     <li class="header-right-item">
                         <div class="dropdown admin-profile">
-                            <div class="d-xxl-flex align-items-center bg-transparent border-0 text-start p-0 cursor dropdown-toggle"
-                                data-bs-toggle="dropdown">
+                            <button type="button" class="d-xxl-flex align-items-center bg-transparent border-0 text-start p-0 cursor dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="flex-shrink-0">
                                     <img class="rounded-circle wh-40 administrator"
                                         src="{{ Auth::user()->avatar ?? asset('v2/images/administrator.jpg') }}" alt="admin">
@@ -48,7 +48,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                     
                             <div class="dropdown-menu border-0 bg-white dropdown-menu-end">
                                 <div class="d-flex align-items-center info">
@@ -77,12 +77,31 @@
                                             </a>
                                         </li>
                                     @endif
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center text-body" href="{{ route('e2ee.recover') }}">
+                                            <i class="material-symbols-outlined">key</i>
+                                            <span class="ms-2">Recover E2EE</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center text-body" href="{{ route('e2ee.setup') }}">
+                                            <i class="material-symbols-outlined">vpn_key</i>
+                                            <span class="ms-2">Encryption Setup</span>
+                                        </a>
+                                    </li>
+                                    {{-- Biometric remember disabled; keys are kept in SharedWorker for session only --}}
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center text-body" href="#" onclick="lockE2EE()">
+                                            <i class="material-symbols-outlined">lock</i>
+                                            <span class="ms-2">Lock Now</span>
+                                        </a>
+                                    </li>
                                 </ul>
                                 <ul class="admin-link ps-0 mb-0 list-unstyled">
                                     <li>
-                                        <a class="dropdown-item d-flex align-items-center text-body" onclick="logout()">
+                                        <a class="dropdown-item d-flex align-items-center text-body" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                                             <i class="material-symbols-outlined">logout</i>
-                                            <span class="ms-2">Logout</span>
+                                            <span class="ms-2">Log Out</span>
                                         </a>
                                     </li>
                                 </ul>

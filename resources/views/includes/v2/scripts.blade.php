@@ -15,13 +15,7 @@
 <script src="{{ asset('v2/js/custom/apexcharts.js') }}"></script>
 <script src="{{ asset('v2/js/custom/custom.js') }}"></script>
 
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- jQuery, DataTables, Select2, SweetAlert2 are bundled via Vite --}}
 
 <script>
     function showCustomAlert(type = 'success', message = 'Berhasil!') {
@@ -74,8 +68,8 @@
     }
 
     const rupiahInput = document.getElementById('rupiah');
-
-    rupiahInput.addEventListener('input', function(e) {
+    if (rupiahInput) {
+      rupiahInput.addEventListener('input', function(e) {
         let cursorPosition = this.selectionStart;
         let originalLength = this.value.length;
 
@@ -85,10 +79,10 @@
         cursorPosition = cursorPosition + (newLength - originalLength);
 
         this.setSelectionRange(cursorPosition, cursorPosition);
-    });
+      });
 
-    // Untuk mencegah input selain angka & koma
-    rupiahInput.addEventListener('keydown', function(e) {
+      // Untuk mencegah input selain angka & koma
+      rupiahInput.addEventListener('keydown', function(e) {
         const allowedKeys = [
             'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete',
             'Home', 'End', ',', // koma
@@ -103,9 +97,11 @@
         }
 
         e.preventDefault();
-    });
+      });
+    }
 
-    document.querySelector('input[name="bukti_pembayaran"]').addEventListener('change', function(event) {
+    const buktiInput = document.querySelector('input[name="bukti_pembayaran"]');
+    if (buktiInput) buktiInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
         const maxSize = 2 * 1024 * 1024; // 2MB
@@ -128,7 +124,64 @@
         }
     });
 
+    function lockE2EE() {
+        try { window.E2EESession?.lock?.(); } catch (e) {}
+        try { sessionStorage.removeItem('e2ee_R_b64'); } catch (e) {}
+        showCustomAlert('success', 'Encryption locked for this session');
+    }
+
+    // Ensure Bootstrap dropdown works for navbar profile (with fallback)
+    (function initAdminProfileDropdown(){
+        const run = function(){
+            try {
+                const toggles = document.querySelectorAll('.admin-profile .dropdown-toggle');
+                if (!toggles.length) return;
+
+                toggles.forEach(function(btn){
+                    // Bootstrap instance (if available)
+                    let inst = null;
+                    if (window.bootstrap && window.bootstrap.Dropdown) {
+                        inst = window.bootstrap.Dropdown.getOrCreateInstance(btn);
+                    }
+
+                    // Click handler forces toggle; also fallback if Bootstrap is absent
+                    btn.addEventListener('click', function(e){
+                        try {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (inst && inst.toggle) {
+                                inst.toggle();
+                            } else {
+                                const menu = btn.parentElement?.querySelector('.dropdown-menu');
+                                if (menu) menu.classList.toggle('show');
+                            }
+                        } catch (err) { /* no-op */ }
+                    });
+                });
+
+                // Click outside to close (fallback path)
+                document.addEventListener('click', function(){
+                    document.querySelectorAll('.admin-profile .dropdown-menu.show').forEach(function(m){
+                        m.classList.remove('show');
+                    });
+                });
+            } catch (e) { /* no-op */ }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', run);
+        } else {
+            run();
+        }
+    })();
+
+    // Auto-unlock moved to app.js (runs early). Keeping page script lean.
+
+    // Biometric remember disabled; using SharedWorker session cache only
+
     function logout() {
+        try { window.E2EESession?.lock?.(); } catch (e) {}
+        try { sessionStorage.removeItem('e2ee_R_b64'); } catch (e) {}
+        try { window.KeyWorker?.lock?.(); } catch (e) {}
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -137,25 +190,32 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, logout!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('logout') }}",
-                    data: {
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        showCustomAlert('success', 'Logout successful!');
-                        setTimeout(function() {
-                            window.location.href = "{{ route('login') }}";
-                        }, 1000);
-                    },
-                    error: function(xhr, status, error) {
-                        showCustomAlert('danger', 'Logout failed! Please try again.');
-                    }
-                });
+        }).then(async (result) => {
+            if (!result.isConfirmed) return;
+            try {
+                if (window.axios) {
+                    await window.axios.post("{{ route('logout') }}", {}, { headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'X-Requested-With': 'XMLHttpRequest' } });
+                } else if (window.$ && $.ajax) {
+                    await new Promise((resolve, reject) => {
+                        $.ajax({
+                            type: 'POST', url: "{{ route('logout') }}",
+                            data: { _token: "{{ csrf_token() }}" },
+                            success: resolve, error: reject
+                        });
+                    });
+                } else {
+                    // Fallback form submit
+                    const f = document.createElement('form'); f.method='POST'; f.action='{{ route('logout') }}';
+                    const t = document.createElement('input'); t.type='hidden'; t.name='_token'; t.value='{{ csrf_token() }}';
+                    f.appendChild(t); document.body.appendChild(f); f.submit();
+                    return;
+                }
+                showCustomAlert('success', 'Logout successful!');
+                setTimeout(() => window.location.href = "{{ route('login') }}", 300);
+            } catch (e) {
+                console.error(e);
+                showCustomAlert('danger', 'Logout failed! Please try again.');
             }
-        })
+        });
     }
 </script>

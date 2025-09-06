@@ -171,9 +171,9 @@
             @endif
 
             <li class="menu-item">
-                <a href="javascript:void()" onclick="logout()" class="menu-link">
+                <a href="#" class="menu-link" data-bs-toggle="modal" data-bs-target="#logoutModal">
                     <span class="material-symbols-outlined menu-icon">logout</span>
-                    <span class="title">Sign Out</span>
+                    <span class="title">Log Out</span>
                 </a>
             </li>
         </ul>

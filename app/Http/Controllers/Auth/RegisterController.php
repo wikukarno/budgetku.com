@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,7 +31,16 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/pages/dashboard';
+    protected $redirectTo = '/e2ee/setup';
+
+    protected function redirectTo()
+    {
+        $user = auth()->user();
+        if ($user && $user->roles === 'Owner') {
+            return '/pages/admin/dashboard';
+        }
+        return '/pages/customer/dashboard';
+    }
 
     /**
      * Create a new controller instance.
@@ -68,6 +79,31 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'roles' => 'Customer',
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        // Send registration notification
+        try {
+            $user->notify(new \App\Notifications\UserRegisteredNotification());
+        } catch (\Exception $e) {
+            // Notification failed, but don't block registration
+        }
+
+        // Always redirect to customer dashboard for new registrations
+        $redirect = $user->roles === 'Owner' 
+            ? route('admin.dashboard') 
+            : route('customer.dashboard');
+
+        // Use Inertia redirect
+        return \Inertia\Inertia::location($redirect);
     }
 }

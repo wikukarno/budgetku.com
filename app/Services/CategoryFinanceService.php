@@ -30,6 +30,14 @@ class CategoryFinanceService
             // Set data
             $category->users_uuid = Auth::id();
             $category->name_category_finances = $validated['name_category_finances'];
+            if (!empty($validated['name_category_finances_pgp'])) {
+                $category->name_category_finances_pgp = $validated['name_category_finances_pgp'];
+                if (Auth::user() && isset(Auth::user()->key_version)) {
+                    $category->content_key_version = Auth::user()->key_version;
+                } else {
+                    $category->content_key_version = 1;
+                }
+            }
 
             $isNew = !$category->exists;
             $wasChanged = $category->isDirty(); // Cek apakah ada perubahan

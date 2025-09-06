@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="{{ asset('v2/css/fullcalendar.main.css') }}">
 <link rel="stylesheet" href="{{ asset('v2/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('v2/css/custom.css') }}">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{{-- Select2 CSS is bundled via Vite --}}
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="{{ asset('v2/images/favicon.png') }}">

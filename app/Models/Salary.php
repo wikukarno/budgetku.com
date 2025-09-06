@@ -21,8 +21,11 @@ class Salary extends Model
         'users_uuid',
         'category_incomes_uuid',
         'salary',
+        'salary_pgp',
         'date',
         'description',
+        'description_pgp',
+        'content_key_version',
     ];
 
     public function user()

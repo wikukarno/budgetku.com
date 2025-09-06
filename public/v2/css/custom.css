@@ -3,6 +3,29 @@ html {
     overflow-x: hidden;
 }
 
+/* Sidebar responsive (mobile off-canvas) */
+@media (max-width: 991.98px) {
+  #sidebar-area {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    max-width: 85%;
+    z-index: 1040; /* above page content */
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-in-out;
+  }
+  body[sidebar-data-theme="sidebar-show"] #sidebar-area {
+    transform: translateX(0);
+  }
+  body[sidebar-data-theme="sidebar-hide"] #sidebar-area {
+    transform: translateX(-100%);
+  }
+}
+
 .form-wrapper, /* or your form container class */
     .container,
     .modal-content {
@@ -86,26 +109,56 @@ div.dataTables_wrapper .dt-top {
 }
 
 /* Style dropdown lebih rapi */
-div.dataTables_wrapper .dataTables_length select {
-    width: 120px;
-    padding: 10px 14px;
+/* DataTables length dropdown (v1: .dataTables_*, v2: .dt-*) */
+.dataTables_wrapper .dataTables_length select,
+.dt-length select {
+    width: 140px;
+    height: 44px;            /* Tinggikan dropdown */
+    padding: 0 12px;         /* Hindari teks kepotong */
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    appearance: none;        /* Safari/Firefox */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-position: right 10px center;
+}
+
+/* Style search box */
+/* DataTables search input (v1 & v2) */
+.dataTables_wrapper .dataTables_filter input[type="search"],
+.dt-search input[type="search"],
+.dt-input[type="search"] {
+    height: 44px;           /* Samakan tinggi dengan dropdown */
+    line-height: 44px;
+    padding: 0 12px;
     font-size: 14px;
     border-radius: 6px;
     border: 1px solid #dee2e6;
 }
 
-/* Style search box */
-div.dataTables_wrapper .dataTables_filter input {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 6px;
-    border: 1px solid #dee2e6;
+/* Pastikan varian -lg juga tinggi bila dipakai */
+.dataTables_wrapper .dataTables_length .form-select-lg,
+.dt-length .form-select-lg {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 12px;
+}
+.dataTables_wrapper .dataTables_filter .form-control-lg[type="search"],
+.dt-search .form-control-lg[type="search"],
+.form-control-lg.dt-input[type="search"] {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 12px;
 }
 
 /* Hilangkan label “Show” dan “Search:” */
 div.dataTables_wrapper .dataTables_length label,
 div.dataTables_wrapper .dataTables_filter label {
-    font-size: 0;
+    font-size: 0;         /* Sembunyikan teks 'Show' dan 'entries' */
+    display: flex;
+    align-items: center;  /* Rapi secara vertikal */
+    gap: 8px;             /* Jarak aman */
 }
 
 /* Pagination */
@@ -147,9 +200,12 @@ div.dataTables_wrapper .dataTables_filter label {
         width: 100% !important;
     }
 
-    .dataTables_length select {
+    .dataTables_length select,
+    .dt-length select {
         width: 100% !important;
-        padding: 10px 14px;
+        height: 46px;           /* Sedikit lebih tinggi di mobile */
+        line-height: 46px;
+        padding: 0 12px;
         font-size: 15px;
         border-radius: 6px;
         border: 1px solid #dee2e6;
@@ -169,10 +225,14 @@ div.dataTables_wrapper .dataTables_filter label {
         display: block !important;
     }
 
-    .dataTables_filter input {
+    .dataTables_filter input[type="search"],
+    .dt-search input[type="search"],
+    .dt-input[type="search"] {
         width: 100% !important;
         box-sizing: border-box;
-        padding: 10px 14px;
+        height: 46px;           /* Samakan tinggi di mobile */
+        line-height: 46px;
+        padding: 0 12px;
         font-size: 15px;
         border-radius: 6px;
         border: 1px solid #dee2e6;
@@ -472,4 +532,21 @@ div.dataTables_wrapper .dataTables_filter label {
     border-color: #7c3aed !important;
     box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25) !important;
     outline: none !important;
+}
+/* Normalize input + select heights across app */
+.form-control,
+.form-select {
+    height: 44px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+    .form-control,
+    .form-select {
+        height: 46px;
+        padding: 12px 12px;
+        font-size: 15px;
+    }
 }

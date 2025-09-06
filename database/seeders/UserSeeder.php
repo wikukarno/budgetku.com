@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -17,18 +18,20 @@ class UserSeeder extends Seeder
     {
         $user = [
             [
+            'uuid'          => Str::uuid(),
             'name'          => 'Wiku Karno',
-            'email'         => 'prasetyagama2@gmail.com',
+            'email'         => 'hi@wikukarno.com',
             'roles'         => 'Owner',
-            'password'      => bcrypt('admin'), // password
+            'password'      => bcrypt('admin12345'), // password
             'created_at'    => date('Y-m-d h:i:s'),
             'updated_at'    => date('Y-m-d h:i:s'),
         ],
         [
+            'uuid'          => Str::uuid(),
             'name'          => 'Customer',
-            'email'         => 'hi@wikukarno.com',
+            'email'         => 'karnowiku@gmail.com',
             'roles'         => 'Customer',
-            'password'      => bcrypt('customer'), // password
+            'password'      => bcrypt('admin12345'), // password
             'created_at'    => date('Y-m-d h:i:s'),
             'updated_at'    => date('Y-m-d h:i:s'),
         ]
