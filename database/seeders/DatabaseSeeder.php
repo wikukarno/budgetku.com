@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             FillUserUuidSeeder::class,
-            // UserSeeder::class,
+            UserSeeder::class,
             // PaymentMethodSeeder::class,
         ]);
     }

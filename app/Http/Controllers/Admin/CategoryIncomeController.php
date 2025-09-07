@@ -3,12 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryIncomeRequest;
 use App\Models\CategoryIncome;
+use App\Services\CategoryIncomeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryIncomeController extends Controller
 {
+    protected $categoryIncomeService;
+
+    public function __construct(CategoryIncomeService $categoryIncomeService)
+    {
+        $this->categoryIncomeService = $categoryIncomeService;
+    }
     public function index()
     {
         if (request()->ajax()) {
@@ -24,14 +33,13 @@ class CategoryIncomeController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <button class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(' . $item->id . ')">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(\'' . $item->uuid . '\')">
                             Edit
-                        </button>
-
-
-                        <button class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(' . $item->id . ')">
+                        </a>
+                        
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(\'' . $item->uuid . '\')">
                             Delete
-                        </button>
+                        </a>
                     ';
                 })
                 ->rawColumns(['action'])
@@ -44,40 +52,27 @@ class CategoryIncomeController extends Controller
     {
     }
 
-    public function store(Request $request)
+    public function store(CategoryIncomeRequest $request)
     {
-        $data = CategoryIncome::updateOrCreate(
-            [
-                'id' => $request->id_category_income,
-            ],
-            [
-                'users_id' => Auth::id(),
-                'name_category_incomes' => $request->name_category_incomes,
-            ]
-        );
+        $categoryIncome = CategoryIncome::find($request->uuid);
 
-        // if the data is successfully created
-        if ($data->wasRecentlyCreated) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Data berhasil ditambahkan',
-            ]);
-        } elseif ($data->wasChanged()) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Data berhasil diubah',
-            ]);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data gagal ditambahkan',
-            ]);
+        if ($categoryIncome) {
+            $this->authorize('updateOrCreate', $categoryIncome);
         }
+        
+        $validated = $request->validated();
+        $data = $this->categoryIncomeService->updateOrCreateCategoryIncome($validated);
+        return response()->json($data);
     }
 
-    public function show(CategoryIncome $categoryIncome, Request $request)
+    public function show(Request $request)
     {
-        $data = CategoryIncome::find($request->id);
+        $data = CategoryIncome::where('uuid', $request->uuid)
+            ->where('users_uuid', Auth::id())
+            ->firstOrFail();
+
+        $this->authorize('view', $data);
+
         return response()->json($data);
     }
 
@@ -91,9 +86,19 @@ class CategoryIncomeController extends Controller
 
     public function destroy(Request $request)
     {
-        $data = CategoryIncome::find($request->id);
-        $data->delete();
+        $data = CategoryIncome::where('uuid', $request->uuid)
+            ->where('users_uuid', Auth::id())
+            ->firstOrFail();
 
-        return response()->json($data);
+        $this->authorize('delete', $data);
+        $data->delete();
+        
+        // Clear cache
+        Cache::forget('admin_categories_income_' . Auth::id());
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'Data deleted successfully'
+        ]);
     }
 }

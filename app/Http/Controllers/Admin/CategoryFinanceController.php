@@ -8,6 +8,7 @@ use App\Models\CategoryFinance;
 use App\Services\CategoryFinanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class CategoryFinanceController extends Controller
@@ -39,11 +40,11 @@ class CategoryFinanceController extends Controller
                 })
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" onclick="updateKategoriFinance(' . $item->id . ')">
+                        <a href="javascript:void(0)" onclick="updateKategoriFinance(\'' . $item->uuid . '\')">
                             <button type="button" class="btn btn-warning text-white">Edit</button>
                         </a>
                         
-                        <a href="javascript:void(0)" onclick="deleteKategoriFinance(' . $item->id . ')">
+                        <a href="javascript:void(0)" onclick="deleteKategoriFinance(\'' . $item->uuid . '\')">
                             <button type="button" class="btn btn-danger text-white">Delete</button>
                         </a>
                     ';
@@ -62,7 +63,7 @@ class CategoryFinanceController extends Controller
      */
     public function store(CategoryFinanceRequest $request)
     {
-        $categoryFinance = CategoryFinance::find($request->id);
+        $categoryFinance = CategoryFinance::find($request->uuid);
 
         if ($categoryFinance) {
             $this->authorize('updateOrCreate', $categoryFinance);
@@ -80,8 +81,8 @@ class CategoryFinanceController extends Controller
      */
     public function show(Request $request)
     {
-        $data = CategoryFinance::where('id', $request->id)
-            ->where('users_id', Auth::id())
+        $data = CategoryFinance::where('uuid', $request->uuid)
+            ->where('users_uuid', Auth::id())
             ->firstOrFail();
 
         $this->authorize('view', $data);
@@ -97,17 +98,19 @@ class CategoryFinanceController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = CategoryFinance::where('id', $request->id)
-            ->where('users_id', Auth::id())
+        $data = CategoryFinance::where('uuid', $request->uuid)
+            ->where('users_uuid', Auth::id())
             ->firstOrFail();
 
         $this->authorize('delete', $data);
         $data->delete();
-        return response()->json(
-            [
-                'status' => true,
-                'message' => 'Data deleted successfully'
-            ]
-        );
+        
+        // Clear cache
+        Cache::forget('admin_categories_finance_' . Auth::id());
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'Data deleted successfully'
+        ]);
     }
 }

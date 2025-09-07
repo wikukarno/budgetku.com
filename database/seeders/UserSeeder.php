@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
     {
         $user = [
             [
+            'uuid'          => Str::uuid(),
             'name'          => 'Wiku Karno',
             'email'         => 'prasetyagama2@gmail.com',
             'roles'         => 'Owner',
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
             'updated_at'    => date('Y-m-d h:i:s'),
         ],
         [
+            'uuid'          => Str::uuid(),
             'name'          => 'Customer',
             'email'         => 'hi@wikukarno.com',
             'roles'         => 'Customer',

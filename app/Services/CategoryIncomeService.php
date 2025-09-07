@@ -20,16 +20,16 @@ class CategoryIncomeService
     {
         DB::beginTransaction();
         try {
-            $id = $validated['uuid'] ?? null;
+            $id = $validated['uuid'] ?? $validated['id'] ?? null;
 
             // Cek apakah data lama ada (update) atau baru (create)
             $category = $id
                 ? $this->categoryIncomeRepository->find($id)
                 : new \App\Models\CategoryIncome();
 
-            // Set data
+            // Set data - now all users use UUID system
             $category->users_uuid = Auth::id();
-            $category->name_category_Incomes = $validated['name_category_incomes'];
+            $category->name_category_incomes = $validated['name_category_incomes'];
 
             $isNew = !$category->exists;
             $wasChanged = $category->isDirty(); // Cek apakah ada perubahan
@@ -37,7 +37,9 @@ class CategoryIncomeService
             // Simpan data
             $category->save();
 
+            // Clear cache for both admin and customer
             Cache::forget('user_categories_income_' . Auth::id());
+            Cache::forget('admin_categories_income_' . Auth::id());
 
             DB::commit();
 

@@ -27,7 +27,7 @@ class CategoryFinanceService
                 ? $this->categoryFinanceRepository->find((string)$id)
                 : new \App\Models\CategoryFinance();
 
-            // Set data
+            // Set data - now all users use UUID system
             $category->users_uuid = Auth::id();
             $category->name_category_finances = $validated['name_category_finances'];
 
@@ -37,7 +37,9 @@ class CategoryFinanceService
             // Simpan data
             $category->save();
 
+            // Clear cache for both admin and customer
             Cache::forget('user_categories_finance_' . Auth::id());
+            Cache::forget('admin_categories_finance_' . Auth::id());
 
             DB::commit();
 
