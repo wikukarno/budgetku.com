@@ -77,15 +77,28 @@
             $('#form-tambah-kategori-finance').trigger('reset');
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            // Clear any previous validation errors
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Focus on first input for better UX
+            setTimeout(() => {
+                $('#name_category_finances').focus();
+            }, 500);
         }
 
         function updateKategoriFinance(uuid){
+            console.log('updateKategoriFinance called with UUID:', uuid);
+            
             $('#form-tambah-kategori-finance').trigger('reset');
             $('#categoryExpenseModal').modal('show');
             $('#categoryExpenseModalLabel').html('Edit Expense Category');
             $('#id_category_finance').val(uuid);
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            console.log('Making AJAX request to:', "{{ route('customer.category.expense.show') }}");
             
             $.ajax({
                 type:"GET",
@@ -95,13 +108,30 @@
                 },
                 dataType: 'json',
                 beforeSend: function() {
+                    console.log('AJAX request started');
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_kategori_finance').val(res.uuid);
-                    $('#name_category_finances').val(res.name_category_finances);
+                    console.log('AJAX response received:', res);
+                    
+                    // Check if response has data structure
+                    if (res.status === 'success' && res.data) {
+                        $('#id_category_finance').val(res.data.uuid);
+                        $('#name_category_finances').val(res.data.name_category_finances);
+                        console.log('Form populated with:', res.data);
+                    } else {
+                        // Handle old response format
+                        $('#id_category_finance').val(res.uuid);
+                        $('#name_category_finances').val(res.name_category_finances);
+                        console.log('Form populated with old format:', res);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
+                    showCustomAlert('danger', 'Failed to load category data');
                 },
                 complete: function(){
+                    console.log('AJAX request completed');
                     $(".preloader").fadeOut();
                 }
             });

@@ -75,6 +75,13 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+        console.log('Category Income JavaScript loaded!');
+        
+        // Make functions globally accessible for debugging
+        window.updateKategoriIncomeDebug = function(uuid) {
+            console.log('Manual test function called with UUID:', uuid);
+            updateKategoriIncome(uuid);
+        };
         function addCategoryIncome() {
             $('#categoryIncomeModal').modal('show');
             $('#categoryIncomeModalLabel').html('Add New Income Category');
@@ -82,15 +89,28 @@
             $('#form-tambah-kategori-income').trigger('reset');
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            // Clear any previous validation errors
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Focus on first input for better UX
+            setTimeout(() => {
+                $('#name_category_incomes').focus();
+            }, 500);
         }
 
         function updateKategoriIncome(uuid){
+            console.log('updateKategoriIncome called with UUID:', uuid);
+            
             $('#form-tambah-kategori-income').trigger('reset');
             $('#categoryIncomeModal').modal('show');
             $('#categoryIncomeModalLabel').html('Edit Income Category');
             $('#id_category_income').val(uuid);
             $('#btnSaveKategoriKeuangan').html('Update');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            console.log('Making AJAX request to:', "{{ route('customer.category.income.show') }}");
             
             $.ajax({
                 type:"GET",
@@ -101,13 +121,30 @@
                 },
                 dataType: 'json',
                 beforeSend: function() {
+                    console.log('AJAX request started');
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_kategori_income').val(res.uuid);
-                    $('#name_category_incomes').val(res.name_category_incomes);
+                    console.log('AJAX response received:', res);
+                    
+                    // Check if response has data structure
+                    if (res.status === 'success' && res.data) {
+                        $('#id_category_income').val(res.data.uuid);
+                        $('#name_category_incomes').val(res.data.name_category_incomes);
+                        console.log('Form populated with:', res.data);
+                    } else {
+                        // Handle old response format
+                        $('#id_category_income').val(res.uuid);
+                        $('#name_category_incomes').val(res.name_category_incomes);
+                        console.log('Form populated with old format:', res);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
+                    showCustomAlert('danger', 'Failed to load category data');
                 },
                 complete: function(){
+                    console.log('AJAX request completed');
                     $(".preloader").fadeOut();
                 }
             });
@@ -115,16 +152,33 @@
 
         function deleteKategoriIncome(uuid){
             Swal.fire({
-                title: 'Are you sure?',
-                text: "Data will be deleted!",
+                title: 'Delete Category?',
+                text: "This action cannot be undone. Are you sure you want to delete this income category?",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'Cancel'
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-trash"></i> Yes, Delete',
+                cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger me-2',
+                    cancelButton: 'btn btn-secondary'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait while we delete the category.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
                     $.ajax({
                         type:"DELETE",
                         url: "{{ route('customer.category.income.destroy') }}",
@@ -133,15 +187,34 @@
                             uuid:uuid
                         },
                         dataType: 'json',
-                        beforeSend: function() {
-                            $(".preloader").fadeIn();
-                        },
                         success: function(res){
                             $('#categoryIncomeTable').DataTable().ajax.reload();
-                            showCustomAlert('success', res.message);
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: res.message || 'Category has been deleted successfully.',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
                         },
-                        complete: function(){
-                            $(".preloader").fadeOut();
+                        error: function(xhr, status, error) {
+                            console.error('Delete error:', xhr.responseJSON);
+                            let message = 'Failed to delete category. Please try again.';
+                            
+                            if (xhr.status === 403) {
+                                message = 'You do not have permission to delete this category.';
+                            } else if (xhr.status === 404) {
+                                message = 'Category not found or already deleted.';
+                            } else if (xhr.responseJSON?.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            
+                            Swal.fire({
+                                title: 'Error!',
+                                text: message,
+                                icon: 'error',
+                                confirmButtonColor: '#dc3545'
+                            });
                         }
                     });
                 }
@@ -160,20 +233,57 @@
                 contentType: false,
                 processData: false,
                 beforeSend: function() {
-                    $('#btnSaveKategoriKeuangan').html('Loading...');
+                    $('#btnSaveKategoriKeuangan').html('<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving...');
                     $('#btnSaveKategoriKeuangan').attr('disabled', true);
+                    $('.form-control').attr('readonly', true);
                 },
                 success: (data) => {
-                    showCustomAlert('success', data.message);
+                    console.log('Form submission success:', data);
+                    showCustomAlert('success', data.message || 'Category saved successfully!');
                     $('#form-tambah-kategori-income').trigger('reset');
                     $('#categoryIncomeModal').modal('hide');
                     $('#categoryIncomeTable').DataTable().ajax.reload();
+                    
+                    // Clear any existing error states
+                    $('.form-control').removeClass('is-invalid');
+                    $('.invalid-feedback').remove();
                 },
                 complete: () => {
-                    $('#categoryIncomeModal').modal('hide');
+                    $('#btnSaveKategoriKeuangan').html('Save');
+                    $('#btnSaveKategoriKeuangan').attr('disabled', false);
+                    $('.form-control').attr('readonly', false);
                 },
-                error: function(data){
-                    showCustomAlert('danger', data.responseJSON.message);
+                error: function(xhr, status, error){
+                    console.error('Form submission error:', xhr.responseJSON);
+                    
+                    // Clear previous error states
+                    $('.form-control').removeClass('is-invalid');
+                    $('.invalid-feedback').remove();
+                    
+                    if (xhr.status === 422) {
+                        // Validation errors
+                        let errors = xhr.responseJSON.errors || {};
+                        let message = xhr.responseJSON.message || 'Please check your input and try again.';
+                        
+                        showCustomAlert('danger', message);
+                        
+                        // Display field-specific errors
+                        Object.keys(errors).forEach(field => {
+                            let fieldElement = $(`[name="${field}"]`);
+                            if (fieldElement.length) {
+                                fieldElement.addClass('is-invalid');
+                                fieldElement.after(`<div class="invalid-feedback">${errors[field][0]}</div>`);
+                            }
+                        });
+                        
+                    } else if (xhr.status === 403) {
+                        showCustomAlert('danger', 'You do not have permission to perform this action.');
+                    } else if (xhr.status === 500) {
+                        showCustomAlert('danger', 'Server error occurred. Please try again later.');
+                    } else {
+                        showCustomAlert('danger', xhr.responseJSON?.message || 'An unexpected error occurred. Please try again.');
+                    }
+                    
                     $('#btnSaveKategoriKeuangan').html('Save');
                     $('#btnSaveKategoriKeuangan').attr('disabled', false);
                 }
@@ -209,6 +319,9 @@
                 }
             },
             initComplete: function () {
+                console.log('DataTables initialized!');
+                console.log('Checking action buttons...');
+                
                 const lengthEl = $('.dataTables_length');
                 const filterEl = $('.dataTables_filter');
                 
@@ -218,6 +331,14 @@
                 
                 wrapper.insertBefore($('#categoryIncomeTable'));
 
+                // Check if action buttons are rendered
+                setTimeout(function() {
+                    const actionButtons = $('[onclick*="updateKategoriIncome"]');
+                    console.log('Found action buttons:', actionButtons.length);
+                    if (actionButtons.length > 0) {
+                        console.log('Action button onclick:', actionButtons.first().attr('onclick'));
+                    }
+                }, 1000);
             }
         });
     </script>

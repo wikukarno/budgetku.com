@@ -70,6 +70,8 @@
 @push('after-scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        console.log('ADMIN Category Finance JavaScript loaded!');
+        
         function addCategoryExpense() {
             $('#categoryExpenseModal').modal('show');
             $('#categoryExpenseModalLabel').html('Add New Expense Category');
@@ -77,15 +79,28 @@
             $('#form-tambah-kategori-finance').trigger('reset');
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            // Clear any previous validation errors
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Focus on first input for better UX
+            setTimeout(() => {
+                $('#name_category_finances').focus();
+            }, 500);
         }
 
         function updateKategoriFinance(uuid){
+            console.log('ADMIN updateKategoriFinance called with UUID:', uuid);
+            
             $('#form-tambah-kategori-finance').trigger('reset');
             $('#categoryExpenseModal').modal('show');
             $('#categoryExpenseModalLabel').html('Edit Expense Category');
             $('#id_category_finance').val(uuid);
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            console.log('Making AJAX request to:', "{{ route('admin.category.expense.show') }}");
             
             $.ajax({
                 type:"GET",
@@ -95,13 +110,30 @@
                 },
                 dataType: 'json',
                 beforeSend: function() {
+                    console.log('ADMIN AJAX request started');
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_category_finance').val(res.uuid);
-                    $('#name_category_finances').val(res.name_category_finances);
+                    console.log('ADMIN AJAX response received:', res);
+                    
+                    // Check if response has data structure
+                    if (res.status === 'success' && res.data) {
+                        $('#id_category_finance').val(res.data.uuid);
+                        $('#name_category_finances').val(res.data.name_category_finances);
+                        console.log('ADMIN Form populated with:', res.data);
+                    } else {
+                        // Handle old response format
+                        $('#id_category_finance').val(res.uuid);
+                        $('#name_category_finances').val(res.name_category_finances);
+                        console.log('ADMIN Form populated with old format:', res);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('ADMIN AJAX Error:', xhr.responseText);
+                    showCustomAlert('danger', 'Failed to load category data');
                 },
                 complete: function(){
+                    console.log('ADMIN AJAX request completed');
                     $(".preloader").fadeOut();
                 }
             });

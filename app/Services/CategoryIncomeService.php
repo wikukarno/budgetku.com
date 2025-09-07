@@ -37,24 +37,31 @@ class CategoryIncomeService
             // Simpan data
             $category->save();
 
-            // Clear cache for both admin and customer
-            Cache::forget('user_categories_income_' . Auth::id());
-            Cache::forget('admin_categories_income_' . Auth::id());
+            // Clear cache more efficiently 
+            $userId = Auth::id();
+            Cache::forget('user_categories_income_' . $userId);
+            Cache::forget('admin_categories_income_' . $userId);
+            
+            // Clear specific item cache if updating existing record
+            if ($id) {
+                Cache::forget('user_categories_income_show_' . $id . '_' . $userId);
+                Cache::forget('admin_categories_income_show_' . $id . '_' . $userId);
+            }
 
             DB::commit();
 
             if ($isNew) {
-                return ['status' => 'success', 'message' => 'Data added successfully'];
+                return ['status' => 'success', 'message' => 'Category created successfully.'];
             }
 
             if ($wasChanged) {
-                return ['status' => 'success', 'message' => 'Data updated successfully'];
+                return ['status' => 'success', 'message' => 'Category updated successfully.'];
             }
 
-            return ['status' => 'error', 'message' => 'No changes have been made'];
+            return ['status' => 'error', 'message' => 'No changes were made to the category.'];
         } catch (\Exception $e) {
             DB::rollBack();
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            return ['status' => 'error', 'message' => 'Failed to save category. Please try again.'];
         }
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\InputSanitizerTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryIncomeRequest extends FormRequest
 {
+    use InputSanitizerTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,14 +27,8 @@ class CategoryIncomeRequest extends FormRequest
     {
         return [
             'uuid' => 'nullable|string|max:36',
-            'name_category_incomes' => 'required|string|max:255',
+            'name_category_incomes' => 'required|string|max:255|min:2',
         ];
     }
 
-    public function attributes(): array
-    {
-        return [
-            'name_category_incomes' => 'category name',
-        ];
-    }
 }

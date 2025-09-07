@@ -154,16 +154,16 @@ return [
 
     'custom' => [
         'name_category_finances' => [
-            'required' => 'Please enter an expense category name.',
-            'string' => 'The expense category name must be valid text.',
-            'min' => 'The expense category name must be at least :min characters.',
-            'max' => 'The expense category name cannot be longer than :max characters.',
+            'required' => 'Silakan masukkan nama kategori pengeluaran.',
+            'string' => 'Nama kategori pengeluaran harus berupa teks yang valid.',
+            'min' => 'Nama kategori pengeluaran minimal :min karakter.',
+            'max' => 'Nama kategori pengeluaran maksimal :max karakter.',
         ],
         'name_category_incomes' => [
-            'required' => 'Please enter an income category name.',
-            'string' => 'The income category name must be valid text.',
-            'min' => 'The income category name must be at least :min characters.',
-            'max' => 'The income category name cannot be longer than :max characters.',
+            'required' => 'Silakan masukkan nama kategori pemasukan.',
+            'string' => 'Nama kategori pemasukan harus berupa teks yang valid.',
+            'min' => 'Nama kategori pemasukan minimal :min karakter.',
+            'max' => 'Nama kategori pemasukan maksimal :max karakter.',
         ],
     ],
 
@@ -179,9 +179,9 @@ return [
     */
 
     'attributes' => [
-        'name_category_finances' => 'expense category name',
-        'name_category_incomes' => 'income category name',
-        'uuid' => 'category ID',
+        'name_category_finances' => 'nama kategori pengeluaran',
+        'name_category_incomes' => 'nama kategori pemasukan',
+        'uuid' => 'ID kategori',
     ],
 
 ];

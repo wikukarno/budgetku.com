@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ApiResponseTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 abstract class AbstractCategoryController extends Controller
 {
+    use ApiResponseTrait;
     /**
      * The service instance for CRUD operations
      */
@@ -57,7 +59,16 @@ abstract class AbstractCategoryController extends Controller
     {
         if (request()->ajax()) {
             $modelClass = $this->getModelClass();
-            $query = $modelClass::where('users_uuid', Auth::id())->orderBy('created_at', 'DESC');
+            
+            // Optimize query with proper indexing and selective columns
+            $query = $modelClass::select([
+                    'uuid',
+                    $this->getCategoryNameField(),
+                    'created_at',
+                    'updated_at'
+                ])
+                ->where('users_uuid', Auth::id())
+                ->orderBy('created_at', 'DESC');
 
             return datatables()->of($query)
                 ->addIndexColumn()
@@ -113,8 +124,18 @@ abstract class AbstractCategoryController extends Controller
             
             $service = $this->getService();
             $method = $this->getServiceUpdateMethod();
-            $data = $service->$method($validated);
-            return response()->json($data);
+            $serviceResponse = $service->$method($validated);
+            
+            return $this->transformServiceResponse($serviceResponse);
+            
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            Log::warning('Category authorization error: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'uuid' => $uuid,
+                'action' => $uuid ? 'update' : 'create'
+            ]);
+            
+            return $this->forbiddenResponse('You are not authorized to perform this action.');
             
         } catch (\Exception $e) {
             Log::error('Category store error: ' . $e->getMessage(), [
@@ -123,10 +144,7 @@ abstract class AbstractCategoryController extends Controller
                 'uuid' => $uuid
             ]);
             
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to save category. Please try again.'
-            ], 500);
+            return $this->serverErrorResponse('Failed to save category. Please try again.');
         }
     }
 
@@ -136,14 +154,42 @@ abstract class AbstractCategoryController extends Controller
     public function show(Request $request)
     {
         try {
-            $modelClass = $this->getModelClass();
-            $data = $modelClass::where('uuid', $request->uuid)
-                ->where('users_uuid', Auth::id())
-                ->firstOrFail();
+            $cacheKey = $this->getCacheKeyPrefix() . '_show_' . $request->uuid . '_' . Auth::id();
+            
+            // Try to get from cache first (5 minutes cache)
+            $data = Cache::remember($cacheKey, 300, function () use ($request) {
+                $modelClass = $this->getModelClass();
+                return $modelClass::select([
+                        'uuid', 
+                        'users_uuid',  // IMPORTANT: Include for authorization
+                        $this->getCategoryNameField(), 
+                        'created_at', 
+                        'updated_at'
+                    ])
+                    ->where('uuid', $request->uuid)
+                    ->where('users_uuid', Auth::id())
+                    ->firstOrFail();
+            });
 
             $this->authorize('view', $data);
 
-            return response()->json($data);
+            return $this->successResponse($data, 'Category retrieved successfully.');
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::info('Category not found: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'uuid' => $request->uuid
+            ]);
+            
+            return $this->notFoundResponse('Category not found.');
+            
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            Log::warning('Category view authorization error: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'uuid' => $request->uuid
+            ]);
+            
+            return $this->forbiddenResponse('You are not authorized to view this category.');
             
         } catch (\Exception $e) {
             Log::error('Category show error: ' . $e->getMessage(), [
@@ -151,10 +197,7 @@ abstract class AbstractCategoryController extends Controller
                 'uuid' => $request->uuid
             ]);
             
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Category not found or access denied.'
-            ], 404);
+            return $this->serverErrorResponse('Failed to retrieve category. Please try again.');
         }
     }
 
@@ -170,15 +213,29 @@ abstract class AbstractCategoryController extends Controller
                 ->firstOrFail();
 
             $this->authorize('delete', $data);
+            $uuid = $data->uuid;
             $data->delete();
             
-            // Clear cache
-            $this->clearCache();
+            // Clear cache with specific UUID
+            $this->clearCache($uuid);
             
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Category deleted successfully'
+            return $this->successResponse(null, 'Category deleted successfully.');
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::info('Category not found for deletion: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'uuid' => $request->uuid
             ]);
+            
+            return $this->notFoundResponse('Category not found.');
+            
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            Log::warning('Category delete authorization error: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'uuid' => $request->uuid
+            ]);
+            
+            return $this->forbiddenResponse('You are not authorized to delete this category.');
             
         } catch (\Exception $e) {
             Log::error('Category delete error: ' . $e->getMessage(), [
@@ -186,19 +243,51 @@ abstract class AbstractCategoryController extends Controller
                 'uuid' => $request->uuid
             ]);
             
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to delete category. Please try again.'
-            ], 500);
+            return $this->serverErrorResponse('Failed to delete category. Please try again.');
         }
     }
 
     /**
      * Clear cache for this category type
      */
-    protected function clearCache(): void
+    protected function clearCache(?string $uuid = null): void
     {
         $prefix = $this->getCacheKeyPrefix();
-        Cache::forget($prefix . '_' . Auth::id());
+        $userId = Auth::id();
+        
+        // Clear main cache
+        Cache::forget($prefix . '_' . $userId);
+        
+        // Clear specific item cache if uuid provided
+        if ($uuid) {
+            Cache::forget($prefix . '_show_' . $uuid . '_' . $userId);
+        }
+        
+        // Clear related caches (both admin and user variants)
+        $basePrefix = str_replace(['admin_', 'user_'], '', $prefix);
+        Cache::forget('admin_' . $basePrefix . '_' . $userId);
+        Cache::forget('user_' . $basePrefix . '_' . $userId);
+    }
+
+    /**
+     * Warm up cache with frequently accessed data
+     */
+    protected function warmUpCache(): void
+    {
+        $modelClass = $this->getModelClass();
+        $cacheKey = $this->getCacheKeyPrefix() . '_list_' . Auth::id();
+        
+        // Cache most recent categories for quick access
+        Cache::remember($cacheKey, 600, function () use ($modelClass) {
+            return $modelClass::select([
+                    'uuid',
+                    $this->getCategoryNameField(),
+                    'created_at'
+                ])
+                ->where('users_uuid', Auth::id())
+                ->orderBy('created_at', 'DESC')
+                ->limit(20)
+                ->get();
+        });
     }
 }
