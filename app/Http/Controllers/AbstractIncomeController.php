@@ -241,7 +241,32 @@ abstract class AbstractIncomeController extends Controller
 
     protected function formatSalaryForStorage(string $salary): string
     {
-        return str_replace(['Rp. ', '.'], ['', ''], $salary);
+        // Remove currency prefix and handle both Indonesian and international formats
+        $cleaned = str_replace(['Rp. ', 'Rp ', 'IDR ', '$'], '', $salary);
+        $cleaned = trim($cleaned);
+        
+        // Indonesian format detection:
+        // - If comma has 1-2 digits after it, it's decimal (123.456,50)
+        // - If comma has 3+ digits after it, it's likely thousand separator error (699,115)
+        if (strpos($cleaned, ',') !== false) {
+            $parts = explode(',', $cleaned);
+            $afterComma = $parts[1] ?? '';
+            
+            if (strlen($afterComma) <= 2) {
+                // Decimal separator: 123.456,50 -> 123456
+                $integerPart = str_replace('.', '', $parts[0]);
+                $cleaned = $integerPart;
+            } else {
+                // Likely thousand separator error: 699,115 -> 699115
+                $cleaned = str_replace(['.', ','], '', $cleaned);
+            }
+        } else {
+            // No comma, remove dots (thousand separators): 123.456 -> 123456
+            $cleaned = str_replace('.', '', $cleaned);
+        }
+        
+        // Return clean integer string
+        return preg_replace('/[^0-9]/', '', $cleaned);
     }
 
     protected function dispatchEmailJob(Salary $salary): void

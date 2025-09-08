@@ -25,8 +25,8 @@ class SalaryService
     {
         $request['users_uuid'] = Auth::id();
 
-        $salary = (int) preg_replace('/[^0-9]/', '', $request['salary']);
-        if ($salary <= 0) {
+        $salary = $this->formatSalaryForStorage($request['salary']);
+        if ((int)$salary <= 0) {
             throw new Exception('Salary must be greater than 0.');
         }
         $request['salary'] = $salary;
@@ -56,8 +56,8 @@ class SalaryService
             throw new Exception('Tanggal tidak boleh melebihi hari ini.');
         }
 
-        $parsedSalary = (int) preg_replace('/[^0-9]/', '', $request['salary']);
-        if ($parsedSalary <= 0) {
+        $parsedSalary = $this->formatSalaryForStorage($request['salary']);
+        if ((int)$parsedSalary <= 0) {
             throw new Exception('Salary must be greater than 0.');
         }
 
@@ -78,5 +78,35 @@ class SalaryService
         }
 
         return $this->salaryRepo->delete($salary);
+    }
+
+    private function formatSalaryForStorage(string $salary): string
+    {
+        // Remove currency prefix and handle both Indonesian and international formats
+        $cleaned = str_replace(['Rp. ', 'Rp ', 'IDR ', '$'], '', $salary);
+        $cleaned = trim($cleaned);
+        
+        // Indonesian format detection:
+        // - If comma has 1-2 digits after it, it's decimal (123.456,50)
+        // - If comma has 3+ digits after it, it's likely thousand separator error (699,115)
+        if (strpos($cleaned, ',') !== false) {
+            $parts = explode(',', $cleaned);
+            $afterComma = $parts[1] ?? '';
+            
+            if (strlen($afterComma) <= 2) {
+                // Decimal separator: 123.456,50 -> 123456
+                $integerPart = str_replace('.', '', $parts[0]);
+                $cleaned = $integerPart;
+            } else {
+                // Likely thousand separator error: 699,115 -> 699115
+                $cleaned = str_replace(['.', ','], '', $cleaned);
+            }
+        } else {
+            // No comma, remove dots (thousand separators): 123.456 -> 123456
+            $cleaned = str_replace('.', '', $cleaned);
+        }
+        
+        // Return clean integer string
+        return preg_replace('/[^0-9]/', '', $cleaned);
     }
 }

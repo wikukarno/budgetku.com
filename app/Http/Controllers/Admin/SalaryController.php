@@ -8,7 +8,7 @@ class SalaryController extends AbstractIncomeController
 {
     protected function getService()
     {
-        return null;
+        return app(\App\Services\Admin\SalaryService::class);
     }
 
     protected function getViewPath(): string

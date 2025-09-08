@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class AccountController extends Controller
@@ -89,13 +91,29 @@ class AccountController extends Controller
      */
     public function update(Request $request)
     {
-        if (Auth::user()->id) {
+        try {
             $user = User::where('id', Auth::user()->id)->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 404);
+            }
+
             $user->name = $request->name;
-            $user->email_parrent = $request->email_parrent;
-            $user->notifications = $request->notifications;
+            $user->email_parrent = $request->email_parrent ?? null;
+            $user->notifications = $request->has('notifications') ? true : false;
             $user->save();
-            return back();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Profile updated successfully'
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to update profile'
+            ]);
         }
     }
 
@@ -105,9 +123,52 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $user = Auth::user();
+
+            // Optional: Backup or archive logic here
+
+            Auth::logout();
+            $user->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Your account has been deleted successfully.'
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('Account deletion error: ' . $th->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete account'
+            ]);
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed'
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Current password is incorrect'
+            ]);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password updated successfully'
+        ]);
     }
 
     public function ubahProfile(Request $request)
