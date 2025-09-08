@@ -39,35 +39,47 @@ class ProcessUangMasukEmail implements ShouldQueue
      */
     public function handle()
     {
-        // get Salary data by user id
-        // $salary = Salary::find($this->user->id);
         $user = $this->data['user'];
         $salary = $this->data['salary'];
 
-        Log::info('Sending email to ' . $user->email);
-
-        if ($user->notifications != 1) {
-            Log::info('Notifications are disabled for the main user. No email sent.');
-            return false;
+        // Double check notifications are enabled (defense in depth)
+        if (!$user->notifications || $user->notifications != 1) {
+            Log::info('Email notifications are disabled for user: ' . $user->email . '. Skipping all email notifications.');
+            return;
         }
 
-        if ($salary) {
-            Mail::to($user->email)->send(new UangMasuk($salary));
+        if (!$salary) {
+            Log::warning('No salary data provided for user: ' . $user->email);
+            return;
+        }
 
-            // Check if there is an email_parrent
+        Log::info('Processing income email notifications for user: ' . $user->email);
+
+        try {
+            // Send email to main user
+            Mail::to($user->email)->send(new UangMasuk($salary));
+            Log::info('Income email sent successfully to main user: ' . $user->email);
+
+            // Send to parent emails if notifications enabled and parent emails exist
             if ($user->email_parrent) {
-                // Separate email_parrent by comma
-                $emailParents = explode(',', $user->email_parrent);
+                $emailParents = array_map('trim', explode(',', $user->email_parrent));
+                $emailParents = array_filter($emailParents); // Remove empty values
 
                 foreach ($emailParents as $emailParent) {
-                    Mail::to($emailParent)->send(new UangMasuk($salary));
+                    if (filter_var($emailParent, FILTER_VALIDATE_EMAIL)) {
+                        Mail::to($emailParent)->send(new UangMasuk($salary));
+                        Log::info('Income email sent successfully to parent: ' . $emailParent);
+                    } else {
+                        Log::warning('Invalid parent email format: ' . $emailParent . ' for user: ' . $user->email);
+                    }
                 }
-            }else{
-                Log::info('No email_parrent found for user ' . $user->email);
+            } else {
+                Log::info('No parent email configured for user: ' . $user->email);
             }
-        }else{
-            Log::info('No salary data found for user ' . $user->email);
-            return false;
+
+        } catch (\Exception $e) {
+            Log::error('Failed to send income email for user: ' . $user->email . '. Error: ' . $e->getMessage());
+            throw $e; // Re-throw to trigger job retry mechanism
         }
     }
 }

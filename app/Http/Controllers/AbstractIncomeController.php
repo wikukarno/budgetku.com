@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessUangMasukEmail;
 use App\Models\CategoryIncome;
 use App\Models\Salary;
+use App\Helpers\NotificationHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -244,10 +245,18 @@ abstract class AbstractIncomeController extends Controller
 
     protected function dispatchEmailJob(Salary $salary): void
     {
-        ProcessUangMasukEmail::dispatch([
-            'salary' => $salary,
-            'user' => Auth::user()
-        ]);
+        $user = Auth::user();
+        
+        NotificationHelper::dispatchEmailIfEnabled(
+            $user,
+            function () use ($salary, $user) {
+                ProcessUangMasukEmail::dispatch([
+                    'salary' => $salary,
+                    'user' => $user
+                ]);
+            },
+            'income'
+        );
     }
 
     protected function clearRelatedCaches(): void

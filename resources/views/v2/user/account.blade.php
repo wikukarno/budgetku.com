@@ -172,6 +172,19 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group mb-4">
+                                                <label class="label text-secondary">Email Notifications</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="emailNotificationCheck" name="notifications"
+                                                           {{ Auth::user()->notifications ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="emailNotificationCheck">
+                                                        Receive email notifications for transactions and updates
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="text-end">
