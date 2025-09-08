@@ -14,10 +14,12 @@ class PaymentMethodRepository
             ->get();
     }
 
-    // get payment method by id
+    // get payment method by id  
     public function getPaymentMethodById($id)
     {
-        return PaymentMethod::find($id);
+        return PaymentMethod::where('users_uuid', Auth::id())
+            ->where('uuid', $id)
+            ->first();
     }
 
     // create payment method
@@ -29,7 +31,9 @@ class PaymentMethodRepository
     // update payment method
     public function updatePaymentMethod($id, $data)
     {
-        $paymentMethod = PaymentMethod::find($id);
+        $paymentMethod = PaymentMethod::where('users_uuid', Auth::id())
+            ->where('uuid', $id)
+            ->first();
         if ($paymentMethod) {
             $paymentMethod->update($data);
             return $paymentMethod;

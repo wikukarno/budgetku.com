@@ -13,9 +13,7 @@ class PaymentMethodPolicy
      */
     public function create(User $user)
     {
-        return $user->roles === 'Owner'
-            ? Response::allow()
-            : Response::deny('You do not have access to create this data');
+        return Response::allow(); // Allow all authenticated users to create
     }
 
     /**
@@ -24,7 +22,7 @@ class PaymentMethodPolicy
     public function updateOrCreate(User $user, PaymentMethod $paymentMethod)
     {
         // Check if the user is the owner of the payment method
-        if ($user->id === $paymentMethod->users_id) {
+        if ($user->uuid === $paymentMethod->users_uuid) {
             return Response::allow();
         }
 
@@ -37,7 +35,7 @@ class PaymentMethodPolicy
      */
     public function delete(User $user, PaymentMethod $paymentMethod)
     {
-        return $user->id === $paymentMethod->users_id
+        return $user->uuid === $paymentMethod->users_uuid
             ? Response::allow()
             : Response::deny('You do not have access to delete this data');
     }

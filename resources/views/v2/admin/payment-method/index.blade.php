@@ -104,7 +104,7 @@
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_payment_method').val(res.data.id);
+                    $('#id_payment_method').val(res.data.uuid);
                     $('#name').val(res.data.name);
                 },
                 complete: function(){
@@ -165,13 +165,19 @@
                 },
                 success: (data) => {
                     console.log(data);
-                    showCustomAlert('success', data.message);
-                    $('#form-add-payment-method').trigger('reset');
-                    $('#paymentMethodModal').modal('hide');
-                    $('#paymentMethodTable').DataTable().ajax.reload();
+                    if (data.status) {
+                        showCustomAlert('success', data.message);
+                        $('#form-add-payment-method').trigger('reset');
+                        $('#paymentMethodModal').modal('hide');
+                        $('#paymentMethodTable').DataTable().ajax.reload();
+                    } else {
+                        showCustomAlert('danger', data.message);
+                        $('#btnSavePaymentMethod').html('Save');
+                        $('#btnSavePaymentMethod').attr('disabled', false);
+                    }
                 },
                 complete: () => {
-                    $('#paymentMethodModal').modal('hide');
+                    // Don't hide modal here, let success/error handler decide
                 },
                 error: function(data){
                     showCustomAlert('danger', data.responseJSON.message);

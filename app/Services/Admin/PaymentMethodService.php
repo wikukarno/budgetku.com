@@ -27,7 +27,7 @@ class PaymentMethodService
 
     public function createPaymentMethod(array $data, $id): PaymentMethod
     {
-        $data['users_id'] = Auth::id();
+        $data['users_uuid'] = Auth::id();
         $data['icon'] = $data['icon'] ?? null;
         $data['name'] = $data['name'] ?? null;
 

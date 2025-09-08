@@ -6,6 +6,7 @@ use App\Jobs\ProcessUangMasukEmail;
 use App\Models\CategoryIncome;
 use App\Models\Salary;
 use App\Helpers\NotificationHelper;
+use App\Helpers\CacheHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -261,18 +262,6 @@ abstract class AbstractIncomeController extends Controller
 
     protected function clearRelatedCaches(): void
     {
-        $userId = Auth::id();
-        $cacheKeys = [
-            'gaji_bulan_ini_user_' . $userId,
-            'gaji_bulan_lalu_user_' . $userId,
-            'pengeluaran_bulan_ini_user_' . $userId,
-            'pengeluaran_bulan_lalu_user_' . $userId,
-            'laporan_tahunan_user_' . $userId,
-            'user_categories_income_' . $userId,
-        ];
-
-        foreach ($cacheKeys as $key) {
-            Cache::forget($key);
-        }
+        CacheHelper::clearDashboardCaches();
     }
 }

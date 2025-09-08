@@ -9,6 +9,7 @@ use App\Models\Finance;
 use App\Models\PaymentMethod;
 use App\Models\Salary;
 use App\Models\User;
+use App\Helpers\CacheHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -194,12 +195,7 @@ class UserFinanceController extends Controller
             }
 
             // Delete cache
-            Cache::forget('total_saldo_user_' . Auth::id());
-            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
-            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
-            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
-            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
-            Cache::forget('laporan_tahunan_user_' . Auth::id());
+            CacheHelper::clearDashboardCaches();
 
             // Proses saldo & email
             $user = Auth::user();
@@ -287,12 +283,7 @@ class UserFinanceController extends Controller
             }
 
             // Delete cache
-            Cache::forget('total_saldo_user_' . Auth::id());
-            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
-            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
-            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
-            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
-            Cache::forget('laporan_tahunan_user_' . Auth::id());
+            CacheHelper::clearDashboardCaches();
 
             // Hitung ulang saldo user
             $user = Auth::user();
@@ -331,12 +322,7 @@ class UserFinanceController extends Controller
             $item->delete();
 
             // Delete cache
-            Cache::forget('total_saldo_user_' . Auth::id());
-            Cache::forget('gaji_bulan_ini_user_' . Auth::id());
-            Cache::forget('gaji_bulan_lalu_user_' . Auth::id());
-            Cache::forget('pengeluaran_bulan_ini_user_' . Auth::id());
-            Cache::forget('pengeluaran_bulan_lalu_user_' . Auth::id());
-            Cache::forget('laporan_tahunan_user_' . Auth::id());
+            CacheHelper::clearDashboardCaches();
 
             return response()->json([
                 'status' => true,
