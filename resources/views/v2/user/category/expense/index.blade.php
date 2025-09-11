@@ -245,7 +245,17 @@
                 filterEl.appendTo(wrapper);
                 
                 wrapper.insertBefore($('#categoryExpenseTable'));
-
+                
+                // Initialize Select2 for length dropdown
+                setTimeout(function() {
+                    $('#categoryExpenseTable_length select').select2({
+                        minimumResultsForSearch: Infinity,
+                        width: 'resolve',
+                        dropdownParent: $('#categoryExpenseTable_length'),
+                        placeholder: 'Show entries',
+                        allowClear: false
+                    });
+                }, 100);
             }
         });
     </script>
