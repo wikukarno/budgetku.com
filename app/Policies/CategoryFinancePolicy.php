@@ -11,6 +11,12 @@ class CategoryFinancePolicy
 {
     use HandlesAuthorization;
 
+    public function create(User $user)
+    {
+        // Semua authenticated user bisa create category finance
+        return Response::allow();
+    }
+
     public function view(User $user, CategoryFinance $categoryFinance)
     {
         // Periksa apakah pengguna adalah pemilik category finance

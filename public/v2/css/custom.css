@@ -86,12 +86,309 @@ div.dataTables_wrapper .dt-top {
 }
 
 /* Style dropdown lebih rapi */
-div.dataTables_wrapper .dataTables_length select {
-    width: 120px;
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 6px;
-    border: 1px solid #dee2e6;
+div.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_length select,
+table.dataTable + .dataTables_wrapper .dataTables_length select {
+    width: 150px !important;
+    min-width: 150px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Untuk layar large, berikan lebih banyak space */
+@media (min-width: 992px) {
+    div.dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_length select,
+    table.dataTable + .dataTables_wrapper .dataTables_length select {
+        width: 200px !important;
+        min-width: 200px !important;
+    }
+}
+
+/* Untuk layar extra large, berikan space yang lebih luas */
+@media (min-width: 1200px) {
+    div.dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_length select,
+    table.dataTable + .dataTables_wrapper .dataTables_length select {
+        width: 250px !important;
+        min-width: 250px !important;
+    }
+}
+
+/* Additional aggressive selectors for DataTables length dropdown */
+select[name*="length"],
+.dataTables_length select,
+.dataTables_wrapper .dataTables_length select,
+div.dataTables_wrapper div.dataTables_length select,
+.form-select[name*="length"],
+#expenseTable_length select,
+#categoryExpenseTable_length select,
+#categoryIncomeTable_length select,
+#incomeTable_length select,
+table[id$="Table"]_length select {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: none !important;
+    border: 1px solid #dee2e6 !important;
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+/* Focus state untuk DataTables dropdown - konsisten dengan Bootstrap theme */
+select[name*="length"]:focus,
+.dataTables_length select:focus,
+.dataTables_wrapper .dataTables_length select:focus,
+div.dataTables_wrapper div.dataTables_length select:focus,
+.form-select[name*="length"]:focus,
+#expenseTable_length select:focus,
+#categoryExpenseTable_length select:focus,
+#categoryIncomeTable_length select:focus,
+#incomeTable_length select:focus,
+table[id$="Table"]_length select:focus {
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Hover state */
+select[name*="length"]:hover,
+.dataTables_length select:hover,
+.dataTables_wrapper .dataTables_length select:hover,
+div.dataTables_wrapper div.dataTables_length select:hover,
+.form-select[name*="length"]:hover,
+#expenseTable_length select:hover,
+#categoryExpenseTable_length select:hover,
+#categoryIncomeTable_length select:hover,
+#incomeTable_length select:hover,
+table[id$="Table"]_length select:hover {
+    border-color: #b6d4fe !important;
+}
+
+/* Dark mode support for DataTables dropdown */
+[data-theme="dark"] select[name*="length"],
+[data-theme="dark"] .dataTables_length select,
+[data-theme="dark"] .dataTables_wrapper .dataTables_length select,
+[data-theme="dark"] div.dataTables_wrapper div.dataTables_length select,
+[data-theme="dark"] .form-select[name*="length"],
+[data-theme="dark"] #expenseTable_length select,
+[data-theme="dark"] #categoryExpenseTable_length select,
+[data-theme="dark"] #categoryIncomeTable_length select,
+[data-theme="dark"] #incomeTable_length select,
+[data-theme="dark"] table[id$="Table"]_length select {
+    background-color: #15203C !important;
+    color: #f9fafb !important;
+    border-color: #334155 !important;
+}
+
+[data-theme="dark"] select[name*="length"]:focus,
+[data-theme="dark"] .dataTables_length select:focus,
+[data-theme="dark"] .dataTables_wrapper .dataTables_length select:focus,
+[data-theme="dark"] div.dataTables_wrapper div.dataTables_length select:focus,
+[data-theme="dark"] .form-select[name*="length"]:focus,
+[data-theme="dark"] #expenseTable_length select:focus,
+[data-theme="dark"] #categoryExpenseTable_length select:focus,
+[data-theme="dark"] #categoryIncomeTable_length select:focus,
+[data-theme="dark"] #incomeTable_length select:focus,
+[data-theme="dark"] table[id$="Table"]_length select:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25) !important;
+}
+
+[data-theme="dark"] select[name*="length"]:hover,
+[data-theme="dark"] .dataTables_length select:hover,
+[data-theme="dark"] .dataTables_wrapper .dataTables_length select:hover,
+[data-theme="dark"] div.dataTables_wrapper div.dataTables_length select:hover,
+[data-theme="dark"] .form-select[name*="length"]:hover,
+[data-theme="dark"] #expenseTable_length select:hover,
+[data-theme="dark"] #categoryExpenseTable_length select:hover,
+[data-theme="dark"] #categoryIncomeTable_length select:hover,
+[data-theme="dark"] #incomeTable_length select:hover,
+[data-theme="dark"] table[id$="Table"]_length select:hover {
+    border-color: #8b5cf6 !important;
+}
+
+/* Select2 specific styling for DataTables length dropdown */
+.dataTables_length .select2-container {
+    width: 150px !important;
+    min-width: 150px !important;
+}
+
+.dataTables_length .select2-container .select2-selection--single {
+    height: 45px !important;
+    padding: 8px 8px !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.dataTables_length .select2-container .select2-selection--single .select2-selection__rendered {
+    color: #495057 !important;
+    line-height: 28px !important;
+    padding-left: 6px !important;
+    padding-right: 20px !important;
+}
+
+.dataTables_length .select2-container .select2-selection--single .select2-selection__arrow {
+    height: 43px !important;
+    right: 8px !important;
+}
+
+/* Focus state for Select2 in DataTables */
+.dataTables_length .select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Hover state for Select2 in DataTables */
+.dataTables_length .select2-container--default .select2-selection--single:hover {
+    border-color: #b6d4fe !important;
+}
+
+/* Responsive widths for Select2 in DataTables */
+@media (min-width: 992px) {
+    .dataTables_length .select2-container {
+        width: 200px !important;
+        min-width: 200px !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .dataTables_length .select2-container {
+        width: 250px !important;
+        min-width: 250px !important;
+    }
+}
+
+/* Dark mode for Select2 in DataTables */
+[data-theme="dark"] .dataTables_length .select2-container .select2-selection--single {
+    background-color: #15203C !important;
+    color: #f9fafb !important;
+    border-color: #334155 !important;
+}
+
+[data-theme="dark"] .dataTables_length .select2-container .select2-selection--single .select2-selection__rendered {
+    color: #f9fafb !important;
+}
+
+[data-theme="dark"] .dataTables_length .select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25) !important;
+}
+
+[data-theme="dark"] .dataTables_length .select2-container--default .select2-selection--single:hover {
+    border-color: #8b5cf6 !important;
+}
+
+/* Select2 dropdown for DataTables length in dark mode */
+[data-theme="dark"] .dataTables_length .select2-dropdown {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .dataTables_length .select2-results__options {
+    background-color: #1e293b !important;
+}
+
+[data-theme="dark"] .dataTables_length .select2-results__option {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .dataTables_length .select2-results__option--highlighted[aria-selected] {
+    background-color: #7c3aed !important;
+    color: #ffffff !important;
+}
+
+/* Sidebar Logo Styling */
+.sidebar-logo {
+    max-width: 120px;
+    height: auto;
+    max-height: 45px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+/* Responsive logo sizing */
+@media (max-width: 768px) {
+    .sidebar-logo {
+        max-width: 100px;
+        max-height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-logo {
+        max-width: 80px;
+        max-height: 35px;
+    }
+}
+
+/* Logo container padding and alignment */
+.sidebar-area .logo {
+    padding: 20px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-area .logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dark mode logo adjustments if needed */
+[data-theme="dark"] .sidebar-logo {
+    filter: brightness(1.1);
+}
+
+/* Hover effect for logo */
+.sidebar-area .logo a:hover .sidebar-logo {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+@media (min-width: 992px) {
+    select[name*="length"],
+    .dataTables_length select,
+    .dataTables_wrapper .dataTables_length select,
+    div.dataTables_wrapper div.dataTables_length select,
+    .form-select[name*="length"],
+    #expenseTable_length select,
+    #categoryExpenseTable_length select,
+    #categoryIncomeTable_length select,
+    #incomeTable_length select,
+    table[id$="Table"]_length select {
+        width: 200px !important;
+        min-width: 200px !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    select[name*="length"],
+    .dataTables_length select,
+    .dataTables_wrapper .dataTables_length select,
+    div.dataTables_wrapper div.dataTables_length select,
+    .form-select[name*="length"],
+    #expenseTable_length select,
+    #categoryExpenseTable_length select,
+    #categoryIncomeTable_length select,
+    #incomeTable_length select,
+    table[id$="Table"]_length select {
+        width: 250px !important;
+        min-width: 250px !important;
+    }
 }
 
 /* Style search box */

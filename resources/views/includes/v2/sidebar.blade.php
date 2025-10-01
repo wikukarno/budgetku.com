@@ -1,11 +1,14 @@
 <div class="sidebar-area" id="sidebar-area">
     <div class="logo position-relative">
-        <a href="index.html" class="d-block text-decoration-none position-relative">
-            {{-- <img src="{{ asset('v2/images/logo-icon.png') }}" alt="logo-icon"> --}}
-            <span class="logo-text fw-bold text-dark">
-                BudgetKu
-            </span>
-        </a>
+        @if (Auth::user()->roles == "Owner")
+            <a href="{{ route('admin.dashboard') }}" class="d-block text-decoration-none position-relative">
+                <img src="{{ asset('v2/images/logo.svg') }}" alt="BudgetKu Logo" class="sidebar-logo">
+            </a>
+        @else
+            <a href="{{ route('customer.dashboard') }}" class="d-block text-decoration-none position-relative">
+                <img src="{{ asset('v2/images/logo.svg') }}" alt="BudgetKu Logo" class="sidebar-logo">
+            </a>
+        @endif
         <button
             class="sidebar-burger-menu bg-transparent p-0 border-0 opacity-0 z-n1 position-absolute top-50 end-0 translate-middle-y"
             id="sidebar-burger-menu">
@@ -171,7 +174,7 @@
             @endif
 
             <li class="menu-item">
-                <a href="javascript:void()" onclick="logout()" class="menu-link">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal" class="menu-link">
                     <span class="material-symbols-outlined menu-icon">logout</span>
                     <span class="title">Sign Out</span>
                 </a>

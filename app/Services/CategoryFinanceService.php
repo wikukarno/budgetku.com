@@ -27,7 +27,7 @@ class CategoryFinanceService
                 ? $this->categoryFinanceRepository->find((string)$id)
                 : new \App\Models\CategoryFinance();
 
-            // Set data
+            // Set data - now all users use UUID system
             $category->users_uuid = Auth::id();
             $category->name_category_finances = $validated['name_category_finances'];
 
@@ -37,22 +37,31 @@ class CategoryFinanceService
             // Simpan data
             $category->save();
 
-            Cache::forget('user_categories_finance_' . Auth::id());
+            // Clear cache more efficiently 
+            $userId = Auth::id();
+            Cache::forget('user_categories_finance_' . $userId);
+            Cache::forget('admin_categories_finance_' . $userId);
+            
+            // Clear specific item cache if updating existing record
+            if ($id) {
+                Cache::forget('user_categories_finance_show_' . $id . '_' . $userId);
+                Cache::forget('admin_categories_finance_show_' . $id . '_' . $userId);
+            }
 
             DB::commit();
 
             if ($isNew) {
-                return ['status' => 'success', 'message' => 'Data added successfully'];
+                return ['status' => 'success', 'message' => 'Category created successfully.'];
             }
 
             if ($wasChanged) {
-                return ['status' => 'success', 'message' => 'Data updated successfully'];
+                return ['status' => 'success', 'message' => 'Category updated successfully.'];
             }
 
-            return ['status' => 'error', 'message' => 'No changes have been made'];
+            return ['status' => 'error', 'message' => 'No changes were made to the category.'];
         } catch (\Exception $e) {
             DB::rollBack();
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            return ['status' => 'error', 'message' => 'Failed to save category. Please try again.'];
         }
     }
 }

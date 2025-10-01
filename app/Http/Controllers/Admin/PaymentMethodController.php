@@ -36,8 +36,8 @@ class PaymentMethodController extends Controller
                 ->editColumn('updated_at', fn($item) => Carbon::parse($item->updated_at)->isoFormat('D MMMM Y'))
                 ->editColumn('action', function ($item) {
                     return '
-                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="btnEditPaymentMethod(' . $item->id . ')">Edit</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="btnDeletePaymentMethod(' . $item->id . ')">Delete</a>';
+                        <a href="javascript:void(0)" class="btn btn-sm btn-warning text-white" onclick="btnEditPaymentMethod(\'' . $item->uuid . '\')">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger text-white" onclick="btnDeletePaymentMethod(\'' . $item->uuid . '\')">Delete</a>';
                 })
                 ->rawColumns(['action', 'created_at', 'updated_at'])
                 ->make(true);
@@ -67,7 +67,10 @@ class PaymentMethodController extends Controller
             if ($request->id) {
                 $paymentMethod = $this->paymentMethodService->getPaymentMethodById($request->id);
 
-                // Authorize update
+                // Check if payment method exists and authorize update
+                if (!$paymentMethod) {
+                    return response()->json(['status' => false, 'message' => 'Payment method not found.']);
+                }
                 $this->authorize('updateOrCreate', $paymentMethod);
             } else {
                 // Authorize create
@@ -88,8 +91,14 @@ class PaymentMethodController extends Controller
                     : 'Payment method created successfully.'
             ]);
         } catch (\Exception $e) {
-            Log::error('Payment method creation failed: ' . $e->getMessage());
-            return response()->json(['status' => false, 'message' => 'Failed to create payment method.']);
+            Log::error('Payment method creation failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+            return response()->json([
+                'status' => false, 
+                'message' => 'Failed to create payment method: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -99,7 +108,7 @@ class PaymentMethodController extends Controller
     public function show(Request $request)
     {
         $request->validate([
-            'id' => 'required|integer|exists:payment_methods,id',
+            'id' => 'required|string|exists:payment_methods,uuid',
         ]);
         $paymentMethod = $this->paymentMethodService->getPaymentMethodById($request->id);
         if ($paymentMethod) {

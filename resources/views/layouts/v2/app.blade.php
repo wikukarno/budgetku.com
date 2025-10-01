@@ -46,6 +46,9 @@
                 @yield('content')
             </div>
 
+            <!-- Logout Modal -->
+            @include('components.modal-logout')
+
             <div class="flex-grow-1"></div>
 
             <!-- Start Footer Area -->

@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\InputSanitizerTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreCategoryFinanceRequest extends FormRequest
 {
+    use InputSanitizerTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -31,14 +33,9 @@ class StoreCategoryFinanceRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                'min:2',
             ],
         ];
     }
 
-    public function attributes(): array
-    {
-        return [
-            'name_category_finances' => 'category name',
-        ];
-    }
 }

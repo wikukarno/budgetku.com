@@ -80,7 +80,7 @@
                                 </ul>
                                 <ul class="admin-link ps-0 mb-0 list-unstyled">
                                     <li>
-                                        <a class="dropdown-item d-flex align-items-center text-body" onclick="logout()">
+                                        <a class="dropdown-item d-flex align-items-center text-body" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                                             <i class="material-symbols-outlined">logout</i>
                                             <span class="ms-2">Logout</span>
                                         </a>

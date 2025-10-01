@@ -123,7 +123,17 @@
                 filterEl.appendTo(wrapper);
                 
                 wrapper.insertBefore($('#expenseTable'));
-
+                
+                // Initialize Select2 for length dropdown
+                setTimeout(function() {
+                    $('#expenseTable_length select').select2({
+                        minimumResultsForSearch: Infinity,
+                        width: 'resolve',
+                        dropdownParent: $('#expenseTable_length'),
+                        placeholder: 'Show entries',
+                        allowClear: false
+                    });
+                }, 100);
             }
         });
 </script>

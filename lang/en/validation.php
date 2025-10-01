@@ -153,8 +153,17 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'name_category_finances' => [
+            'required' => 'Please enter an expense category name.',
+            'string' => 'The expense category name must be valid text.',
+            'min' => 'The expense category name must be at least :min characters.',
+            'max' => 'The expense category name cannot be longer than :max characters.',
+        ],
+        'name_category_incomes' => [
+            'required' => 'Please enter an income category name.',
+            'string' => 'The income category name must be valid text.',
+            'min' => 'The income category name must be at least :min characters.',
+            'max' => 'The income category name cannot be longer than :max characters.',
         ],
     ],
 
@@ -169,6 +178,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name_category_finances' => 'expense category name',
+        'name_category_incomes' => 'income category name',
+        'uuid' => 'category ID',
+    ],
 
 ];

@@ -2,98 +2,65 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\AbstractCategoryController;
+use App\Http\Requests\CategoryIncomeRequest;
 use App\Models\CategoryIncome;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Services\CategoryIncomeService;
 
-class CategoryIncomeController extends Controller
+class CategoryIncomeController extends AbstractCategoryController
 {
-    public function index()
+    protected $categoryIncomeService;
+
+    public function __construct(CategoryIncomeService $categoryIncomeService)
     {
-        if (request()->ajax()) {
-            $query = CategoryIncome::where('users_uuid', Auth::id())->orderBy('created_at', 'DESC');
-
-            return datatables()->of($query)
-                ->addIndexColumn()
-                ->editColumn('created_at', function ($item) {
-                    return $item->created_at->isoFormat('D MMMM Y');
-                })
-                ->editColumn('updated_at', function ($item) {
-                    return $item->updated_at->isoFormat('D MMMM Y');
-                })
-                ->editColumn('action', function ($item) {
-                    return '
-                        <button class="btn btn-sm btn-warning text-white" onclick="updateKategoriIncome(' . $item->id . ')">
-                            Edit
-                        </button>
-
-
-                        <button class="btn btn-sm btn-danger text-white" onclick="deleteKategoriIncome(' . $item->id . ')">
-                            Delete
-                        </button>
-                    ';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-        return view('v2.admin.category.income.index');
+        $this->categoryIncomeService = $categoryIncomeService;
     }
 
-    public function create()
+    protected function getModelClass(): string
     {
+        return CategoryIncome::class;
     }
 
-    public function store(Request $request)
+    protected function getService()
     {
-        $data = CategoryIncome::updateOrCreate(
-            [
-                'id' => $request->id_category_income,
-            ],
-            [
-                'users_id' => Auth::id(),
-                'name_category_incomes' => $request->name_category_incomes,
-            ]
-        );
-
-        // if the data is successfully created
-        if ($data->wasRecentlyCreated) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Data berhasil ditambahkan',
-            ]);
-        } elseif ($data->wasChanged()) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Data berhasil diubah',
-            ]);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data gagal ditambahkan',
-            ]);
-        }
+        return $this->categoryIncomeService;
     }
 
-    public function show(CategoryIncome $categoryIncome, Request $request)
+    protected function getServiceUpdateMethod(): string
     {
-        $data = CategoryIncome::find($request->id);
-        return response()->json($data);
+        return 'updateOrCreateCategoryIncome';
     }
 
-    public function edit(CategoryIncome $categoryIncome)
+    protected function getIndexViewName(): string
     {
+        return 'v2.admin.category.income.index';
     }
 
-    public function update(Request $request, CategoryIncome $categoryIncome)
+    protected function getCacheKeyPrefix(): string
     {
+        return 'admin_categories_income';
     }
 
-    public function destroy(Request $request)
+    protected function getCategoryNameField(): string
     {
-        $data = CategoryIncome::find($request->id);
-        $data->delete();
-
-        return response()->json($data);
+        return 'name_category_incomes';
     }
+
+    protected function getJavaScriptFunctions(): array
+    {
+        return [
+            'update' => 'updateKategoriIncome',
+            'delete' => 'deleteKategoriIncome'
+        ];
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(CategoryIncomeRequest $request)
+    {
+        return $this->handleStore($request->validated(), $request->uuid);
+    }
+
+    // Other CRUD methods (show, destroy) are handled by AbstractCategoryController
 }

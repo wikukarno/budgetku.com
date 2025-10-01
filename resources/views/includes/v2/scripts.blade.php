@@ -24,6 +24,34 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    // Initialize Select2 for DataTables length dropdown
+    function initSelect2ForDataTables() {
+        // Wait for DataTables to be fully initialized
+        setTimeout(function() {
+            $('.dataTables_length select').each(function() {
+                if (!$(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2({
+                        minimumResultsForSearch: Infinity, // Hide search box since options are limited
+                        width: 'resolve', // Use CSS width
+                        dropdownParent: $(this).closest('.dataTables_length'),
+                        placeholder: 'Show entries',
+                        allowClear: false
+                    });
+                }
+            });
+        }, 100);
+    }
+
+    // Initialize on document ready
+    $(document).ready(function() {
+        initSelect2ForDataTables();
+        
+        // Re-initialize when DataTables are reloaded
+        $(document).on('draw.dt', function() {
+            initSelect2ForDataTables();
+        });
+    });
+
     function showCustomAlert(type = 'success', message = 'Berhasil!') {
         const iconMap = {
             success: 'ri-play-circle-line',
@@ -128,34 +156,4 @@
         }
     });
 
-    function logout() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, logout!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('logout') }}",
-                    data: {
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        showCustomAlert('success', 'Logout successful!');
-                        setTimeout(function() {
-                            window.location.href = "{{ route('login') }}";
-                        }, 1000);
-                    },
-                    error: function(xhr, status, error) {
-                        showCustomAlert('danger', 'Logout failed! Please try again.');
-                    }
-                });
-            }
-        })
-    }
 </script>

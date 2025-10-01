@@ -48,7 +48,7 @@
                 <form id="form-tambah-kategori-income" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="id" id="id_category_income">
+                        <input type="hidden" name="uuid" id="id_category_income">
                         <div class="form-group">
                             <label for="name">
                                 Name
@@ -75,6 +75,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+        console.log('ADMIN Category Income JavaScript loaded!');
+        
         function addCategoryIncome() {
             $('#categoryIncomeModal').modal('show');
             $('#categoryIncomeModalLabel').html('Add New Income Category');
@@ -82,38 +84,68 @@
             $('#form-tambah-kategori-income').trigger('reset');
             $('#btnSaveKategoriKeuangan').html('Save');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            // Clear any previous validation errors
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Focus on first input for better UX
+            setTimeout(() => {
+                $('#name_category_incomes').focus();
+            }, 500);
         }
 
-        function updateKategoriIncome(id){
+        function updateKategoriIncome(uuid){
+            console.log('ADMIN updateKategoriIncome called with UUID:', uuid);
+            
             $('#form-tambah-kategori-income').trigger('reset');
             $('#categoryIncomeModal').modal('show');
             $('#categoryIncomeModalLabel').html('Edit Income Category');
-            $('#id_category_income').val(id);
+            $('#id_category_income').val(uuid);
             $('#btnSaveKategoriKeuangan').html('Update');
             $('#btnSaveKategoriKeuangan').attr('disabled', false);
+            
+            console.log('Making AJAX request to:', "{{ route('admin.category.income.show') }}");
             
             $.ajax({
                 type:"GET",
                 url: "{{ route('admin.category.income.show') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    id:id
+                    uuid:uuid
                 },
                 dataType: 'json',
                 beforeSend: function() {
+                    console.log('ADMIN AJAX request started');
                     $(".preloader").fadeIn();
                 },
                 success: function(res){
-                    $('#id_kategori_income').val(res.id);
-                    $('#name_category_incomes').val(res.name_category_incomes);
+                    console.log('ADMIN AJAX response received:', res);
+                    
+                    // Check if response has data structure
+                    if (res.status === 'success' && res.data) {
+                        $('#id_category_income').val(res.data.uuid);
+                        $('#name_category_incomes').val(res.data.name_category_incomes);
+                        console.log('ADMIN Form populated with:', res.data);
+                    } else {
+                        // Handle old response format
+                        $('#id_category_income').val(res.uuid);
+                        $('#name_category_incomes').val(res.name_category_incomes);
+                        console.log('ADMIN Form populated with old format:', res);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('ADMIN AJAX Error:', xhr.responseText);
+                    showCustomAlert('danger', 'Failed to load category data');
                 },
                 complete: function(){
+                    console.log('ADMIN AJAX request completed');
                     $(".preloader").fadeOut();
                 }
             });
         }
 
-        function deleteKategoriIncome(id){
+        function deleteKategoriIncome(uuid){
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Data will be deleted!",
@@ -130,7 +162,7 @@
                         url: "{{ route('admin.category.income.destroy') }}",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            id:id
+                            uuid:uuid
                         },
                         dataType: 'json',
                         beforeSend: function() {

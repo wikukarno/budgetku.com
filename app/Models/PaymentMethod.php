@@ -9,7 +9,7 @@ class PaymentMethod extends Model
 {
     use SoftDeletes;
 
-    // protected $primaryKey = 'uuid';
+    protected $primaryKey = 'uuid';
 
     protected $keyType = 'string';
 
@@ -19,18 +19,12 @@ class PaymentMethod extends Model
         'uuid',
         'users_uuid',
         'name',
-        'users_id',
         'icon',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'users_id');
-    }
-
-    public function legacyUser()
-    {
-        return $this->belongsTo(User::class, 'users_id', 'id');
+        return $this->belongsTo(User::class, 'users_uuid', 'uuid');
     }
 
     protected static function booted()

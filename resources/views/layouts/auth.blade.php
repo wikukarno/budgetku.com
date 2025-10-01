@@ -27,6 +27,9 @@
     </div>
     <!-- Start Main Content Area -->
 
+    <!-- Logout Modal -->
+    @include('components.modal-logout')
+
     @stack('before-scripts')
     @include('includes.v2.scripts')
     @stack('after-scripts')

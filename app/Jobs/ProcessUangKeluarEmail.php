@@ -38,36 +38,48 @@ class ProcessUangKeluarEmail implements ShouldQueue
      */
     public function handle()
     {
-        // get finance data by user id
         $user = $this->data['user'];
         $finance = $this->data['finance'];
         $saldo = $this->data['saldo'];
 
-        // Cek apakah notifikasi user utama aktif
-        if ($user->notifications != 1) {
-            Log::info('Notifications are disabled for the main user. No email sent.');
-            return false;
+        // Double check notifications are enabled (defense in depth)
+        if (!$user->notifications || $user->notifications != 1) {
+            Log::info('Email notifications are disabled for user: ' . $user->email . '. Skipping all email notifications.');
+            return;
         }
 
-        // Kirim email ke user utama
-        if ($finance) {
+        if (!$finance) {
+            Log::warning('No finance data provided for user: ' . $user->email);
+            return;
+        }
+
+        Log::info('Processing expense email notifications for user: ' . $user->email);
+
+        try {
+            // Send email to main user
             Mail::to($user->email)->send(new UangKeluar($finance, $saldo));
+            Log::info('Expense email sent successfully to main user: ' . $user->email);
 
-            // Cek apakah ada email_parrent
+            // Send to parent emails if notifications enabled and parent emails exist
             if ($user->email_parrent) {
-                // Memisahkan email_parrent berdasarkan koma
-                $emailParents = explode(',', $user->email_parrent);
+                $emailParents = array_map('trim', explode(',', $user->email_parrent));
+                $emailParents = array_filter($emailParents); // Remove empty values
 
-                // Mengirim email ke setiap email orang tua
-                foreach ($emailParents as $parentEmail) {
-                    Mail::to($parentEmail)->send(new UangKeluar($finance, $saldo));
+                foreach ($emailParents as $emailParent) {
+                    if (filter_var($emailParent, FILTER_VALIDATE_EMAIL)) {
+                        Mail::to($emailParent)->send(new UangKeluar($finance, $saldo));
+                        Log::info('Expense email sent successfully to parent: ' . $emailParent);
+                    } else {
+                        Log::warning('Invalid parent email format: ' . $emailParent . ' for user: ' . $user->email);
+                    }
                 }
             } else {
-                Log::info('No parent emails found.');
+                Log::info('No parent email configured for user: ' . $user->email);
             }
-        } else {
-            Log::info('Finance data not found. No email sent.');
-            return false;
+
+        } catch (\Exception $e) {
+            Log::error('Failed to send expense email for user: ' . $user->email . '. Error: ' . $e->getMessage());
+            throw $e; // Re-throw to trigger job retry mechanism
         }
     }
 }

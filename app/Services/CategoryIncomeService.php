@@ -20,16 +20,16 @@ class CategoryIncomeService
     {
         DB::beginTransaction();
         try {
-            $id = $validated['uuid'] ?? null;
+            $id = $validated['uuid'] ?? $validated['id'] ?? null;
 
             // Cek apakah data lama ada (update) atau baru (create)
             $category = $id
                 ? $this->categoryIncomeRepository->find($id)
                 : new \App\Models\CategoryIncome();
 
-            // Set data
+            // Set data - now all users use UUID system
             $category->users_uuid = Auth::id();
-            $category->name_category_Incomes = $validated['name_category_incomes'];
+            $category->name_category_incomes = $validated['name_category_incomes'];
 
             $isNew = !$category->exists;
             $wasChanged = $category->isDirty(); // Cek apakah ada perubahan
@@ -37,22 +37,31 @@ class CategoryIncomeService
             // Simpan data
             $category->save();
 
-            Cache::forget('user_categories_income_' . Auth::id());
+            // Clear cache more efficiently 
+            $userId = Auth::id();
+            Cache::forget('user_categories_income_' . $userId);
+            Cache::forget('admin_categories_income_' . $userId);
+            
+            // Clear specific item cache if updating existing record
+            if ($id) {
+                Cache::forget('user_categories_income_show_' . $id . '_' . $userId);
+                Cache::forget('admin_categories_income_show_' . $id . '_' . $userId);
+            }
 
             DB::commit();
 
             if ($isNew) {
-                return ['status' => 'success', 'message' => 'Data added successfully'];
+                return ['status' => 'success', 'message' => 'Category created successfully.'];
             }
 
             if ($wasChanged) {
-                return ['status' => 'success', 'message' => 'Data updated successfully'];
+                return ['status' => 'success', 'message' => 'Category updated successfully.'];
             }
 
-            return ['status' => 'error', 'message' => 'No changes have been made'];
+            return ['status' => 'error', 'message' => 'No changes were made to the category.'];
         } catch (\Exception $e) {
             DB::rollBack();
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            return ['status' => 'error', 'message' => 'Failed to save category. Please try again.'];
         }
     }
 }

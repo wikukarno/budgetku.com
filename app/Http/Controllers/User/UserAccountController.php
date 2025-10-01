@@ -92,6 +92,7 @@ class UserAccountController extends Controller
 
             $user->name = $request->name;
             $user->email_parrent = $request->email_parrent ?? null;
+            $user->notifications = $request->has('notifications') ? true : false;
             $user->save();
 
             return response()->json([
