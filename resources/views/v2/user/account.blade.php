@@ -160,7 +160,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        {{-- <div class="col-lg-6">
                                             <div class="form-group mb-4">
                                                 <label class="label text-secondary">Parent Email (Optional)</label>
                                                 <div class="form-group position-relative">
@@ -171,7 +171,7 @@
                                                         class="ri-mail-unread-line position-absolute top-50 start-0 translate-middle-y fs-20 text-gray-light ps-20"></i>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-lg-12">
                                             <div class="form-group mb-4">
                                                 <label class="label text-secondary">Email Notifications</label>
