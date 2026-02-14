@@ -76,7 +76,10 @@ class DataExportController extends Controller
             return redirect()->back()->with('error', 'Export file not found. Please request a new one.');
         }
 
-        return response()->download($fullPath, $export->file_name);
+        return response()->download($fullPath, $export->file_name, [
+            'Content-Type' => 'application/zip',
+            'Content-Disposition' => 'attachment; filename="' . $export->file_name . '"',
+        ]);
     }
 
     protected function getRouteName(string $action): string

@@ -21,6 +21,25 @@
                         </form>
                     </div>
 
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    @if (session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show rounded-3" role="alert">
+                            {{ session('warning') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
                     <div class="alert alert-light border rounded-3 mb-4">
                         <h6 class="mb-2">What's included in the export:</h6>
                         <div class="row">
