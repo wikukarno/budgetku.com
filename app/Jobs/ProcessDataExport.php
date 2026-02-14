@@ -52,15 +52,14 @@ class ProcessDataExport implements ShouldQueue
 
     protected function buildZip(DataExport $export, User $user): void
     {
-        $exportDir = 'exports';
-        if (!Storage::disk('local')->exists($exportDir)) {
-            Storage::disk('local')->makeDirectory($exportDir);
+        if (!Storage::disk('public')->exists('exports')) {
+            Storage::disk('public')->makeDirectory('exports');
         }
 
         $userName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $user->name);
         $fileName = "budgetku-data-{$userName}-" . now()->format('Y-m-d') . ".zip";
         $filePath = "exports/{$export->uuid}.zip";
-        $fullPath = storage_path("app/{$filePath}");
+        $fullPath = storage_path("app/public/{$filePath}");
 
         $zip = new ZipArchive();
         if ($zip->open($fullPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {

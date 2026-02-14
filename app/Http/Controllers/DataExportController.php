@@ -70,16 +70,15 @@ class DataExportController extends Controller
             return redirect()->back()->with('error', 'This export has expired. Please request a new one.');
         }
 
-        $fullPath = storage_path("app/{$export->file_path}");
-
-        if (!file_exists($fullPath)) {
+        if (!Storage::disk('public')->exists($export->file_path)) {
             return redirect()->back()->with('error', 'Export file not found. Please request a new one.');
         }
 
-        return response()->download($fullPath, $export->file_name, [
-            'Content-Type' => 'application/zip',
-            'Content-Disposition' => 'attachment; filename="' . $export->file_name . '"',
-        ]);
+        return response()->download(
+            storage_path("app/public/{$export->file_path}"),
+            $export->file_name,
+            ['Content-Type' => 'application/zip']
+        );
     }
 
     protected function getRouteName(string $action): string
