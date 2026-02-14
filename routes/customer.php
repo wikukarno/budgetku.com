@@ -8,6 +8,7 @@ use App\Http\Controllers\User\DashboardCustomerController;
 use App\Http\Controllers\User\HelpCenterController;
 use App\Http\Controllers\User\UserCategoryIncomeController;
 use App\Http\Controllers\User\UserCategoryFinancesController;
+use App\Http\Controllers\DataExportController;
 
 Route::prefix('/pages/customer')
     ->name('customer.')
@@ -65,6 +66,12 @@ Route::prefix('/pages/customer')
         Route::put('/account/password/update', [UserAccountController::class, 'updatePassword'])->name('account.password.update');
         Route::delete('/account/delete', [UserAccountController::class, 'destroy'])->name('account.delete');
         // End Route custom account
+
+        // Data Export
+        Route::get('/data-export', [DataExportController::class, 'index'])->name('data.export.index');
+        Route::post('/data-export/request', [DataExportController::class, 'request'])->name('data.export.request');
+        Route::get('/data-export/status/{uuid}', [DataExportController::class, 'status'])->name('data.export.status');
+        Route::get('/data-export/download/{uuid}', [DataExportController::class, 'download'])->name('data.export.download');
 
         Route::resource('akun', UserAccountController::class);
     });

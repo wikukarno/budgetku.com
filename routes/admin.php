@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryIncomeController;
 use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\Admin\CategoryFinanceController;
 use App\Http\Controllers\Admin\PaymentMethodController;
+use App\Http\Controllers\DataExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/pages/admin')
@@ -61,4 +62,10 @@ Route::prefix('/pages/admin')
         Route::put('/account/password/update', [AccountController::class, 'updatePassword'])->name('admin.account.password.update');
         Route::delete('/account/delete', [AccountController::class, 'destroy'])->name('admin.account.delete');
         // End Route custom account
+
+        // Data Export
+        Route::get('/data-export', [DataExportController::class, 'index'])->name('admin.data.export.index');
+        Route::post('/data-export/request', [DataExportController::class, 'request'])->name('admin.data.export.request');
+        Route::get('/data-export/status/{uuid}', [DataExportController::class, 'status'])->name('admin.data.export.status');
+        Route::get('/data-export/download/{uuid}', [DataExportController::class, 'download'])->name('admin.data.export.download');
     });

@@ -11,13 +11,13 @@
         </div>
         <div class="flex-shrink-0 ms-3 d-none d-sm-block">
             @if (Auth::user()->roles == "Owner")
-                <a href="{{ route('admin.account.index') }}" class="btn btn-sm btn-light fw-medium" style="border-radius: 8px;">
-                    <i class="material-symbols-outlined align-middle" style="font-size: 18px;">arrow_forward</i>
-                    Go to Account
+                <a href="{{ route('admin.data.export.index') }}" class="btn btn-sm btn-light fw-medium" style="border-radius: 8px;">
+                    <i class="material-symbols-outlined align-middle" style="font-size: 18px;">download</i>
+                    Download Now
                 </a>
             @else
-                <a href="{{ route('customer.expense.export') }}" class="btn btn-sm btn-light fw-medium" style="border-radius: 8px;">
-                    <i class="material-symbols-outlined align-middle" style="font-size: 18px;">arrow_forward</i>
+                <a href="{{ route('customer.data.export.index') }}" class="btn btn-sm btn-light fw-medium" style="border-radius: 8px;">
+                    <i class="material-symbols-outlined align-middle" style="font-size: 18px;">download</i>
                     Download Now
                 </a>
             @endif
