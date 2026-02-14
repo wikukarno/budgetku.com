@@ -144,12 +144,8 @@ class ProcessDataExport implements ShouldQueue
         $zip->addFromString('data/incomes.json', $incomesData->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         // 7. Bills
-        $bills = Bill::where('users_id', $user->id)->get([
-            'nama_tagihan', 'harga_tagihan', 'pemilik_tagihan',
-            'siklus_tagihan', 'jatuh_tempo_tagihan', 'metode_pembayaran',
-            'keterangan_tagihan', 'created_at',
-        ]);
-        $zip->addFromString('data/bills.json', $bills->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $bills = Bill::where('users_id', $user->id)->get();
+        $zip->addFromString('data/bills.json', $bills->makeHidden(['id', 'users_id', 'deleted_at', 'updated_at'])->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         // 8. Avatar image
         if ($user->avatar) {
