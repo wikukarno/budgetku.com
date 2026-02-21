@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'access-token' => \App\Http\Middleware\ApiToken::class,
         '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
         '2fa-verify' => \App\Http\Middleware\EnsureTwoFactorVerified::class,
+        'prevent-new-data' => \App\Http\Middleware\PreventNewData::class,
     ];
 }

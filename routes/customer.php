@@ -12,7 +12,7 @@ use App\Http\Controllers\DataExportController;
 
 Route::prefix('/pages/customer')
     ->name('customer.')
-    ->middleware(['auth', 'user', '2fa-verify'])
+    ->middleware(['auth', 'user', '2fa-verify', 'prevent-new-data'])
     ->group(function () {
         Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('dashboard');
 

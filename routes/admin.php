@@ -11,7 +11,7 @@ use App\Http\Controllers\DataExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/pages/admin')
-    ->middleware(['auth', 'owner', '2fa-verify'])
+    ->middleware(['auth', 'owner', '2fa-verify', 'prevent-new-data'])
     ->group(function () {
         Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
 
