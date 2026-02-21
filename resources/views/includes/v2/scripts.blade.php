@@ -45,11 +45,22 @@
     // Initialize on document ready
     $(document).ready(function() {
         initSelect2ForDataTables();
-        
+
         // Re-initialize when DataTables are reloaded
         $(document).on('draw.dt', function() {
             initSelect2ForDataTables();
         });
+
+        // Global flash message handler
+        @if(session('success'))
+            showCustomAlert('success', @json(session('success')));
+        @endif
+        @if(session('error'))
+            showCustomAlert('danger', @json(session('error')));
+        @endif
+        @if(session('warning'))
+            showCustomAlert('warning', @json(session('warning')));
+        @endif
     });
 
     function showCustomAlert(type = 'success', message = 'Berhasil!') {
